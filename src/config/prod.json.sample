@@ -1,0 +1,20 @@
+{
+  "name": "Tripleonetech service",
+  "server": {
+    "port": 7001
+  },
+  "database": {
+    "mysql": {
+      "host": "localhost",
+      "db": "tripleonetech-test",
+      "port": 3306,
+      "credentials": {
+        "username": "user",
+        "password": "password"
+      }
+    }
+  },
+  "secret": {
+    "token": "abc123"
+  }
+}

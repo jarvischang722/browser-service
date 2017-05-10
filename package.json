@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "engines": {
+    "node": ">=7",
+    "npm": ">3.1"
+  },
+  "name": "tripleonetech-discover-service",
+  "version": "1.0.0",
+  "description": "Tripleonetech discover service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.smartbackend.com:john.fu/service.git"
+  },
+  "author": "john.fu@tripleonetech.net",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "helmet": "^3.6.0",
+    "joi": "^10.4.1",
+    "log4js": "^1.1.1",
+    "mysql": "^2.13.0",
+    "supertest": "^3.0.0",
+    "uuid": "^3.0.1"
+  }
+}
