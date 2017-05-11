@@ -29,10 +29,6 @@ apiRouter.use(bodyParser.json())
 route.bind(apiRouter, config)
 app.use('/', apiRouter)
 
-app.get('/', function (req, res) {
-  res.send('Tripleonetech discover service')
-})
-
 const port = config.server.port
 app.listen(port, () => {
     log.info(`The server [${config.name}] running on port: ${port}`)
