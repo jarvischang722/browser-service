@@ -1,37 +1,36 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
 const log4js = require('log4js')
+const mysql = require('mysql')
 const config = require('./config')
+const route = require('./route')
 
 const app = express()
 const log = log4js.getLogger()
 
 app.use(helmet())
-app.use(bodyParser.json())
+
+// db connection
+const dbCfg = config.database.mysql
+global.conn = mysql.createConnection({
+    host: dbCfg.host,
+    port: dbCfg.port,
+    database: dbCfg.db,
+    user: dbCfg.credentials.username,
+    password: dbCfg.credentials.password,
+});
+
+const apiRouter = new express.Router()
+apiRouter.use(cookieParser(config.secret.cookie))
+apiRouter.use(bodyParser.json())
+  
+route.bind(apiRouter, config)
+app.use('/', apiRouter)
 
 app.get('/', function (req, res) {
   res.send('Tripleonetech discover service')
-})
-
-app.post('/login', (req, res, next) => {
-    console.log(req.body);
-    const { username, password } = req.body
-    if (!username || !password) {
-        return res.status(400).send('Username and password are required')
-    }
-    if (username.toLowerCase() === 'admin' && password === 'pass') {
-        return res.json({
-            status: 'Ok',
-            message: 'Login successfully',
-            data: {
-                token: '',
-                ss: null,
-            }
-        })
-    } else {
-        return res.status(401).send('unauthorized')
-    }
 })
 
 const port = config.server.port
