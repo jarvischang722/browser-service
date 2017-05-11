@@ -15,6 +15,10 @@
     }
   },
   "secret": {
-    "token": "abc123"
+    "token": "abc123",
+    "cookie": "xyz987"
+  },
+  "timeout": {
+    "token": 7200
   }
 }
