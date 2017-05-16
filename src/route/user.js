@@ -8,7 +8,7 @@ module.exports = (route, config) => {
         }
         User.authorize(username, password, config.secret.token, (err, player) => {
             if (err) {
-                if (err === 401) return res.status(401).send('unauthorized')
+                if (err === 401) return res.status(401).send('Unauthorized')
                 return res.status(400).send('Login failed')
             }
             if (!player) return res.status(404).send('User not found')
@@ -27,9 +27,23 @@ module.exports = (route, config) => {
     }
 
     const test = (req, res, next) => {
-        res.send('Test service')
+        const { username, password } = req.body
+        if (!username || !password) {
+            return res.status(400).send('Username and password are required')
+        }
+        if (username && username.toLowerCase() === 'admin' && password === 'pass') {
+            return res.json({
+                status: 'Ok',
+                message: 'Login successfully',
+                data: {
+                    token: 'testtoken',
+                    ss: null,
+                }
+            })
+        }
+        return res.status(401).send('Unauthorized')
     }
     
     route.post('/user/login', login)
-    route.get('/test', test)
+    route.post('/user/test', test)
 }
