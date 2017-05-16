@@ -7,8 +7,11 @@ module.exports = (route, config) => {
             return res.status(400).send('Username and password are required')
         }
         User.authorize(username, password, config.secret.token, (err, player) => {
-            if (err) return res.status(400).send('Login failed')
-            if (!player) return res.status(401).send('unauthorized')
+            if (err) {
+                if (err === 401) return res.status(401).send('unauthorized')
+                return res.status(400).send('Login failed')
+            }
+            if (!player) return res.status(404).send('User not found')
             User.generateToken(player.id, config.timeout.token, (err, token) => {
                 if (err) return res.status(400).send('Login failed')
                 return res.json({
@@ -27,6 +30,6 @@ module.exports = (route, config) => {
         res.send('Test service')
     }
     
-    route.post('/login', login)
+    route.post('/user/login', login)
     route.get('/test', test)
 }
