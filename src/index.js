@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
 const log4js = require('log4js')
-const mysql = require('mysql')
 const config = require('./config')
 const route = require('./route')
 
@@ -14,13 +13,13 @@ app.use(helmet())
 
 // db connection
 const dbCfg = config.database.mysql
-global.conn = mysql.createConnection({
+global.connStr = {
     host: dbCfg.host,
     port: dbCfg.port,
     database: dbCfg.db,
     user: dbCfg.credentials.username,
     password: dbCfg.credentials.password,
-});
+}
 
 const apiRouter = new express.Router()
 apiRouter.use(cookieParser(config.secret.cookie))

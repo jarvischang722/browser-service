@@ -1,22 +1,19 @@
-const mysql = require('mysql')
 const config = require('../src/config')
 const User = require('../src/schema/user')
 
-global.conn = mysql.createConnection({
+global.connStr = {
     host: 'localhost',
     database: 'test',
     user: 'root',
     password: '1qaz!QAZ',
-});
+}
 global.config = config
 
-const username = 'aa'
-const password = 'bb'
+const username = 'test7777'
+const password = 'test7777'
 User.authorize(username, password, config.secret.token, (err, player) => {
-    console.log(err, player);
     if(!player) return
     User.generateToken(player.id, config.timeout.token, (err, token) => {
-        console.log(err);
         console.log({
             status: 'Ok',
             message: 'Login successfully',
