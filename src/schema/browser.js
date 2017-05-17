@@ -9,6 +9,8 @@ const getVersion = (platform, client) => {
             if (client) {
                 if (version[platform].hasOwnProperty(client)) {
                     result = version[platform][client]
+                } else {
+                    result = {}
                 }
             }
         }

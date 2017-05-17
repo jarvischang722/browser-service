@@ -7,5 +7,5 @@ module.exports = (route, config) => {
         return res.json(version)
     }
 
-    route.post('/browser/version', getVersion)
+    route.get('/browser/version', getVersion)
 }
