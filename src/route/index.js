@@ -3,7 +3,6 @@ const bind = (route, config) => {
 
     require('./user')(route, config)
     require('./browser')(route, config)
-    // ...
 }
 
 module.exports = { bind }
