@@ -35,6 +35,7 @@ apiRouter.use(bodyParser.json())
 route.bind(apiRouter, config)
 app.use('/', apiRouter)
 
+app.use("/styles",  express.static('src/public/css'));
 app.use('/download', express.static('deploy'));
 
 const port = config.server.port
