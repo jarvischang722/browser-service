@@ -76,13 +76,14 @@ module.exports = (route, config) => {
             await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
 
             await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
+            const setupFileName = `safety-browser-${options.client}-setup-${options.version}`
             await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
                 gui: false,
                 verbose: true,
                 signtoolname: 'signtool',
                 signtoolcommand: `"${projectPath}\\build\\install-script\\signtool.exe" sign /f "${projectPath}\\build\\install-script\\smartbrowser.pfx" /t http://timestamp.globalsign.com/scripts/timstamp.dll /p "12345678" $f`,
-                O: path.join(projectPath, `dist/${options.client}`),
-                F: `safety-browser-${options.client}-setup-${options.version}`,
+                O: path.join(__dirname, '../..', 'deploy'),
+                F: setupFileName,
                 DProjectHomeBase: projectPath,
                 DCLIENT: options.client,
                 DCLIENT_GUID: `{${options.clientId}}`,
@@ -91,7 +92,7 @@ module.exports = (route, config) => {
                 DAPP_TITLE_CH: options.productName,
                 DAPP_ICO: icon,
             })
-            return res.send('Done')
+            return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
             logger.error(err)
             return res.status(400).send('Error')

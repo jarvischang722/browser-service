@@ -35,6 +35,8 @@ apiRouter.use(bodyParser.json())
 route.bind(apiRouter, config)
 app.use('/', apiRouter)
 
+app.use('/download', express.static('deploy'));
+
 const port = config.server.port
 app.listen(port, () => {
     log.info(`The server [${config.name}] running on port: ${port}`)
