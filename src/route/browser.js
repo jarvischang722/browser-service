@@ -64,7 +64,6 @@ module.exports = (route, config) => {
                 'product-version': options.version,
                 icon,
             }
-
             await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
             await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe') , rceditOptions)
 
@@ -73,6 +72,7 @@ module.exports = (route, config) => {
             }
 
             await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
+            await utils.copy(icon, path.join(projectPath, 'src/app/config/icon.ico'))
             await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
 
             await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
@@ -82,7 +82,7 @@ module.exports = (route, config) => {
                 signtoolname: 'signtool',
                 signtoolcommand: `"${projectPath}\\build\\install-script\\signtool.exe" sign /f "${projectPath}\\build\\install-script\\smartbrowser.pfx" /t http://timestamp.globalsign.com/scripts/timstamp.dll /p "12345678" $f`,
                 O: path.join(projectPath, `dist/${options.client}`),
-                F: `safety-browser-setup-${options.version}`,
+                F: `safety-browser-${options.client}-setup-${options.version}`,
                 DProjectHomeBase: projectPath,
                 DCLIENT: options.client,
                 DCLIENT_GUID: `{${options.clientId}}`,

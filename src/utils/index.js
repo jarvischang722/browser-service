@@ -1,4 +1,4 @@
-const ncp = require('ncp').ncp
+const { ncp } = require('ncp')
 const rcedit = require('rcedit')
 const asar = require('asar')
 const innoSetup = require('innosetup-compiler')
