@@ -3,7 +3,7 @@
 }
 
 .App-header {
-  background-color: darkblue;
+  background-color: #4F84C4;
   height: 70px;
   padding: 20px;
   color: white;
@@ -54,7 +54,7 @@ input[type="button"]{
 
 input[type="submit"] {
     padding:5px 15px; 
-    background: darkblue; 
+    background: #4F84C4; 
     border:0 none;
     cursor:pointer;
     border-radius: 5px; 
