@@ -104,6 +104,6 @@ module.exports = (route, config) => {
     }
 
     route.get('/browser/version', getVersion)
-    route.get('/browser/clients/new', getCreateClientPage)
+    route.get('/browser/new', getCreateClientPage)
     route.post('/browser/create', upload.single('icon'),  createNewBrowser)
 }
