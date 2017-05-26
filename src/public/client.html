@@ -9,13 +9,13 @@
                 <h2>Create New Client Browser</h2>
             </div>
             <div class="Client">
-                <form action="/browser/create" method="post" enctype="multipart/form-data">
+                <form action="/browser/create" method="post" enctype="multipart/form-data" onsubmit="showMsg()" >
                     <ul>
-                        <p><label>英文名称</label><input type="text" placeholder="eg: tripleone" name="client" /></p>
-                        <p><label>中文名称</label><input type="text" placeholder="eg: 合众科技" name="company" /></p>
-                        <p><label>公司主页</label><input type="text" placeholder="eg: https://tripleonetech.net/" name="homepage" /></p>
-                        <p><label>公司图标</label><input type="file" name="icon" /></p>
-                        <p><input type="submit" value="Submit" onclick="showMsg()" /></p>
+                        <p><label>英文名称</label><input type="text" placeholder="eg: tripleone" name="client" required="required" /></p>
+                        <p><label>中文名称</label><input type="text" placeholder="eg: 合众科技" name="company" required="required" /></p>
+                        <p><label>公司主页</label><input type="text" placeholder="eg: https://tripleonetech.net/" name="homepage" required="required" /></p>
+                        <p><label>公司图标</label><input type="file" name="icon" required="required" /></p>
+                        <p><input type="submit" value="Submit" /></p>
                     </ul>
                 </form>
                 <span id="msg" style="color:red"></span>
