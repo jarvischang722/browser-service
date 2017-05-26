@@ -95,7 +95,7 @@ module.exports = (route, config) => {
             return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
             logger.error(err)
-            return res.status(400).send('Error')
+            return res.status(400).send('请回退并刷新网页重试')
         }
     }
 
