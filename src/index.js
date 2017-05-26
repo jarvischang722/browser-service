@@ -10,6 +10,11 @@ const app = express()
 const log = log4js.getLogger()
 
 app.use(helmet())
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    next()
+})
 
 // db connection
 const dbCfg = config.database.mysql
@@ -23,6 +28,8 @@ global.connStr = {
 
 const apiRouter = new express.Router()
 apiRouter.use(cookieParser(config.secret.cookie))
+
+apiRouter.use(bodyParser.urlencoded({ extended: false }))
 apiRouter.use(bodyParser.json())
   
 route.bind(apiRouter, config)

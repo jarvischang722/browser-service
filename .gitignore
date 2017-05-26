@@ -17,3 +17,5 @@ ncp-debug.log
 npm-debug.log
 
 src/config/*.json
+
+/upload/

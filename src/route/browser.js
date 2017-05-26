@@ -4,6 +4,8 @@ const path = require('path')
 const log4js = require('log4js')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
+const multer  = require('multer')
+const upload = multer({ dest: 'upload/' })
 
 const logger = log4js.getLogger()
 
@@ -16,11 +18,14 @@ module.exports = (route, config) => {
 
     const createNewBrowser = async (req, res, next) => {
         try {
-            const { client, homepage, company, icon } = req.body
+            const { client, homepage, company } = req.body
             if (!client || !homepage || !company)  return res.status(400).send('Missing fields')
             const { projectPath, version, legalCopyright } = config.browser
             const optionPath = path.join(projectPath, `src/clients/${client}`)
             if (!fs.existsSync(optionPath))  fs.mkdirSync(optionPath)
+            if (req.file && req.file.path) {
+                utils.copy(req.file.path, path.join(optionPath, 'icon.ico'))
+            }
             // generate options
             const options = {
                 client,
@@ -47,7 +52,7 @@ module.exports = (route, config) => {
             // generate option file
             const optionFile = path.join(optionPath, 'client.json')
             fs.writeFileSync(optionFile, JSON.stringify(options))
-            // const icon = `${optionPath}/icon.ico`
+            const icon = path.join(optionPath, 'icon.ico')
             const rceditOptions = {
                 'version-string': {
                     CompanyName: options.companyName,
@@ -57,7 +62,7 @@ module.exports = (route, config) => {
                 },
                 'file-version': options.version,
                 'product-version': options.version,
-                // icon,
+                icon,
             }
 
             await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
@@ -68,7 +73,7 @@ module.exports = (route, config) => {
             }
 
             await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
-            await utils.copy(path.join(projectPath, 'build/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
+            await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
 
             await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
             await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
@@ -93,6 +98,11 @@ module.exports = (route, config) => {
         }
     }
 
+    const getCreateClientPage = (req, res, next) => {
+        return res.sendFile(path.join(__dirname, '..', 'public/client.html'));
+    }
+
     route.get('/browser/version', getVersion)
-    route.post('/browser/create', createNewBrowser)
+    route.get('/browser/clients/new', getCreateClientPage)
+    route.post('/browser/create', upload.single('icon'),  createNewBrowser)
 }

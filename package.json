@@ -28,6 +28,7 @@
     "innosetup-compiler": "git+https://github.com/tripleonetech-john/node-innosetup-compiler.git#bb64ae8",
     "joi": "^10.4.1",
     "log4js": "^1.1.1",
+    "multer": "^1.3.0",
     "mysql": "^2.13.0",
     "ncp": "^2.0.0",
     "rcedit": "^0.9.0",
