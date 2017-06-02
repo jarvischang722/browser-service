@@ -15,10 +15,15 @@
     }
   },
   "secret": {
-    "token": "abc123",
+    "token": "abcd1234",
     "cookie": "xyz987"
   },
   "timeout": {
     "token": 7200
+  },
+  "browser": {
+    "projectPath": "C:\\projects\\safetybrowser",
+    "version": "2.9.0",
+    "legalCopyright": "Copyright 2017"
   }
 }
