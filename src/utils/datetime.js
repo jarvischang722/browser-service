@@ -10,6 +10,4 @@ const format = (dt, diff) => {
     return new Date(dt.addSeconds(diff)).toFormat('YYYY-MM-DD HH24:MI:SS')
 }
 
-
-
 module.exports = { format }
