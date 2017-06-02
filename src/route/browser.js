@@ -5,18 +5,29 @@ const log4js = require('log4js')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const multer = require('multer')
+const errors = require('../error')
 
 const upload = multer({ dest: 'upload/' })
 const logger = log4js.getLogger()
 
+const ERRORS = {
+    CreateBrowserFailed: 400,
+}
+
+errors.register(ERRORS)
+
 module.exports = (route, config) => {
-    const getVersion = (req, res) => {
-        const { platform, client } = req.query
-        const version = Browser.getVersion(platform, client)
-        return res.json(version)
+    const getVersion = (req, res, next) => {
+        try {
+            const { platform, client } = req.query
+            const version = Browser.getVersion(platform, client)
+            return res.json(version)
+        } catch (err) {
+            return next(err)
+        }
     }
 
-    const createNewBrowser = async (req, res) => {
+    const createNewBrowser = async (req, res, next) => {
         try {
             const { client, homepage, company } = req.body
             if (!client || !homepage || !company) return res.status(400).send('Missing fields')
@@ -94,7 +105,7 @@ module.exports = (route, config) => {
             return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
             logger.error(err)
-            return res.status(400).send('请回退并刷新网页重试')
+            return next(new errors.CreateBrowserFailedError())
         }
     }
 

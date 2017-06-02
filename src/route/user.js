@@ -1,48 +1,45 @@
 const User = require('../schema/user')
+const errors = require('../error')
+
+const ERRORS = {
+    UserUnauthorized: 401,
+}
+
+errors.register(ERRORS)
 
 module.exports = (route, config) => {
-    const signup = async (req, res) => {
-        const { username, email, password } = req.body
-        if (!username || !email || !password) {
-            return res.status(400).send('Username, email and password are required')
+    const signup = async (req, res, next) => {
+        try {
+            const { username, email, password } = req.body
+            if (!username || !email || !password) {
+                return res.status(400).send('Username, email and password are required')
+            }
+            await User.signup(username, email, password, config.secret.token)
+            return res.status(201).send()
+        } catch (err) {
+            return next(err)
         }
-        await User.signup(username, email, password, config.secret.token)
-        return res.status(201).send()
     }
 
-    const login = async (req, res) => {
-        const { username, password } = req.body
-        if (!username || !password) {
-            return res.status(400).send('Username and password are required')
+    const login = async (req, res, next) => {
+        try {
+            const { username, password } = req.body
+            if (!username || !password) {
+                return res.status(400).send('Username and password are required')
+            }
+            const player = await User.authorize(username, password, config.secret.token)
+            if (!player) return next(new errors.UserUnauthorizedError())
+            const token = await User.generateToken(player.id, config.timeout.token)
+            return res.json({
+                token,
+                ssinfo: null,
+            })
+        } catch (err) {
+            return next(err)
         }
-        const player = await User.authorize(username, password, config.secret.token)
-        if (!player) return res.status(401).send('Unauthorized')
-        const token = await User.generateToken(player.id, config.timeout.token)
-        return res.json({
-            token,
-            ssinfo: null,
-        })
     }
 
     const test = async (req, res) => {
-        const { username, password } = req.body
-        if (!username || !password) {
-            return res.status(400).send('Username and password are required')
-        }
-        if (username && username.toLowerCase() === 'admin' && password === 'pass1234') {
-            return res.json({
-                status: 'Ok',
-                message: 'Login successfully',
-                data: {
-                    token: 'testtoken',
-                    ss: null,
-                },
-            })
-        }
-        return res.status(401).send('Unauthorized')
-    }
-
-    const testUser = async (req, res) => {
         const user = {
             user: 'test',
         }
@@ -51,6 +48,5 @@ module.exports = (route, config) => {
 
     route.post('/user/signup', signup)
     route.post('/user/login', login)
-    route.post('/user/test', test)
-    route.get('/user/test', testUser)
+    route.get('/user/test', test)
 }

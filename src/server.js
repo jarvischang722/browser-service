@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const log4js = require('log4js')
 const config = require('./config')
 const route = require('./route')
+const errors = require('./error')
 
 const log = log4js.getLogger()
 const server = async () => {
@@ -34,6 +35,29 @@ const server = async () => {
     apiRouter.use(bodyParser.json())
 
     route.bind(apiRouter, config)
+
+    apiRouter.use((err, req, res) => {
+        let error = {}
+        let statusCode = 500
+        if (typeof err === 'string') {
+            const e = new errors.InternalError()
+            error.code = e.name
+            error.message = `${errors.lang(e)} (${err})` || e.name
+        } else if (err.failedValidation) {
+            statusCode = 400
+            error = err
+        } else if (err.name) {
+            error.code = err.name
+            error.message = errors.lang(err) || err.name
+            statusCode = err.statusCode || statusCode
+        } else {
+            error.code = err.code
+            error.message = err.message
+            statusCode = err.statusCode || statusCode
+        }
+        res.status(statusCode).send({ error })
+    })
+
     app.use('/', apiRouter)
 
     app.use('/styles', express.static('src/public/css'))
