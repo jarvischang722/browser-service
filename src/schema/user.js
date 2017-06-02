@@ -1,3 +1,4 @@
+
 const uuidV4 = require('uuid/v4')
 const db = require('../utils/db')
 const crypto = require('../utils/crypto')
@@ -11,7 +12,6 @@ const signup = async (userName, email, password, key) => {
     // const resultFields = await db.exec(queryFields)
     // if (resultFields && resultFields.length > 0) {
     //     const rowFields = resultFields[0]
-    //     console.log(rowFields)
     // }
     const query = `
         INSERT INTO player (
@@ -20,11 +20,10 @@ const signup = async (userName, email, password, key) => {
         VALUES (?, ?, ?, false, '', '')
         ;`
     const hashedPwd = crypto.encrypt(password, key)
-    db.exec(query, [userName, email, hashedPwd])
+    await db.exec(query, [userName, email, hashedPwd])
 }
 
-const authorize = (userName, password, key, callback) => {
-    const conn = mysql.createConnection(connStr)
+const authorize = async (userName, password, key) => {
     const query = `
         SELECT playerId AS id
         FROM player
@@ -33,25 +32,21 @@ const authorize = (userName, password, key, callback) => {
             AND password = ?
         ;`
     const hashedPwd = crypto.encrypt(password, key)
-    conn.query(query, [userName, hashedPwd], (err, results) => {
-        conn.end()
-        return callback(err, results[0])
-    })
+    const results = await db.exec(query, [userName, hashedPwd])
+    return results[0]
 }
 
-const generateToken = (playerId, timeout, callback) => {
-    const conn = mysql.createConnection(connStr)
+const generateToken = async (playerId, timeout) => {
     const token = uuidV4()
     const query = `
         INSERT INTO common_tokens (
             player_id, token, created_at, updated_at, timeout_at, timeout, status
         ) VALUES (
             ?, ?, ?, ?, ?, ?, ?
-        );
-    ;`
+        );`
     const now = datetime.format()
     const timeoutAt = datetime.format(now, timeout)
-    conn.query(query, [
+    await db.exec(query, [
         playerId,
         token,
         now,
@@ -59,10 +54,8 @@ const generateToken = (playerId, timeout, callback) => {
         timeoutAt,
         timeout,
         STATUS_NORMAL,
-    ], (err) => {
-        conn.end()
-        return callback(err, token)
-    })
+    ])
+    return token
 }
 
 module.exports = {
