@@ -1,4 +1,4 @@
-const version = require('./browser-version')
+const version = require('../meta/browser.json')
 
 const getVersion = (platform, client) => {
     if (!platform && !client) return version
