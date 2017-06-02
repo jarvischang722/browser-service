@@ -7,7 +7,7 @@
       "instances"           : 1,
       "exec_mode"           : "cluster_mode",
       "env"                 : {
-        "NODE_ENV"          : "dev"
+        "NODE_ENV"          : "prod"
       },
       "max_memory_restart"  : "1G",
       "merge_logs"          : true,
