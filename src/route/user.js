@@ -1,7 +1,7 @@
 const User = require('../schema/user')
 
 module.exports = (route, config) => {
-    const signup = async (req, res, next) => {
+    const signup = async (req, res) => {
         const { username, email, password } = req.body
         if (!username || !email || !password) {
             return res.status(400).send('Username, email and password are required')
@@ -10,7 +10,7 @@ module.exports = (route, config) => {
         return res.status(201).send()
     }
 
-    const login = async (req, res, next) => {
+    const login = async (req, res) => {
         const { username, password } = req.body
         if (!username || !password) {
             return res.status(400).send('Username and password are required')
@@ -24,7 +24,7 @@ module.exports = (route, config) => {
         })
     }
 
-    const test = async (req, res, next) => {
+    const test = async (req, res) => {
         const { username, password } = req.body
         if (!username || !password) {
             return res.status(400).send('Username and password are required')
@@ -36,16 +36,19 @@ module.exports = (route, config) => {
                 data: {
                     token: 'testtoken',
                     ss: null,
-                }
+                },
             })
         }
         return res.status(401).send('Unauthorized')
     }
-    
-    const testUser = async (req, res, next) => {
-        return res.json({ user: 'test' })
+
+    const testUser = async (req, res) => {
+        const user = {
+            user: 'test',
+        }
+        return res.json(user)
     }
-    
+
     route.post('/user/signup', signup)
     route.post('/user/login', login)
     route.post('/user/test', test)

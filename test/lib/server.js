@@ -1,6 +1,6 @@
 const server = require('../../src/server')
-const options = require('../../src/config')
 
+/* eslint-disable no-underscore-dangle */
 global.__DEV__ = true
 global.__TEST__ = true
 

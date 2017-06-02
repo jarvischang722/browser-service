@@ -4,10 +4,10 @@ const getVersion = (platform, client) => {
     if (!platform && !client) return version
     let result = {}
     if (platform) {
-        if (version.hasOwnProperty(platform)) {
+        if (version[platform]) {
             result = version[platform]
             if (client) {
-                if (version[platform].hasOwnProperty(client)) {
+                if (version[platform][client]) {
                     result = version[platform][client]
                 } else {
                     result = {}
@@ -16,8 +16,9 @@ const getVersion = (platform, client) => {
         }
     } else {
         // no platform, has client
-        for (const pf in version) {
-            if (version[pf].hasOwnProperty(client)) {
+        /* eslint-disable no-restricted-syntax */
+        for (const pf of Object.keys(version)) {
+            if (version[pf][client]) {
                 result[pf] = version[pf][client]
             }
         }

@@ -1,4 +1,5 @@
 const client = require('./lib/client')
+
 const player = {
     username: `testuser_${Date.now()}`,
     email: 'test@email.com',
@@ -18,7 +19,7 @@ describe('User', () => {
             done()
         })
     })
-    
+
     it('Sign up', (done) => {
         client()
         .post('/user/signup')

@@ -6,14 +6,14 @@ const log4js = require('log4js')
 const config = require('./config')
 const route = require('./route')
 
+const log = log4js.getLogger()
 const server = async () => {
     const app = express()
-    const log = log4js.getLogger()
 
     app.use(helmet())
     app.use((req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "*")
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+        res.header('Access-Control-Allow-Origin', '*')
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
         next()
     })
 
@@ -32,15 +32,16 @@ const server = async () => {
 
     apiRouter.use(bodyParser.urlencoded({ extended: false }))
     apiRouter.use(bodyParser.json())
-    
+
     route.bind(apiRouter, config)
     app.use('/', apiRouter)
 
-    app.use("/styles",  express.static('src/public/css'));
-    app.use('/download', express.static('deploy'));
+    app.use('/styles', express.static('src/public/css'))
+    app.use('/download', express.static('deploy'))
 
     const port = config.server.port
-    
+
+    /* eslint-disable no-underscore-dangle */
     if (global.__TEST__) return app
     return app.listen(port, () => {
         log.info(`The server [${config.name}] running on port: ${port}`)
@@ -48,8 +49,9 @@ const server = async () => {
 }
 
 module.exports = () => {
-    return server().catch((e) => {
+    const handleErr = (e) => {
         log.error(e)
         throw e
-    })
+    }
+    return server().catch(handleErr)
 }

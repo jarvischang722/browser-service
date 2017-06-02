@@ -99,7 +99,8 @@ module.exports = (route, config) => {
     }
 
     const getCreateClientPage = (req, res) => {
-        return res.sendFile(path.join(__dirname, '..', 'public/client.html'))
+        const page = path.join(__dirname, '..', 'public/client.html')
+        return res.sendFile(page)
     }
 
     route.get('/browser/version', getVersion)

@@ -3,8 +3,11 @@ const uuidV4 = require('uuid/v4')
 const db = require('../utils/db')
 const crypto = require('../utils/crypto')
 const datetime = require('../utils/datetime')
-const STATUS_NORMAL = 1;
-const STATUS_DISABLED = 2;
+
+const STATUS = {
+    NORMAL: 1,
+    DISABLED: 2,
+}
 
 const signup = async (userName, email, password, key) => {
     // TODO: check needed columns from registration fields table
@@ -53,7 +56,7 @@ const generateToken = async (playerId, timeout) => {
         now,
         timeoutAt,
         timeout,
-        STATUS_NORMAL,
+        STATUS.NORMAL,
     ])
     return token
 }

@@ -1,7 +1,7 @@
 const mysql = require('mysql')
 
 const exec = (query, params) => {
-    return new Promise((resolve, reject) => {
+    const promise = (resolve, reject) => {
         let conn
         try {
             conn = mysql.createConnection(connStr)
@@ -15,7 +15,8 @@ const exec = (query, params) => {
         } finally {
             if (conn) conn.end()
         }
-    })
+    }
+    return new Promise(promise)
 }
 
 module.exports = { exec }
