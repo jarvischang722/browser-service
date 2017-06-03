@@ -1,6 +1,7 @@
 const User = require('../schema/user')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
+const { generateToken } = require('../authorization')
 
 const SCHEMA = {
     username: T.string().required(),
@@ -14,13 +15,14 @@ const ERRORS = {
 
 errors.register(ERRORS)
 
-module.exports = (route, config) => {
+module.exports = (route, config, exempt) => {
     const signup = async (req, res, next) => {
         try {
             validate(req.body, SCHEMA)
             const { username, email, password } = req.body
-            await User.signup(username, email, password, config.secret.token)
-            return res.status(201).send()
+            const player = await User.signup(username, email, password, config.secret.token)
+            player.token = generateToken(config, player.id)
+            return res.status(201).send(player)
         } catch (err) {
             return next(err)
         }
@@ -30,11 +32,12 @@ module.exports = (route, config) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password'))
             const { username, password } = req.body
-            const player = await User.authorize(username, password, config.secret.token)
+            const player = await User.login(username, password, config.secret.token)
             if (!player) return next(new errors.UserUnauthorizedError())
-            const token = await User.generateToken(player.id, config.timeout.token)
+            // const token = await User.generateToken(player.id, config.timeout.token)
+            player.token = generateToken(config, player.id)
             return res.json({
-                token,
+                player,
                 ssinfo: null,
             })
         } catch (err) {
@@ -48,6 +51,9 @@ module.exports = (route, config) => {
         }
         return res.json(user)
     }
+
+    exempt('/user/signup')
+    exempt('/user/login')
 
     route.post('/user/signup', signup)
     route.post('/user/login', login)

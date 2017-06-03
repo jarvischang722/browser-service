@@ -24,7 +24,7 @@ const ERRORS = {
 
 errors.register(ERRORS)
 
-module.exports = (route, config) => {
+module.exports = (route, config, exempt) => {
     const getVersion = (req, res, next) => {
         try {
             validate(req.query, getSchema(SCHEMA, 'platform', 'client'))
@@ -125,6 +125,10 @@ module.exports = (route, config) => {
         const page = path.join(__dirname, '..', 'public/client.html')
         return res.sendFile(page)
     }
+    
+    exempt('/browser/version')
+    exempt('/browser/new')
+    exempt('/browser/create')
 
     route.get('/browser/version', getVersion)
     route.get('/browser/new', getCreateClientPage)
