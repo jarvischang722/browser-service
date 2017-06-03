@@ -7,4 +7,6 @@ const bind = (route, config) => {
     require('./browser')(route, config, exempt)
 }
 
+exempt('/')
+
 module.exports = { bind }

@@ -19,6 +19,9 @@ const server = async () => {
         next()
     })
 
+    app.use('/styles', express.static('src/public/css'))
+    app.use('/download', express.static('deploy'))
+
     // db connection
     const dbCfg = config.database.mysql
     global.connStr = {
@@ -62,9 +65,6 @@ const server = async () => {
     })
 
     app.use('/', apiRouter)
-
-    app.use('/styles', express.static('src/public/css'))
-    app.use('/download', express.static('deploy'))
 
     const port = config.server.port
 
