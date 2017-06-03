@@ -7,19 +7,6 @@ const player = {
 }
 
 describe('User', () => {
-    it('Get test user', (done) => {
-        client()
-        .get('/user/test')
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .expect(200)
-        .end((err, res) => {
-            should.not.exist(err)
-            res.body.should.have.property('user').and.equal('test')
-            done()
-        })
-    })
-
     it('Sign up', (done) => {
         client()
         .post('/user/signup')
@@ -27,8 +14,10 @@ describe('User', () => {
         .set('Accept', 'application/json')
         .send(player)
         .expect(201)
-        .end((err) => {
+        .end((err, res) => {
             should.not.exist(err)
+            res.body.should.have.property('id')
+            res.body.should.have.property('token')
             done()
         })
     })
@@ -43,8 +32,11 @@ describe('User', () => {
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
-            res.body.should.have.property('token')
+            res.body.should.have.property('player')
+            res.body.player.should.have.property('id')
+            res.body.player.should.have.property('token')
             res.body.should.have.property('ssinfo')
+            env.player = res.body.player
             done()
         })
     })
@@ -79,6 +71,34 @@ describe('User', () => {
             res.body.should.have.property('error')
             res.body.error.should.have.property('code').and.equal('ValidationFailedError')
             res.body.error.should.have.property('message')
+            done()
+        })
+    })
+
+    it('Get test info after login', (done) => {
+        client()
+        .get('/user/test')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.player.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('user').and.equal('test')
+            done()
+        })
+    })
+
+    it('Get test info failed without auth token', (done) => {
+        client()
+        .get('/user/test')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .expect(401)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('UnauthorizedError')
             done()
         })
     })
