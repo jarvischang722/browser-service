@@ -58,8 +58,11 @@ describe('User', () => {
             password: 'wrong',
         })
         .expect(401)
-        .end((err) => {
+        .end((err, res) => {
             should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('UserUnauthorizedError')
+            res.body.error.should.have.property('message')
             done()
         })
     })

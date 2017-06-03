@@ -36,7 +36,8 @@ const server = async () => {
 
     route.bind(apiRouter, config)
 
-    apiRouter.use((err, req, res) => {
+    /* eslint-disable no-unused-vars */
+    apiRouter.use((err, req, res, next) => {
         let error = {}
         let statusCode = 500
         if (typeof err === 'string') {
