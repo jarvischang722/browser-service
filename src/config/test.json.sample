@@ -14,7 +14,11 @@
       }
     }
   },
+  "jwtOptions": {
+    "expiresIn": "180d"
+  },
   "secret": {
+    "jwt": "jwtsecret",
     "token": "abcd1234",
     "cookie": "xyz987"
   },

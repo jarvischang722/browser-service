@@ -14,8 +14,12 @@
       }
     }
   },
+  "jwtOptions": {
+    "expiresIn": "180d"
+  },
   "secret": {
-    "token": "abc123",
+    "jwt": "jwtsecret",
+    "token": "abcd1234",
     "cookie": "xyz987"
   },
   "timeout": {
