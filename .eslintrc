@@ -6,7 +6,8 @@
         "describe": true,
         "it": true,
         "should": true,
-        "connStr": true
+        "connStr": true,
+        "env": true
     },
     "env": {
         "es6": true,
