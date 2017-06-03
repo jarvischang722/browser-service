@@ -23,10 +23,13 @@ const signup = async (userName, email, password, key) => {
         VALUES (?, ?, ?, false, '', '')
         ;`
     const hashedPwd = crypto.encrypt(password, key)
-    await db.exec(query, [userName, email, hashedPwd])
+    const results = await db.exec(query, [userName, email, hashedPwd])
+    return {
+        id: results.insertId,
+    }
 }
 
-const authorize = async (userName, password, key) => {
+const login = async (userName, password, key) => {
     const query = `
         SELECT playerId AS id
         FROM player
@@ -63,6 +66,6 @@ const generateToken = async (playerId, timeout) => {
 
 module.exports = {
     signup,
-    authorize,
+    login,
     generateToken,
 }
