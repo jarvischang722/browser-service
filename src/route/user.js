@@ -1,5 +1,12 @@
 const User = require('../schema/user')
 const errors = require('../error')
+const { validate, getSchema, T } = require('../validator')
+
+const SCHEMA = {
+    username: T.string().required(),
+    email: T.string().email().required(),
+    password: T.string().required(),
+}
 
 const ERRORS = {
     UserUnauthorized: 401,
@@ -10,10 +17,8 @@ errors.register(ERRORS)
 module.exports = (route, config) => {
     const signup = async (req, res, next) => {
         try {
+            validate(req.body, SCHEMA)
             const { username, email, password } = req.body
-            if (!username || !email || !password) {
-                return res.status(400).send('Username, email and password are required')
-            }
             await User.signup(username, email, password, config.secret.token)
             return res.status(201).send()
         } catch (err) {
@@ -23,10 +28,8 @@ module.exports = (route, config) => {
 
     const login = async (req, res, next) => {
         try {
+            validate(req.body, getSchema(SCHEMA, 'username', 'password'))
             const { username, password } = req.body
-            if (!username || !password) {
-                return res.status(400).send('Username and password are required')
-            }
             const player = await User.authorize(username, password, config.secret.token)
             if (!player) return next(new errors.UserUnauthorizedError())
             const token = await User.generateToken(player.id, config.timeout.token)

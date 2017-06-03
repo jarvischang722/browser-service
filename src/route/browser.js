@@ -6,9 +6,17 @@ const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const multer = require('multer')
 const errors = require('../error')
+const { validate, getSchema, T } = require('../validator')
 
 const upload = multer({ dest: 'upload/' })
 const logger = log4js.getLogger()
+
+const SCHEMA = {
+    platform: T.string(),
+    client: T.string(),
+    homepage: T.string().uri().required(),
+    company: T.string().required(),
+}
 
 const ERRORS = {
     CreateBrowserFailed: 400,
@@ -19,6 +27,7 @@ errors.register(ERRORS)
 module.exports = (route, config) => {
     const getVersion = (req, res, next) => {
         try {
+            validate(req.query, getSchema(SCHEMA, 'platform', 'client'))
             const { platform, client } = req.query
             const version = Browser.getVersion(platform, client)
             return res.json(version)
@@ -29,8 +38,10 @@ module.exports = (route, config) => {
 
     const createNewBrowser = async (req, res, next) => {
         try {
+            validate(req.body, getSchema(SCHEMA, 'client', 'homepage', 'company'), ['client'])
+            /* eslint-disable no-underscore-dangle */
+            if (global.__TEST__) return res.send(req.body)
             const { client, homepage, company } = req.body
-            if (!client || !homepage || !company) return res.status(400).send('Missing fields')
             const { projectPath, version, legalCopyright } = config.browser
             const optionPath = path.join(projectPath, `src/clients/${client}`)
             if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
@@ -104,7 +115,8 @@ module.exports = (route, config) => {
             })
             return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
-            logger.error(err)
+            if (!global.__TEST__) logger.error(err)
+            if (err && err.code === 'ValidationFailed') return next(err)
             return next(new errors.CreateBrowserFailedError())
         }
     }

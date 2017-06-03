@@ -129,3 +129,41 @@ describe('Get browser latest version and download link', () => {
         })
     })
 })
+
+describe('Generate browser', () => {
+    it('with all required fileds', (done) => {
+        client()
+        .post('/browser/create')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .send({
+            client: 'tripleone',
+            homepage: 'https://tripleonetech.net',
+            company: '合衆科技',
+        })
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            done()
+        })
+    })
+
+    it('without client', (done) => {
+        client()
+        .post('/browser/create')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .send({
+            homepage: 'https://tripleonetech.net',
+            company: '合衆科技',
+        })
+        .expect(400)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('ValidationFailedError')
+            res.body.error.should.have.property('message')
+            done()
+        })
+    })
+})

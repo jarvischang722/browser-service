@@ -34,11 +34,12 @@ describe('User', () => {
     })
 
     it('Sign in', (done) => {
+        const { username, password } = player
         client()
         .post('/user/login')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .send(player)
+        .send({ username, password })
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
@@ -62,6 +63,21 @@ describe('User', () => {
             should.not.exist(err)
             res.body.should.have.property('error')
             res.body.error.should.have.property('code').and.equal('UserUnauthorizedError')
+            res.body.error.should.have.property('message')
+            done()
+        })
+    })
+
+    it('Login failed without required fields', (done) => {
+        client()
+        .post('/user/login')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .expect(400)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('ValidationFailedError')
             res.body.error.should.have.property('message')
             done()
         })
