@@ -6,6 +6,7 @@ const log4js = require('log4js')
 const config = require('./config')
 const route = require('./route')
 const errors = require('./error')
+const authorization = require('./authorization')
 
 const log = log4js.getLogger()
 const server = async () => {
@@ -33,6 +34,7 @@ const server = async () => {
 
     apiRouter.use(bodyParser.urlencoded({ extended: false }))
     apiRouter.use(bodyParser.json())
+    apiRouter.use(authorization.authorize(config))
 
     route.bind(apiRouter, config)
 
