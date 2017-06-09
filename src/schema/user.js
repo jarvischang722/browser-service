@@ -1,6 +1,5 @@
-
 const uuidV4 = require('uuid/v4')
-const db = require('../utils/db')
+const db = require('../db')
 const crypto = require('../utils/crypto')
 const datetime = require('../utils/datetime')
 
@@ -12,7 +11,7 @@ const STATUS = {
 const signup = async (userName, email, password, key) => {
     // TODO: check needed columns from registration fields table
     // const queryFields = 'SELECT * FROM registration_fields WHERE type = 1;'
-    // const resultFields = await db.exec(queryFields)
+    // const resultFields = await db.query(queryFields)
     // if (resultFields && resultFields.length > 0) {
     //     const rowFields = resultFields[0]
     // }
@@ -23,7 +22,7 @@ const signup = async (userName, email, password, key) => {
         VALUES (?, ?, ?, false, '', '')
         ;`
     const hashedPwd = crypto.encrypt(password, key)
-    const results = await db.exec(query, [userName, email, hashedPwd])
+    const results = await db.query(query, [userName, email, hashedPwd])
     return {
         id: results.insertId,
     }
@@ -38,7 +37,7 @@ const login = async (userName, password, key) => {
             AND password = ?
         ;`
     const hashedPwd = crypto.encrypt(password, key)
-    const results = await db.exec(query, [userName, hashedPwd])
+    const results = await db.query(query, [userName, hashedPwd])
     return results[0]
 }
 
@@ -52,7 +51,7 @@ const generateToken = async (playerId, timeout) => {
         );`
     const now = datetime.format()
     const timeoutAt = datetime.format(now, timeout)
-    await db.exec(query, [
+    await db.query(query, [
         playerId,
         token,
         now,
