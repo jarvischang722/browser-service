@@ -49,6 +49,7 @@ module.exports = (route, config, exempt) => {
         const user = {
             user: 'test',
         }
+        await User.testTrans()
         return res.json(user)
     }
 
