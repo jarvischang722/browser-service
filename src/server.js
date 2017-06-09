@@ -8,8 +8,16 @@ const route = require('./route')
 const errors = require('./error')
 const authorization = require('./authorization')
 
+global.db = require('./db')
+
 const log = log4js.getLogger()
 const server = async () => {
+    // update db to latest
+    // db connection
+    const dbManager = db.configure(config)
+    await dbManager.update()
+    log.info(`db version: ${dbManager.version}`)
+
     const app = express()
 
     app.use(helmet())
@@ -21,16 +29,6 @@ const server = async () => {
 
     app.use('/styles', express.static('src/public/css'))
     app.use('/download', express.static('deploy'))
-
-    // db connection
-    const dbCfg = config.database.mysql
-    global.connStr = {
-        host: dbCfg.host,
-        port: dbCfg.port,
-        database: dbCfg.db,
-        user: dbCfg.credentials.username,
-        password: dbCfg.credentials.password,
-    }
 
     const apiRouter = new express.Router()
     apiRouter.use(cookieParser(config.secret.cookie))
