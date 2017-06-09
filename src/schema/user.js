@@ -1,5 +1,4 @@
 const uuidV4 = require('uuid/v4')
-const db = require('../db')
 const crypto = require('../utils/crypto')
 const datetime = require('../utils/datetime')
 
@@ -9,17 +8,11 @@ const STATUS = {
 }
 
 const signup = async (userName, email, password, key) => {
-    // TODO: check needed columns from registration fields table
-    // const queryFields = 'SELECT * FROM registration_fields WHERE type = 1;'
-    // const resultFields = await db.query(queryFields)
-    // if (resultFields && resultFields.length > 0) {
-    //     const rowFields = resultFields[0]
-    // }
     const query = `
         INSERT INTO player (
-            username, email, password, verify, withdraw_password, withdraw_password_md5
+            username, email, password, verify
         )
-        VALUES (?, ?, ?, false, '', '')
+        VALUES (?, ?, ?, false)
         ;`
     const hashedPwd = crypto.encrypt(password, key)
     const results = await db.query(query, [userName, email, hashedPwd])
@@ -30,7 +23,7 @@ const signup = async (userName, email, password, key) => {
 
 const login = async (userName, password, key) => {
     const query = `
-        SELECT playerId AS id
+        SELECT id
         FROM player
         WHERE 
             username = ?
