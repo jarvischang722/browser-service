@@ -65,7 +65,6 @@ module.exports = (route, config, exempt) => {
                 clientId: uuidV4().toUpperCase(),
             }
             if (useProxy) {
-                console.log(11111)
                 // get available local port
                 const localPortFile = path.join(__dirname, '..', 'meta/local-port.json')
                 const currentLocalPort = require(localPortFile)
