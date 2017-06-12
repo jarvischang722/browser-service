@@ -16,6 +16,7 @@ const SCHEMA = {
     client: T.string(),
     homepage: T.string().uri().required(),
     company: T.string().required(),
+    useProxy: T.string().valid('on'),
 }
 
 const ERRORS = {
@@ -38,10 +39,11 @@ module.exports = (route, config, exempt) => {
 
     const createNewBrowser = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'client', 'homepage', 'company'), ['client'])
+            validate(req.body, getSchema(SCHEMA, 'client', 'homepage', 'company', 'useProxy'), ['client'])
             /* eslint-disable no-underscore-dangle */
             if (global.__TEST__) return res.send(req.body)
             const { client, homepage, company } = req.body
+            const useProxy = req.body.useProxy && req.body.useProxy === 'on'
             const { projectPath, version, legalCopyright } = config.browser
             const optionPath = path.join(projectPath, `src/clients/${client}`)
             if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
@@ -59,21 +61,35 @@ module.exports = (route, config, exempt) => {
                 legalCopyright,
                 version,
                 enabledFlash: true,
-                enabledProxy: false,
+                enabledProxy: useProxy,
                 clientId: uuidV4().toUpperCase(),
-                proxyOptions: {
+            }
+            if (useProxy) {
+                console.log(11111)
+                // get available local port
+                const localPortFile = path.join(__dirname, '..', 'meta/local-port.json')
+                const currentLocalPort = require(localPortFile)
+                let localPort
+                if (currentLocalPort[client]) {
+                    localPort = currentLocalPort[client]
+                } else {
+                    localPort = Math.max(...Object.values(currentLocalPort)) + 1
+                    currentLocalPort[client] = localPort
+                    fs.writeFileSync(localPortFile, JSON.stringify(currentLocalPort, null, 4))
+                }
+                options.proxyOptions = {
                     localAddr: '127.0.0.1',
-                    localPort: 21866,
+                    localPort,
                     serverAddr: '106.75.147.144',
                     serverPort: 19999,
-                    password: '0367E21094d36315',
+                    password: 'dBbQMP8Nd9vyjvN',
                     method: 'aes-256-cfb',
                     timeout: 180,
-                },
+                }
             }
             // generate option file
             const optionFile = path.join(optionPath, 'client.json')
-            fs.writeFileSync(optionFile, JSON.stringify(options))
+            fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
             const icon = path.join(optionPath, 'icon.ico')
             const rceditOptions = {
                 'version-string': {
