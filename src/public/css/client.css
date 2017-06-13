@@ -29,11 +29,23 @@ input{
 }
 
 input[type="text"]{  
-    height: 14px;  
+    height: 14px;
+    width: 238px;
     line-height: 14px;  
     border-radius: 5px;  
     padding:10px 10px;  
     vertical-align: middle;  
+    color:#666;  
+}
+
+textarea{  
+    height: 14px;
+    width: 238px;
+    line-height: 14px;  
+    border-radius: 5px;  
+    padding:10px 10px;  
+    vertical-align: middle;  
+    resize:vertical;
     color:#666;  
 }
 

@@ -12,7 +12,7 @@ const logger = log4js.getLogger()
 const SCHEMA = {
     platform: T.string(),
     client: T.string(),
-    homepage: T.string().uri().required(),
+    homepage: T.string().required(),
     company: T.string().required(),
     useProxy: T.string().valid('on'),
 }

@@ -3,9 +3,18 @@ const fs = require('fs')
 const path = require('path')
 const utils = require('./index')
 const uuidV4 = require('uuid/v4')
+const { validate, T } = require('../validator')
+
+const SCHEMA = {
+    homeUrl: T.array().items(T.string().uri()).required(),
+}
 
 const createBrowser = async (config, req) => {
     const { client, homepage, company } = req.body
+    const homeUrl = [...new Set(homepage.split(/\r\n/))]
+    validate({ homeUrl }, SCHEMA)
+    console.log(homeUrl)
+    console.log(Array.isArray(homeUrl))
     const useProxy = req.body.useProxy === 'on'
     const { projectPath, version, legalCopyright } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${client}`)
@@ -16,7 +25,7 @@ const createBrowser = async (config, req) => {
     // generate options
     const options = {
         client,
-        homeUrl: homepage,
+        homeUrl,
         companyName: company,
         productName: `${company}安全浏览器`,
         productNameEn: `${client.toUpperCase()} Safety Browser`,
@@ -50,13 +59,15 @@ const createBrowser = async (config, req) => {
         }
         // write pac file
         let filterString = ''
-
-        let host = url.parse(homepage).hostname
-        const suffix = host.slice(host.lastIndexOf('.') + 1)
-        host = host.slice(0, host.lastIndexOf('.'))
-        const main = host.slice(host.lastIndexOf('.') + 1)
-        filterString += `
-        if (/(?:^|\\.)${main}\\.${suffix}$/gi.test(host)) return "+proxy";`
+        for (const page of homeUrl) {
+            let host = url.parse(page).hostname
+            console.log(host)
+            const suffix = host.slice(host.lastIndexOf('.') + 1)
+            host = host.slice(0, host.lastIndexOf('.'))
+            const main = host.slice(host.lastIndexOf('.') + 1)
+            filterString += `
+            if (/(?:^|\\.)${main}\\.${suffix}$/gi.test(host)) return "+proxy";`
+        }
         const pac = `var FindProxyForURL = function(init, profiles) {
     return function(url, host) {
         "use strict";
