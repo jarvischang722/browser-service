@@ -60,13 +60,19 @@ const createBrowser = async (config, req) => {
         // write pac file
         let filterString = ''
         for (const page of homeUrl) {
-            let host = url.parse(page).hostname
-            console.log(host)
-            const suffix = host.slice(host.lastIndexOf('.') + 1)
-            host = host.slice(0, host.lastIndexOf('.'))
-            const main = host.slice(host.lastIndexOf('.') + 1)
-            filterString += `
-            if (/(?:^|\\.)${main}\\.${suffix}$/gi.test(host)) return "+proxy";`
+            const pageUrl = url.parse(page)
+            let host = pageUrl.host || pageUrl.path
+            const idx = host.lastIndexOf('.')
+            const suffix = host.slice(idx + 1)
+            if (idx > -1) {
+                host = host.slice(0, idx)
+                const main = host.slice(host.lastIndexOf('.') + 1)
+                filterString += `
+        if (/(?:^|\\.)${main}\\.${suffix}$/gi.test(host)) return "+proxy";`
+            } else {
+                filterString += `
+        if (/(?:^|\\.)${suffix}$/gi.test(host)) return "+proxy";`
+            }
         }
         const pac = `var FindProxyForURL = function(init, profiles) {
     return function(url, host) {
