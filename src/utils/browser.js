@@ -52,7 +52,7 @@ const createBrowser = async (config, req) => {
             localAddr: '127.0.0.1',
             localPort,
             serverAddr: '106.75.147.144',
-            serverPort: 19999,
+            serverPort: 17777,
             password: 'dBbQMP8Nd9vyjvN',
             method: 'aes-256-cfb',
             timeout: 180,
