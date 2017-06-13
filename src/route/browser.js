@@ -50,7 +50,7 @@ module.exports = (route, config, exempt) => {
     }
 
     const getCreateClientPage = (req, res) => {
-        const page = path.join(__dirname, '..', 'public/client.html')
+        const page = path.join(__dirname, '..', 'public/view/client.html')
         return res.sendFile(page)
     }
 
