@@ -5,6 +5,7 @@ const bind = (route, config) => {
 
     require('./user')(route, config, exempt)
     require('./browser')(route, config, exempt)
+    require('./test')(route, config, exempt)
 }
 
 exempt('/')
