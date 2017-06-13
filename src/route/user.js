@@ -1,3 +1,4 @@
+const request = require('request-promise-native')
 const User = require('../schema/user')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
@@ -7,6 +8,7 @@ const SCHEMA = {
     username: T.string().required(),
     email: T.string().email().required(),
     password: T.string().required(),
+    client: T.string().required(),
 }
 
 const ERRORS = {
@@ -18,7 +20,7 @@ errors.register(ERRORS)
 module.exports = (route, config, exempt) => {
     const signup = async (req, res, next) => {
         try {
-            validate(req.body, SCHEMA)
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'email'))
             const { username, email, password } = req.body
             const player = await User.signup(username, email, password, config.secret.token)
             player.token = generateToken(config, player.id)
@@ -45,12 +47,45 @@ module.exports = (route, config, exempt) => {
         }
     }
 
-    const test = async (req, res) => {
-        const user = {
-            user: 'test',
+    const ssoLogin = async (req, res, next) => {
+        try {
+            return res.json({
+            })
+        } catch (err) {
+            return next(err)
         }
-        await User.testTrans()
-        return res.json(user)
+    }
+
+    const centerLogin = async (req, res, next) => {
+        try {
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'client'))
+            const { username, password, client } = req.body
+            // call API to login and get token back
+            let player = await request({
+                method: 'POST',
+                url: 'http://localhost:7002/test/login',
+                json: { username, password, client },
+            })
+            let playerBinded = false
+            if (player) {
+                // check binding
+            } else {
+                // invoke game center API to create new player and get info back
+                player = await request({
+                    method: 'POST',
+                    url: 'http://localhost:7002/test/new',
+                    json: { username, password, client },
+                })
+            }
+            // check binding
+            if (!playerBinded) {
+                // bind player
+            }
+            return res.json({
+            })
+        } catch (err) {
+            return next(err)
+        }
     }
 
     exempt('/user/signup')
@@ -58,5 +93,6 @@ module.exports = (route, config, exempt) => {
 
     route.post('/user/signup', signup)
     route.post('/user/login', login)
-    route.get('/user/test', test)
+    route.post('/user/ssoLogin', ssoLogin) // wechat, qq, facebook...
+    route.post('/user/centerLogin', centerLogin) // mgm, agtop...
 }
