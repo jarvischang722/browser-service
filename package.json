@@ -34,6 +34,8 @@
     "ncp": "^2.0.0",
     "promise-mysql": "^3.0.1",
     "rcedit": "^0.9.0",
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.4",
     "restify-errors": "^4.3.0",
     "supertest": "^3.0.0",
     "uuid": "^3.0.1"
