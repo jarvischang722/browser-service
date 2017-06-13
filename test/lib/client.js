@@ -1,6 +1,6 @@
-const request = require('supertest')
+const supertest = require('supertest')
 
 module.exports = () => {
-    const client = request(global.server)
+    const client = supertest(global.server)
     return client
 }

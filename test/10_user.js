@@ -77,7 +77,7 @@ describe('User', () => {
 
     it('Get test info after login', (done) => {
         client()
-        .get('/user/test')
+        .get('/test/user')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.player.token)
@@ -91,7 +91,7 @@ describe('User', () => {
 
     it('Get test info failed without auth token', (done) => {
         client()
-        .get('/user/test')
+        .get('/test/user')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .expect(401)
