@@ -13,18 +13,6 @@ module.exports = (route, config, exempt) => {
         }
     }
 
-    const newPlayer = async (req, res, next) => {
-        try {
-            const player = {
-                id: 1,
-                token: 'newplayercentertoken',
-            }
-            return res.json(player)
-        } catch (err) {
-            return next(err)
-        }
-    }
-
     const testUser = async (req, res) => {
         const user = {
             user: 'test',
@@ -35,9 +23,7 @@ module.exports = (route, config, exempt) => {
 
 
     exempt('/test/login')
-    exempt('/test/new')
 
     route.post('/test/login', login)
-    route.post('/test/new', newPlayer)
     route.get('/test/user', testUser)
 }
