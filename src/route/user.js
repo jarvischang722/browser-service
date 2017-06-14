@@ -61,28 +61,18 @@ module.exports = (route, config, exempt) => {
             validate(req.body, getSchema(SCHEMA, 'username', 'password', 'client'))
             const { username, password, client } = req.body
             // call API to login and get token back
-            let player = await request({
-                method: 'POST',
-                url: 'http://localhost:7002/test/login',
-                json: { username, password, client },
-            })
-            let playerBinded = false
-            if (player) {
-                // check binding
-            } else {
-                // invoke game center API to create new player and get info back
-                player = await request({
-                    method: 'POST',
-                    url: 'http://localhost:7002/test/new',
-                    json: { username, password, client },
-                })
+            // const user = await request({
+            //     method: 'POST',
+            //     url: 'http://playercenterapi/login',
+            //     json: { username, password, client },
+            // })
+            // fake for now
+            const user = {
+                id: Math.ceil(Math.random() * 5),
             }
-            // check binding
-            if (!playerBinded) {
-                // bind player
-            }
-            return res.json({
-            })
+            if (!user) return next(new errors.UserUnauthorizedError())
+            const bindedPlayer = await User.getBindedPlayer(client, user.id)
+            return res.json(bindedPlayer)
         } catch (err) {
             return next(err)
         }
@@ -90,9 +80,11 @@ module.exports = (route, config, exempt) => {
 
     exempt('/user/signup')
     exempt('/user/login')
+    exempt('/user/login/sso')
+    exempt('/user/login/third')
 
     route.post('/user/signup', signup)
     route.post('/user/login', login)
-    route.post('/user/ssoLogin', ssoLogin) // wechat, qq, facebook...
-    route.post('/user/centerLogin', centerLogin) // mgm, agtop...
+    route.post('/user/login/sso', ssoLogin) // wechat, qq, facebook...
+    route.post('/user/login/third', centerLogin) // mgm, agtop...
 }
