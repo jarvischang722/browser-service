@@ -102,4 +102,22 @@ describe('User', () => {
             done()
         })
     })
+
+    it('Login by third party account', (done) => {
+        client()
+        .post('/user/login/third')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .send({
+            username: 'username',
+            password: 'password',
+            client: 'playercenter',
+        })
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('id')
+            done()
+        })
+    })
 })
