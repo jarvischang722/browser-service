@@ -1,9 +1,9 @@
-CREATE TABLE player (
+CREATE TABLE player_mapping (
     id serial,
-    username varchar(255),
-    email varchar(255),
-    password varchar(255),
-    verify boolean,
+    playerid int,
+    third_party varchar(255),
+    third_party_id int,
+    token varchar(255),
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
