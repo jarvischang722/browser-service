@@ -1,5 +1,8 @@
 const fs = require('fs')
 const path = require('path')
+const log4js = require('log4js')
+
+const logger = log4js.getLogger()
 
 class DbManager {
     constructor(data) {
@@ -62,15 +65,20 @@ class DbManager {
     async update() {
         this.version = await this.getCurrentVersion()
         const patches = await this.getPatches()
+        let newVersion = 0
         await db.transaction(async (client) => {
             for (const patch of patches) {
                 const { version, file } = patch
+                newVersion = version
                 if (version <= this.version) continue
                 const query = fs.readFileSync(file, 'utf8')
                 await client.query(query)
                 await this.updateVersion(client, version)
             }
         })
+        if (newVersion > 0 && this.version !== newVersion) {
+            logger.error(`Update db failed, expected version is ${newVersion}, but got ${this.version}`)
+        }
     }
 }
 
