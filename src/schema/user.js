@@ -14,8 +14,8 @@ const signup = async (userName, email, password, key) => {
         )
         VALUES (?, ?, ?, false)
         ;`
-    const hashedPwd = crypto.encrypt(password, key)
-    const results = await db.query(query, [userName, email, hashedPwd])
+    if (key) password = crypto.encrypt(password, key)
+    const results = await db.query(query, [userName, email, password])
     return {
         id: results.insertId,
     }
@@ -56,17 +56,33 @@ const generateToken = async (playerId, timeout) => {
     return token
 }
 
-const testTrans = async () => {
-    const a = await db.transaction(async (client) => {
-        await client.query('SELECT 1;')
-        await client.query('SELECT 2;')
-    })
-    return a
+// if binded, return
+// if not binded, create new one and bind
+const getBindedPlayer = async (thirdParty, userId) => {
+    const query = `
+        SELECT a.playerid AS id, b.username
+        FROM 
+            player_mapping AS a,
+            player AS b
+        WHERE
+            a.playerid = b.id
+            AND third_party = ?
+            AND third_party_id = ?
+        ;`
+    const results = await db.query(query, [thirdParty, userId])
+    if (results.length > 0) return results[0]
+    const player = await signup('', '', uuidV4())
+    const queryBind = `
+        INSERT INTO player_mapping (playerid, third_party, third_party_id)
+        VALUES (?, ?, ?)
+        ;`
+    await db.query(queryBind, [player.id, thirdParty, userId])
+    return player
 }
 
 module.exports = {
     signup,
     login,
     generateToken,
-    testTrans,
+    getBindedPlayer,
 }
