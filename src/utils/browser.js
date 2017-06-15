@@ -13,8 +13,6 @@ const createBrowser = async (config, req) => {
     const { client, homepage, company } = req.body
     const homeUrl = [...new Set(homepage.split(/\r\n/))]
     validate({ homeUrl }, SCHEMA)
-    console.log(homeUrl)
-    console.log(Array.isArray(homeUrl))
     const useProxy = req.body.useProxy === 'on'
     const { projectPath, version, legalCopyright } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${client}`)
