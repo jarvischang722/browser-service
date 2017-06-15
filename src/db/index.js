@@ -46,6 +46,7 @@ const configure = (config) => {
         database: dbCfg.db,
         user: dbCfg.credentials.username,
         password: dbCfg.credentials.password,
+        multipleStatements: true,
     }
     return new DbManager({ connections })
 }
