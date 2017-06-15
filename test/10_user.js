@@ -54,7 +54,7 @@ describe('User', () => {
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('error')
-            res.body.error.should.have.property('code').and.equal('UserUnauthorizedError')
+            res.body.error.should.have.property('code').and.equal('UnauthorizedError')
             res.body.error.should.have.property('message')
             done()
         })
@@ -103,26 +103,25 @@ describe('User', () => {
         })
     })
 
-    it('Login by third party account', (done) => {
+    it('Login by merchant account', (done) => {
         client()
-        .post('/user/login/third')
+        .post('/user/login/merchant')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .send({
             username: 'username',
             password: 'password',
-            client: 'playercenter',
+            merchant: 'playercenter',
         })
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('id')
-            env.thirdPartyUser = res.body
             done()
         })
     })
     
-    it('Login to third party by user center account', (done) => {
+    it('Login to merchant by user center account', (done) => {
         const { username, password } = player
         client()
         .post('/user/login/sso')
@@ -131,7 +130,7 @@ describe('User', () => {
         .send({
             username,
             password,
-            client: 'playercenter',
+            merchant: 'playercenter',
         })
         .expect(200)
         .end((err, res) => {

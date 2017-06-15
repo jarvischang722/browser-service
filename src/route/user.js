@@ -8,14 +8,8 @@ const SCHEMA = {
     username: T.string().required(),
     email: T.string().email().required(),
     password: T.string().required(),
-    client: T.string().required(),
+    merchant: T.string().required(),
 }
-
-const ERRORS = {
-    UserUnauthorized: 401,
-}
-
-errors.register(ERRORS)
 
 module.exports = (route, config, exempt) => {
     const signup = async (req, res, next) => {
@@ -35,8 +29,7 @@ module.exports = (route, config, exempt) => {
             validate(req.body, getSchema(SCHEMA, 'username', 'password'))
             const { username, password } = req.body
             const player = await User.login(username, password, config.secret.token)
-            if (!player) return next(new errors.UserUnauthorizedError())
-            // const token = await User.generateToken(player.id, config.timeout.token)
+            if (!player) return next(new errors.UnauthorizedError())
             player.token = generateToken(config, player.id)
             return res.json({
                 player,
@@ -51,23 +44,23 @@ module.exports = (route, config, exempt) => {
     const ssoLogin = async (req, res, next) => {
         try {
             // login and get binded user
-            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'client'))
-            const { username, password, client } = req.body
-            const player = await User.login(username, password, config.secret.token)
-            if (!player) return next(new errors.UserUnauthorizedError())
-            let user = await User.getBindedUser(client, player.id)
-            if (!user) {
-                // TODO: call API to generate new third party user
-                // user = await request({
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'merchant'))
+            const { username, password, merchant } = req.body
+            const user = await User.login(username, password, config.secret.token)
+            if (!user) return next(new errors.UnauthorizedError())
+            let player = await User.getBindedPlayer(merchant, user.id)
+            if (!player) {
+                // TODO: call API to generate new merchant player
+                // player = await request({
                 //     method: 'POST',
                 //     url: 'http://playercenterapi/signup',
-                //     json: { username, password, client },
+                //     json: { username, password, merchant },
                 // })
                 // fake for now
-                user = {
+                player = {
                     id: Math.ceil(Math.random() * 5),
                 }
-                await User.bindUser(client, player.id, user.id)
+                await User.bindPlayer(merchant, user.id, player.id)
             }
             return res.json(user)
         } catch (err) {
@@ -76,23 +69,23 @@ module.exports = (route, config, exempt) => {
     }
 
     // 使用第三方游戏账号登陆我们的系统
-    const centerLogin = async (req, res, next) => {
+    const merchantLogin = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'client'))
-            const { username, password, client } = req.body
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'merchant'))
+            const { username, password, merchant } = req.body
             // TODO: call API to login and get token back
             // const user = await request({
             //     method: 'POST',
             //     url: 'http://playercenterapi/login',
-            //     json: { username, password, client },
+            //     json: { username, password, merchant },
             // })
             // fake for now
-            const user = {
+            const player = {
                 id: Math.ceil(Math.random() * 5),
             }
-            if (!user) return next(new errors.UserUnauthorizedError())
-            const bindedPlayer = await User.getBindedPlayer(client, user.id)
-            return res.json(bindedPlayer)
+            if (!player) return next(new errors.UnauthorizedError())
+            const user = await User.getBindedUser(merchant, player.id)
+            return res.json(user)
         } catch (err) {
             return next(err)
         }
@@ -101,10 +94,10 @@ module.exports = (route, config, exempt) => {
     exempt('/user/signup')
     exempt('/user/login')
     exempt('/user/login/sso')
-    exempt('/user/login/third')
+    exempt('/user/login/merchant')
 
     route.post('/user/signup', signup)
     route.post('/user/login', login)
     route.post('/user/login/sso', ssoLogin) // wechat, qq, facebook...
-    route.post('/user/login/third', centerLogin) // mgm, agtop...
+    route.post('/user/login/merchant', merchantLogin) // mgm, agtop...
 }

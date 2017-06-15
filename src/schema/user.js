@@ -1,15 +1,9 @@
 const uuidV4 = require('uuid/v4')
 const crypto = require('../utils/crypto')
-const datetime = require('../utils/datetime')
-
-const STATUS = {
-    NORMAL: 1,
-    DISABLED: 2,
-}
 
 const signup = async (userName, email, password, key) => {
     const query = `
-        INSERT INTO player (
+        INSERT INTO user (
             username, email, password, verify
         )
         VALUES (?, ?, ?, false)
@@ -24,7 +18,7 @@ const signup = async (userName, email, password, key) => {
 const login = async (userName, password, key) => {
     const query = `
         SELECT id
-        FROM player
+        FROM user
         WHERE 
             username = ?
             AND password = ?
@@ -34,80 +28,56 @@ const login = async (userName, password, key) => {
     return results[0]
 }
 
-const generateToken = async (playerId, timeout) => {
-    const token = uuidV4()
-    const query = `
-        INSERT INTO common_tokens (
-            player_id, token, created_at, updated_at, timeout_at, timeout, status
-        ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?
-        );`
-    const now = datetime.format()
-    const timeoutAt = datetime.format(now, timeout)
-    await db.query(query, [
-        playerId,
-        token,
-        now,
-        now,
-        timeoutAt,
-        timeout,
-        STATUS.NORMAL,
-    ])
-    return token
-}
-
+// get user center user by merchant player
 // if binded, return
 // if not binded, create new one and bind
-const getBindedPlayer = async (thirdParty, userId) => {
+const getBindedUser = async (merchant, playerId) => {
     const query = `
-        SELECT a.playerid AS id, b.username
-        FROM 
-            player_mapping AS a,
-            player AS b
+        SELECT a.id, a.username
+        FROM
+            user AS a,
+            user_mapping AS b
         WHERE
-            a.playerid = b.id
-            AND third_party = ?
-            AND third_party_id = ?
+            a.id = b.userid
+            AND b.merchant = ?
+            AND b.playerid = ?
         ;`
-    const results = await db.query(query, [thirdParty, userId])
+    const results = await db.query(query, [merchant, playerId])
     if (results.length > 0) return results[0]
-    const player = await signup('', '', uuidV4())
+    const user = await signup('', '', uuidV4())
     const queryBind = `
-        INSERT INTO player_mapping (playerid, third_party, third_party_id)
+        INSERT INTO user_mapping (userid, merchant, playerid)
         VALUES (?, ?, ?)
         ;`
-    await db.query(queryBind, [player.id, thirdParty, userId])
-    return player
+    await db.query(queryBind, [user.id, merchant, playerId])
+    return user
 }
 
-const getBindedUser = async (thirdParty, playerId) => {
+// get merchant player by user center user
+const getBindedPlayer = async (merchant, userId) => {
     const query = `
-        SELECT a.third_party_id AS id
-        FROM 
-            player_mapping AS a,
-            player AS b
-        WHERE
-            a.playerid = b.id
-            AND a.third_party = ?
-            AND b.id = ?
+        SELECT playerid AS id
+        FROM user_mapping
+        WHERE 
+            merchant = ?
+            AND userid = ?
         ;`
-    const results = await db.query(query, [thirdParty, playerId])
+    const results = await db.query(query, [merchant, userId])
     return results[0]
 }
 
-const bindUser = async (thirdParty, playerId, userId) => {
+const bindPlayer = async (merchant, userId, playerId) => {
     const query = `
-        INSERT INTO player_mapping (playerid, third_party, third_party_id)
+        INSERT INTO user_mapping (userid, merchant, playerid)
         VALUES (?, ?, ?)
         ;`
-    await db.query(query, [playerId, thirdParty, userId])
+    await db.query(query, [userId, merchant, playerId])
 }
 
 module.exports = {
     signup,
     login,
-    generateToken,
-    getBindedPlayer,
     getBindedUser,
-    bindUser,
+    getBindedPlayer,
+    bindPlayer,
 }

@@ -1,4 +1,4 @@
-CREATE TABLE player (
+CREATE TABLE user (
     id serial,
     username varchar(255),
     email varchar(255),
