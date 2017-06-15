@@ -16,9 +16,9 @@ module.exports = (route, config, exempt) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password', 'email'))
             const { username, email, password } = req.body
-            const player = await User.signup(username, email, password, config.secret.token)
-            player.token = generateToken(config, player.id)
-            return res.status(201).send(player)
+            const user = await User.signup(username, email, password, config.secret.token)
+            user.token = generateToken(config, user.id)
+            return res.status(201).send(user)
         } catch (err) {
             return next(err)
         }
@@ -28,11 +28,11 @@ module.exports = (route, config, exempt) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password'))
             const { username, password } = req.body
-            const player = await User.login(username, password, config.secret.token)
-            if (!player) return next(new errors.UnauthorizedError())
-            player.token = generateToken(config, player.id)
+            const user = await User.login(username, password, config.secret.token)
+            if (!user) return next(new errors.UnauthorizedError())
+            user.token = generateToken(config, user.id)
             return res.json({
-                player,
+                user,
                 ssinfo: null,
             })
         } catch (err) {

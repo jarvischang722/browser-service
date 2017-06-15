@@ -1,6 +1,6 @@
 const client = require('./lib/client')
 
-const player = {
+const user = {
     username: `testuser_${Date.now()}`,
     email: 'test@email.com',
     password: 'pass1234',
@@ -12,7 +12,7 @@ describe('User', () => {
         .post('/user/signup')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .send(player)
+        .send(user)
         .expect(201)
         .end((err, res) => {
             should.not.exist(err)
@@ -23,7 +23,7 @@ describe('User', () => {
     })
 
     it('Sign in', (done) => {
-        const { username, password } = player
+        const { username, password } = user
         client()
         .post('/user/login')
         .set('Content-Type', 'application/json')
@@ -32,11 +32,11 @@ describe('User', () => {
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
-            res.body.should.have.property('player')
-            res.body.player.should.have.property('id')
-            res.body.player.should.have.property('token')
+            res.body.should.have.property('user')
+            res.body.user.should.have.property('id')
+            res.body.user.should.have.property('token')
             res.body.should.have.property('ssinfo')
-            env.player = res.body.player
+            env.user = res.body.user
             done()
         })
     })
@@ -80,7 +80,7 @@ describe('User', () => {
         .get('/test/user')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .set('X-Auth-Key', env.player.token)
+        .set('X-Auth-Key', env.user.token)
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
@@ -122,7 +122,7 @@ describe('User', () => {
     })
     
     it('Login to merchant by user center account', (done) => {
-        const { username, password } = player
+        const { username, password } = user
         client()
         .post('/user/login/sso')
         .set('Content-Type', 'application/json')
