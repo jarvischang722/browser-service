@@ -33,6 +33,7 @@ const transaction = async (actions) => {
         return results
     } catch (err) {
         await conn.rollback()
+        throw err
     } finally {
         if (conn) await conn.end()
     }
