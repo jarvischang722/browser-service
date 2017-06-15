@@ -11,7 +11,7 @@ CREATE TABLE user (
     username varchar(255),
     email varchar(255),
     password varchar(255),
-    verify boolean,
+    status int DEFAULT 1,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

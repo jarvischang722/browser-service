@@ -4,9 +4,9 @@ const crypto = require('../utils/crypto')
 const signup = async (userName, email, password, key) => {
     const query = `
         INSERT INTO user (
-            username, email, password, verify
+            username, email, password
         )
-        VALUES (?, ?, ?, false)
+        VALUES (?, ?, ?)
         ;`
     if (key) password = crypto.encrypt(password, key)
     const results = await db.query(query, [userName, email, password])
