@@ -80,9 +80,34 @@ const getBindedPlayer = async (thirdParty, userId) => {
     return player
 }
 
+const getBindedUser = async (thirdParty, playerId) => {
+    const query = `
+        SELECT a.third_party_id AS id
+        FROM 
+            player_mapping AS a,
+            player AS b
+        WHERE
+            a.playerid = b.id
+            AND a.third_party = ?
+            AND b.id = ?
+        ;`
+    const results = await db.query(query, [thirdParty, playerId])
+    return results[0]
+}
+
+const bindUser = async (thirdParty, playerId, userId) => {
+    const query = `
+        INSERT INTO player_mapping (playerid, third_party, third_party_id)
+        VALUES (?, ?, ?)
+        ;`
+    await db.query(query, [playerId, thirdParty, userId])
+}
+
 module.exports = {
     signup,
     login,
     generateToken,
     getBindedPlayer,
+    getBindedUser,
+    bindUser,
 }

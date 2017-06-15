@@ -47,20 +47,40 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    // 使用我们自己系统的账号登陆第三方游戏
     const ssoLogin = async (req, res, next) => {
         try {
-            return res.json({
-            })
+            // login and get binded user
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'client'))
+            const { username, password, client } = req.body
+            const player = await User.login(username, password, config.secret.token)
+            if (!player) return next(new errors.UserUnauthorizedError())
+            let user = await User.getBindedUser(client, player.id)
+            if (!user) {
+                // TODO: call API to generate new third party user
+                // user = await request({
+                //     method: 'POST',
+                //     url: 'http://playercenterapi/signup',
+                //     json: { username, password, client },
+                // })
+                // fake for now
+                user = {
+                    id: Math.ceil(Math.random() * 5),
+                }
+                await User.bindUser(client, player.id, user.id)
+            }
+            return res.json(user)
         } catch (err) {
             return next(err)
         }
     }
 
+    // 使用第三方游戏账号登陆我们的系统
     const centerLogin = async (req, res, next) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password', 'client'))
             const { username, password, client } = req.body
-            // call API to login and get token back
+            // TODO: call API to login and get token back
             // const user = await request({
             //     method: 'POST',
             //     url: 'http://playercenterapi/login',

@@ -117,6 +117,26 @@ describe('User', () => {
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('id')
+            env.thirdPartyUser = res.body
+            done()
+        })
+    })
+    
+    it('Login to third party by user center account', (done) => {
+        const { username, password } = player
+        client()
+        .post('/user/login/sso')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .send({
+            username,
+            password,
+            client: 'playercenter',
+        })
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('id')
             done()
         })
     })
