@@ -1,31 +1,41 @@
-const version = require('../meta/browser.json')
-
-const getVersion = (platform, client) => {
-    if (!platform && !client) return version
-    let result = {}
-    if (platform) {
-        if (version[platform]) {
-            result = version[platform]
-            if (client) {
-                if (version[platform][client]) {
-                    result = version[platform][client]
-                } else {
-                    result = {}
-                }
-            }
-        }
-    } else {
-        // no platform, has client
-        /* eslint-disable no-restricted-syntax */
-        for (const pf of Object.keys(version)) {
-            if (version[pf][client]) {
-                result[pf] = version[pf][client]
-            }
-        }
+const getVersion = async (platform, client) => {
+    const query = `
+        SELECT *
+        FROM browser
+        WHERE
+            platform = ?
+            AND client = ?
+        LIMIT 1
+        ;`
+    const results = await db.query(query, [platform, client])
+    if (results.length <= 0) return {}
+    const row = results[0]
+    return {
+        version: row.version,
+        link: row.link,
     }
-    return result
+}
+
+const updateBrowser = async (platform, client, link, updateVersion) => {
+    const defaultVersion = '2.9.0'
+    const query = updateVersion ? `
+        INSERT INTO browser (platform, client, version, link) 
+        VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY 
+        UPDATE
+            version = CONCAT(SUBSTRING_INDEX(version, '.', 2), '.', (CONVERT(SUBSTRING_INDEX(version, '.', -1), UNSIGNED INTEGER) + 1)),
+            link = ?
+        ;` : `
+        INSERT INTO browser (platform, client, version, link) 
+        VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY 
+        UPDATE
+            link = ?
+        ;`
+    await db.query(query, [platform, client, defaultVersion, link, link])
 }
 
 module.exports = {
     getVersion,
+    updateBrowser,
 }

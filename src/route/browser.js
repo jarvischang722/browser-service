@@ -10,8 +10,10 @@ const upload = multer({ dest: 'upload/' })
 const logger = log4js.getLogger()
 
 const SCHEMA = {
-    platform: T.string(),
-    client: T.string(),
+    platform: T.string().required(),
+    client: T.string().required(),
+    link: T.string().uri().required(),
+    version: T.boolean().default(false),
     homepage: T.string().required(),
     company: T.string().required(),
     useProxy: T.string().valid('on'),
@@ -24,12 +26,23 @@ const ERRORS = {
 errors.register(ERRORS)
 
 module.exports = (route, config, exempt) => {
-    const getVersion = (req, res, next) => {
+    const getVersion = async (req, res, next) => {
         try {
             validate(req.query, getSchema(SCHEMA, 'platform', 'client'))
             const { platform, client } = req.query
-            const version = Browser.getVersion(platform, client)
+            const version = await Browser.getVersion(platform, client)
             return res.json(version)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
+    const updateBrowser = async (req, res, next) => {
+        try {
+            validate(req.body, getSchema(SCHEMA, 'platform', 'client', 'link', 'version'))
+            const { platform, client, link, version } = req.body
+            await Browser.updateBrowser(platform, client, link, version)
+            return res.status(204).send()
         } catch (err) {
             return next(err)
         }
@@ -59,6 +72,7 @@ module.exports = (route, config, exempt) => {
     exempt('/browser/create')
 
     route.get('/browser/version', getVersion)
+    route.post('/browser/version', updateBrowser)
     route.get('/browser/new', getCreateClientPage)
     route.post('/browser/create', upload.single('icon'), createNewBrowser)
 }
