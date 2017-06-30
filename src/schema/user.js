@@ -1,83 +1,69 @@
 const uuidV4 = require('uuid/v4')
 const crypto = require('../utils/crypto')
+const errors = require('../../error')
+const strUtils = require('../utils/str.js')
 
-const signup = async (userName, email, password, key) => {
-    const query = `
-        INSERT INTO user (
-            username, email, password
-        )
-        VALUES (?, ?, ?)
-        ;`
-    if (key) password = crypto.encrypt(password, key)
-    const results = await db.query(query, [userName, email, password])
-    return {
-        id: results.insertId,
-    }
-}
+// // userId 是自己的
+// // 其他信息是下级代理的
+// // TODO
+// const createUser = async (userId, userName, password, role, expire_in) => {
+//     return db.transaction(async (client) => {
+//         const salt = strUtils.random()
+//         const query = `
+//             INSERT INTO player (
+//                 username, salt, password
+//             )
+//             VALUES (?, ?, ?, ?, '-')
+//             ;`
+//         password = crypto.encrypt(password, salt)
+//         payPassword = crypto.encrypt(payPassword, salt)
+//         const results = await client.query(query, [userName, salt, password, payPassword])
+//         const playerId = results.insertId
+//         if (!playerId) return new errors.CreatePlayerFailedError()
 
-const login = async (userName, password, key) => {
+//         return {
+//             id: playerId,
+//         }
+//     })
+// }
+
+const login = async (userName, password, config) => {
     const query = `
-        SELECT id
+        SELECT *
         FROM user
-        WHERE 
-            username = ?
-            AND password = ?
+        WHERE username = ?
         ;`
-    const hashedPwd = crypto.encrypt(password, key)
-    const results = await db.query(query, [userName, hashedPwd])
-    return results[0]
-}
-
-// get user center user by merchant player
-// if binded, return
-// if not binded, create new one and bind
-const getBindedUser = async (merchant, playerId) => {
-    const query = `
-        SELECT a.id, a.username
-        FROM
-            user AS a,
-            user_mapping AS b
-        WHERE
-            a.id = b.userid
-            AND b.merchant = ?
-            AND b.playerid = ?
-        ;`
-    const results = await db.query(query, [merchant, playerId])
-    if (results.length > 0) return results[0]
-    const user = await signup('', '', uuidV4())
-    const queryBind = `
-        INSERT INTO user_mapping (userid, merchant, playerid)
-        VALUES (?, ?, ?)
-        ;`
-    await db.query(queryBind, [user.id, merchant, playerId])
+    const results = await db.query(query, [userName])
+    if (results.length <= 0) return null
+    const row = results[0]
+    const hashedPwd = row.salt ? crypto.encrypt(password, row.salt) : password
+    const user = hashedPwd !== row.password ? null : {
+        id: row.id,
+        username: row.username,
+        name: row.name,
+        expireIn: row.expire_in,
+    }
+    if (user) {
+        // get client browsers
+        const queryBrowser = `
+            SELECT *
+            FROM browser
+            WHERE userid = ?
+            ;`
+        const resultsBrowser = await db.query(queryBrowser, [user.id])
+        if (resultsBrowser.length > 0) {
+            user.browsers = resultsBrowser.map(b => ({
+                platform: b.platform,
+                link: b.link,
+                version: b.version,
+                currentVersion: config.browser.version,
+            }))
+        }
+    }
     return user
-}
-
-// get merchant player by user center user
-const getBindedPlayer = async (merchant, userId) => {
-    const query = `
-        SELECT playerid AS id
-        FROM user_mapping
-        WHERE 
-            merchant = ?
-            AND userid = ?
-        ;`
-    const results = await db.query(query, [merchant, userId])
-    return results[0]
-}
-
-const bindPlayer = async (merchant, userId, playerId) => {
-    const query = `
-        INSERT INTO user_mapping (userid, merchant, playerid)
-        VALUES (?, ?, ?)
-        ;`
-    await db.query(query, [userId, merchant, playerId])
 }
 
 module.exports = {
     signup,
     login,
-    getBindedUser,
-    getBindedPlayer,
-    bindPlayer,
 }
