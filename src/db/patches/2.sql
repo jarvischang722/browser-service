@@ -8,7 +8,8 @@ CREATE TABLE browser (
     link text,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY `unique_browser` (`client`,`platform`)
+    UNIQUE KEY `unique_browser` (`client`,`platform`),
+    FOREIGN KEY (userid) REFERENCES user(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 INSERT INTO browser (userid, platform, client, version, link)
