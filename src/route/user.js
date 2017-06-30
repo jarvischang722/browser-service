@@ -4,12 +4,19 @@ const { validate, getSchema, T } = require('../validator')
 const { generateToken } = require('../authorization')
 
 const SCHEMA = {
+    id: T.number().integer(),
     username: T.string().required(),
     password: T.string().required(),
 }
 
+const ERRORS = {
+    UserNotFound: 404,
+}
+
+errors.register(ERRORS)
+
 module.exports = (route, config, exempt) => {
-    const signup = async (req, res, next) => {
+    const createNewUser = async (req, res, next) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password', 'email'))
             const { username, email, password } = req.body
@@ -34,9 +41,20 @@ module.exports = (route, config, exempt) => {
         }
     }
 
-    // exempt('/user/signup')
+    const getProfile = async (req, res, next) => {
+        try {
+            validate(req.body, getSchema(SCHEMA, 'id'))
+            const user = await User.getProfile(req.user.id, req.query.id, config)
+            if (!user) return next(new errors.UserNotFoundError())
+            return res.json(user)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     exempt('/user/login')
 
-    // route.post('/user/signup', signup)
     route.post('/user/login', login)
+    route.post('/user/new', createNewUser)
+    route.get('/user/profile', getProfile)
 }

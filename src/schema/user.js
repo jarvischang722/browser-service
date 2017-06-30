@@ -2,6 +2,7 @@ const uuidV4 = require('uuid/v4')
 const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
+const Browser = require('./browser')
 
 // // userId 是自己的
 // // 其他信息是下级代理的
@@ -45,25 +46,40 @@ const login = async (userName, password, config) => {
     }
     if (user) {
         // get client browsers
-        const queryBrowser = `
-            SELECT *
-            FROM browser
-            WHERE userid = ?
-            ;`
-        const resultsBrowser = await db.query(queryBrowser, [user.id])
-        if (resultsBrowser.length > 0) {
-            user.browsers = resultsBrowser.map(b => ({
-                platform: b.platform,
-                link: b.link,
-                version: b.version,
-                currentVersion: config.browser.version,
-            }))
-        }
+        user.browsers = await Browser.getUserBrowsers(user.id, config)
     }
     return user
+}
+
+const getProfile = async (userId, tarId, config) => {
+    tarId = tarId || userId
+    const query = `
+        SELECT *
+        FROM user
+        WHERE
+            id = ?
+        ;`
+    const results = await db.query(query, [tarId])
+    if (results.length <= 0) throw new errors.UserNotFoundError()
+    const row = results[0]
+    if (tarId !== userId && row.parent && row.parent !== userId) {
+        // 如果目标用户不是自己 &
+        // 如果目标用户的上级存在 &
+        // 如果目标用户的上级不是自己
+        throw new errors.UserNotFoundError()
+    }
+    const browsers = await Browser.getUserBrowsers(tarId, config)
+    return {
+        id: row.id,
+        username: row.username,
+        name: row.name,
+        expireIn: row.expire_in,
+        browsers,
+    }
 }
 
 module.exports = {
     // signup,
     login,
+    getProfile,
 }

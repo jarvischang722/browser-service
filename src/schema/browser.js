@@ -35,7 +35,27 @@ const updateBrowser = async (platform, client, link, updateVersion) => {
     await db.query(query, [platform, client, defaultVersion, link, link])
 }
 
+const getUserBrowsers = async (userId, config) => {
+    const query = `
+        SELECT *
+        FROM browser
+        WHERE userid = ?
+        ;`
+    const results = await db.query(query, [userId])
+    let browsers = []
+    if (results.length > 0) {
+        browsers = results.map(b => ({
+            platform: b.platform,
+            link: b.link,
+            version: b.version,
+            currentVersion: config.browser.version,
+        }))
+    }
+    return browsers
+}
+
 module.exports = {
     getVersion,
     updateBrowser,
+    getUserBrowsers,
 }

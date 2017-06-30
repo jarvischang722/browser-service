@@ -76,23 +76,60 @@ describe('User', () => {
         })
     })
 
-    it('Get test info after login', (done) => {
+    it('Get user profile after sign in', (done) => {
         client()
-        .get('/test/user')
+        .get('/user/profile')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
-            res.body.should.have.property('user').and.equal('test')
+            res.body.should.have.property('id')
+            res.body.should.have.property('username')
+            res.body.should.have.property('name')
+            res.body.should.have.property('expireIn')
+            res.body.should.have.property('browsers').and.instanceOf(Array)
             done()
         })
     })
 
-    it('Get test info failed without auth token', (done) => {
+    it('Get child user profile', (done) => {
         client()
-        .get('/test/user')
+        .get('/user/profile?id=2')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('id')
+            res.body.should.have.property('username')
+            res.body.should.have.property('name')
+            res.body.should.have.property('expireIn')
+            res.body.should.have.property('browsers').and.instanceOf(Array)
+            done()
+        })
+    })
+
+    it('Get user profile, but not child', (done) => {
+        client()
+        .get('/user/profile?id=99')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(404)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('UserNotFoundError')
+            done()
+        })
+    })
+
+    it('Get profile failed without auth token', (done) => {
+        client()
+        .get('/user/profile')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .expect(401)
