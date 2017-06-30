@@ -28,8 +28,6 @@ const createBrowser = async (config, req) => {
         productName: `${company}安全浏览器`,
         productNameEn: `${client.toUpperCase()} Safety Browser`,
         fileDescription: `${company}安全浏览器`,
-        legalCopyright,
-        version,
         enabledFlash: true,
         enabledProxy: useProxy,
         clientId: uuidV4().toUpperCase(),
@@ -105,11 +103,11 @@ const createBrowser = async (config, req) => {
         'version-string': {
             CompanyName: options.companyName,
             FileDescription: options.fileDescription,
-            LegalCopyright: options.legalCopyright || 'Copyright 2017',
+            LegalCopyright: legalCopyright || 'Copyright 2017',
             ProductName: options.productName,
         },
-        'file-version': options.version,
-        'product-version': options.version,
+        'file-version': version,
+        'product-version': version,
         icon,
     }
     await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
@@ -120,7 +118,7 @@ const createBrowser = async (config, req) => {
     await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
 
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
-    const setupFileName = `safety-browser-${options.client}-setup-${options.version}`
+    const setupFileName = `safety-browser-${options.client}-setup-${version}`
     await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
         gui: false,
         verbose: true,
@@ -130,7 +128,7 @@ const createBrowser = async (config, req) => {
         DProjectHomeBase: projectPath,
         DCLIENT: options.client,
         DCLIENT_GUID: `{${options.clientId}}`,
-        DAPP_VERSION: options.version,
+        DAPP_VERSION: version,
         DAPP_TITLE_EN: options.productNameEn,
         DAPP_TITLE_CH: options.productName,
         DAPP_ICO: icon,
