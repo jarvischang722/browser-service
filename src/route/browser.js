@@ -1,3 +1,4 @@
+const User = require('../schema/user')
 const Browser = require('../schema/browser')
 const path = require('path')
 const log4js = require('log4js')
@@ -37,23 +38,17 @@ module.exports = (route, config, exempt) => {
         }
     }
 
-    const updateBrowser = async (req, res, next) => {
-        try {
-            validate(req.body, getSchema(SCHEMA, 'platform', 'client', 'link', 'version'))
-            const { platform, client, link, version } = req.body
-            await Browser.updateBrowser(platform, client, link, version)
-            return res.status(204).send()
-        } catch (err) {
-            return next(err)
-        }
-    }
-
     const createNewBrowser = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'client', 'homepage', 'company', 'useProxy'), ['client'])
+            const tarId = req.body ? req.body.id : null
+            const profile = await User.getProfile(req.user.id, tarId, config)
+            // 信息不全的不允许生成浏览器
+            validate(profile, getSchema(SCHEMA, 'id', 'name', 'homepage', 'icon'))
             /* eslint-disable no-underscore-dangle */
-            if (global.__TEST__) return res.send(req.body)
-            const setupFileName = await browserUtils.createBrowser(config, req)
+            if (global.__TEST__) return res.send(profile)
+            const setupFileName = await browserUtils.createBrowser(config, profile)
+            // update version
+            // await Browser.updateBrowser(platform, client, link, version)
             return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
             if (!global.__TEST__) logger.error(err)
@@ -69,10 +64,8 @@ module.exports = (route, config, exempt) => {
 
     exempt('/browser/version')
     exempt('/browser/new')
-    exempt('/browser/create')
 
     route.get('/browser/version', getVersion)
-    route.post('/browser/version', updateBrowser)
     route.get('/browser/new', getCreateClientPage)
     route.post('/browser/create', upload.single('icon'), createNewBrowser)
 }

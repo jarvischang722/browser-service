@@ -9,16 +9,18 @@ const SCHEMA = {
     homeUrl: T.array().items(T.string().uri()).required(),
 }
 
-const createBrowser = async (config, req) => {
-    const { client, homepage, company } = req.body
+
+const createBrowser = async (config, profile) => {
+    const client = profile.username
+    const homepage = profile.homepage
+    const company = profile.name
     const homeUrl = [...new Set(homepage.split(/\r\n/))]
     validate({ homeUrl }, SCHEMA)
-    const useProxy = req.body.useProxy === 'on'
     const { projectPath, version, legalCopyright } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${client}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     if (req.file && req.file.path) {
-        utils.copy(req.file.path, path.join(optionPath, 'icon.ico'))
+        await utils.copy(req.file.path, path.join(optionPath, 'icon.ico'))
     }
     // generate options
     const options = {
@@ -29,72 +31,70 @@ const createBrowser = async (config, req) => {
         productNameEn: `${client.toUpperCase()} Safety Browser`,
         fileDescription: `${company}安全浏览器`,
         enabledFlash: true,
-        enabledProxy: useProxy,
+        enabledProxy: true,
         clientId: uuidV4().toUpperCase(),
     }
-    if (useProxy) {
-        // get available local port
-        const localPortFile = path.join(__dirname, '..', 'meta/local-port.json')
-        const currentLocalPort = require(localPortFile)
-        let localPort
-        if (currentLocalPort[client]) {
-            localPort = currentLocalPort[client]
-        } else {
-            localPort = Math.max(...Object.values(currentLocalPort)) + 1
-            currentLocalPort[client] = localPort
-            fs.writeFileSync(localPortFile, JSON.stringify(currentLocalPort, null, 4))
-        }
-        options.proxyOptions = {
-            localAddr: '127.0.0.1',
-            localPort,
-            serverAddr: '106.75.147.144',
-            serverPort: 17777,
-            password: 'dBbQMP8Nd9vyjvN',
-            method: 'aes-256-cfb',
-            timeout: 180,
-        }
-        // write pac file
-        let filterString = ''
-        for (const page of homeUrl) {
-            const pageUrl = url.parse(page)
-            let host = pageUrl.host || pageUrl.path
-            const idx = host.lastIndexOf('.')
-            const suffix = host.slice(idx + 1)
-            if (idx > -1) {
-                host = host.slice(0, idx)
-                const main = host.slice(host.lastIndexOf('.') + 1)
-                filterString += `
-        if (/(?:^|\\.)${main}\\.${suffix}$/gi.test(host)) return "+proxy";`
-            } else {
-                filterString += `
-        if (/(?:^|\\.)${suffix}$/gi.test(host)) return "+proxy";`
-            }
-        }
-        const pac = `var FindProxyForURL = function(init, profiles) {
-    return function(url, host) {
-        "use strict";
-        var result = init, scheme = url.substr(0, url.indexOf(":"));
-        do {
-            result = profiles[result];
-            if (typeof result === "function") result = result(url, host, scheme);
-        } while (typeof result !== "string" || result.charCodeAt(0) === 43);
-        return result;
-    };
-}("+safe", {
-    "+safe": function(url, host, scheme) {
-        "use strict";${filterString}
-        return "DIRECT";
-    },
-    "+proxy": function(url, host, scheme) {
-        "use strict";
-        return "SOCKS5 127.0.0.1:${localPort}; SOCKS 127.0.0.1:${localPort}; DIRECT;";
+    // get available local port
+    const localPortFile = path.join(__dirname, '..', 'meta/local-port.json')
+    const currentLocalPort = require(localPortFile)
+    let localPort
+    if (currentLocalPort[client]) {
+        localPort = currentLocalPort[client]
+    } else {
+        localPort = Math.max(...Object.values(currentLocalPort)) + 1
+        currentLocalPort[client] = localPort
+        fs.writeFileSync(localPortFile, JSON.stringify(currentLocalPort, null, 4))
     }
+    options.proxyOptions = {
+        localAddr: '127.0.0.1',
+        localPort,
+        serverAddr: '106.75.147.144',
+        serverPort: 17777,
+        password: 'dBbQMP8Nd9vyjvN',
+        method: 'aes-256-cfb',
+        timeout: 180,
+    }
+    // write pac file
+    let filterString = ''
+    for (const page of homeUrl) {
+        const pageUrl = url.parse(page)
+        let host = pageUrl.host || pageUrl.path
+        const idx = host.lastIndexOf('.')
+        const suffix = host.slice(idx + 1)
+        if (idx > -1) {
+            host = host.slice(0, idx)
+            const main = host.slice(host.lastIndexOf('.') + 1)
+            filterString += `
+    if (/(?:^|\\.)${main}\\.${suffix}$/gi.test(host)) return "+proxy";`
+        } else {
+            filterString += `
+    if (/(?:^|\\.)${suffix}$/gi.test(host)) return "+proxy";`
+        }
+    }
+    const pac = `var FindProxyForURL = function(init, profiles) {
+return function(url, host) {
+    "use strict";
+    var result = init, scheme = url.substr(0, url.indexOf(":"));
+    do {
+        result = profiles[result];
+        if (typeof result === "function") result = result(url, host, scheme);
+    } while (typeof result !== "string" || result.charCodeAt(0) === 43);
+    return result;
+};
+}("+safe", {
+"+safe": function(url, host, scheme) {
+    "use strict";${filterString}
+    return "DIRECT";
+},
+"+proxy": function(url, host, scheme) {
+    "use strict";
+    return "SOCKS5 127.0.0.1:${localPort}; SOCKS 127.0.0.1:${localPort}; DIRECT;";
+}
 });
 `
-        const pacFile = path.join(optionPath, 'default.pac')
-        fs.writeFileSync(pacFile, pac)
-        await utils.copy(pacFile, path.join(projectPath, 'src/app/config/default.pac'))
-    }
+    const pacFile = path.join(optionPath, 'default.pac')
+    fs.writeFileSync(pacFile, pac)
+    await utils.copy(pacFile, path.join(projectPath, 'src/app/config/default.pac'))
     // generate option file
     const optionFile = path.join(optionPath, 'client.json')
     fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))

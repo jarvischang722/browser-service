@@ -29,6 +29,7 @@ const server = async () => {
 
     app.use('/styles', express.static('src/public/css'))
     app.use('/download', express.static('deploy'))
+    app.use('/icon', express.static('icons'))
 
     const apiRouter = new express.Router()
     apiRouter.use(cookieParser(config.secret.cookie))

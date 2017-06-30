@@ -140,4 +140,46 @@ describe('User', () => {
             done()
         })
     })
+
+    it('Update profile', (done) => {
+        client()
+        .post('/user/profile')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .field('name', 'tripleonetech')
+        .field('homeUrl', [
+            'http://www.demo.tripleonetech.com/',
+            'https://www.tripleonetech.com/',
+        ])
+        .attach('icon', 'test/files/icon.ico')
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('updated').and.be.ok
+            done()
+        })
+    })
+
+    it('Get user profile after sign in', (done) => {
+        client()
+        .get('/user/profile')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            console.log(res.body)
+            res.body.should.have.property('id')
+            res.body.should.have.property('username')
+            res.body.should.have.property('name')
+            res.body.should.have.property('expireIn')
+            res.body.should.have.property('icon')
+            res.body.should.have.property('browsers').and.instanceOf(Array)
+            res.body.should.have.property('homeUrl').and.instanceOf(Array)
+            done()
+        })
+    })
+
 })

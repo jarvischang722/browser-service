@@ -1,12 +1,17 @@
+const multer = require('multer')
 const User = require('../schema/user')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const { generateToken } = require('../authorization')
 
+const upload = multer({ dest: 'upload/' })
+
 const SCHEMA = {
     id: T.number().integer(),
+    name: T.string().required(),
     username: T.string().required(),
     password: T.string().required(),
+    homeUrl: T.array().items(T.string()).required(),
 }
 
 const ERRORS = {
@@ -43,10 +48,20 @@ module.exports = (route, config, exempt) => {
 
     const getProfile = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'id'))
+            validate(req.query, getSchema(SCHEMA, 'id'))
             const user = await User.getProfile(req.user.id, req.query.id, config)
             if (!user) return next(new errors.UserNotFoundError())
             return res.json(user)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
+    const updateProfile = async (req, res, next) => {
+        try {
+            validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl'))
+            await User.updateProfile(req.user.id, req, config)
+            return res.json({ updated: true })
         } catch (err) {
             return next(err)
         }
@@ -57,4 +72,5 @@ module.exports = (route, config, exempt) => {
     route.post('/user/login', login)
     route.post('/user/new', createNewUser)
     route.get('/user/profile', getProfile)
+    route.post('/user/profile', upload.single('icon'), updateProfile)
 }
