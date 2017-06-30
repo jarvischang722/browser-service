@@ -122,7 +122,7 @@ describe('Update browser', () => {
             done()
         })
     })
-    
+
     it('get version after version updated', (done) => {
         client()
         .get(`/browser/version?platform=${platform}&client=${clientName}`)
@@ -136,7 +136,7 @@ describe('Update browser', () => {
             done()
         })
     })
-    
+
     it('Update version by new client', (done) => {
         client()
         .post('/browser/version')
@@ -153,7 +153,7 @@ describe('Update browser', () => {
             done()
         })
     })
-    
+
     it('get version after version updated', (done) => {
         client()
         .get(`/browser/version?platform=${platform}&client=${newClient}`)
@@ -167,5 +167,4 @@ describe('Update browser', () => {
             done()
         })
     })
-    
 })
