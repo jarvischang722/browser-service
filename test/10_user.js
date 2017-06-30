@@ -1,29 +1,28 @@
 const client = require('./lib/client')
 
-const user = {
-    username: `testuser_${Date.now()}`,
-    email: 'test@email.com',
+const tripleone = {
+    username: 'tripleone',
     password: 'pass1234',
 }
 
 describe('User', () => {
-    it('Sign up', (done) => {
-        client()
-        .post('/user/signup')
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .send(user)
-        .expect(201)
-        .end((err, res) => {
-            should.not.exist(err)
-            res.body.should.have.property('id')
-            res.body.should.have.property('token')
-            done()
-        })
-    })
+    // it('Sign up', (done) => {
+    //     client()
+    //     .post('/user/signup')
+    //     .set('Content-Type', 'application/json')
+    //     .set('Accept', 'application/json')
+    //     .send(user)
+    //     .expect(201)
+    //     .end((err, res) => {
+    //         should.not.exist(err)
+    //         res.body.should.have.property('id')
+    //         res.body.should.have.property('token')
+    //         done()
+    //     })
+    // })
 
     it('Sign in', (done) => {
-        const { username, password } = user
+        const { username, password } = tripleone
         client()
         .post('/user/login')
         .set('Content-Type', 'application/json')
@@ -32,11 +31,13 @@ describe('User', () => {
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
-            res.body.should.have.property('user')
-            res.body.user.should.have.property('id')
-            res.body.user.should.have.property('token')
-            res.body.should.have.property('ssinfo')
-            env.user = res.body.user
+            res.body.should.have.property('id')
+            res.body.should.have.property('token')
+            res.body.should.have.property('username')
+            res.body.should.have.property('name')
+            res.body.should.have.property('expireIn')
+            res.body.should.have.property('browsers').and.instanceOf(Array)
+            env.user = res.body
             done()
         })
     })
@@ -99,43 +100,6 @@ describe('User', () => {
             should.not.exist(err)
             res.body.should.have.property('error')
             res.body.error.should.have.property('code').and.equal('UnauthorizedError')
-            done()
-        })
-    })
-
-    it('Login by merchant account', (done) => {
-        client()
-        .post('/user/login/merchant')
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .send({
-            username: 'username',
-            password: 'password',
-            merchant: 'playercenter',
-        })
-        .expect(200)
-        .end((err, res) => {
-            should.not.exist(err)
-            res.body.should.have.property('id')
-            done()
-        })
-    })
-    
-    it('Login to merchant by user center account', (done) => {
-        const { username, password } = user
-        client()
-        .post('/user/login/sso')
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .send({
-            username,
-            password,
-            merchant: 'playercenter',
-        })
-        .expect(200)
-        .end((err, res) => {
-            should.not.exist(err)
-            res.body.should.have.property('id')
             done()
         })
     })

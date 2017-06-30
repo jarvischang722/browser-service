@@ -20,7 +20,7 @@ CREATE TABLE user (
     last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-INSERT INTO user (code, password, name)
+INSERT INTO user (username, password, name)
 VALUES
 ('tripleone', 'pass1234', '合众科技'),
 ('agtop', 'pass1234', '澳门新葡京'),

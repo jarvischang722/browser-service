@@ -1,6 +1,6 @@
 const uuidV4 = require('uuid/v4')
 const crypto = require('../utils/crypto')
-const errors = require('../../error')
+const errors = require('../error')
 const strUtils = require('../utils/str.js')
 
 // // userId 是自己的
@@ -64,6 +64,6 @@ const login = async (userName, password, config) => {
 }
 
 module.exports = {
-    signup,
+    // signup,
     login,
 }

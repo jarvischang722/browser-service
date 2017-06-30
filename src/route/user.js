@@ -1,4 +1,3 @@
-const request = require('request-promise-native')
 const User = require('../schema/user')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
@@ -26,7 +25,7 @@ module.exports = (route, config, exempt) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password'))
             const { username, password } = req.body
-            const user = await User.login(username, password)
+            const user = await User.login(username, password, config)
             if (!user) return next(new errors.UnauthorizedError())
             user.token = generateToken(config, user.id)
             return res.json(user)

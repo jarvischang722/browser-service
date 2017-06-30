@@ -25,7 +25,7 @@ password        | body  | String     | Required   |                             
             currentVersion: '2.9.2',
         }
     ],
-    token: 'xxxx'
+    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5ODc5NDc0MCwiZXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKztsgvTLQ'
 }
 ```
 
