@@ -48,8 +48,8 @@ const login = async (userName, password, config) => {
         expireIn: row.expire_in,
     }
     if (user) {
-        // get client browsers
-        user.browsers = await Browser.getUserBrowsers(user.id, config)
+        // get client browser
+        user.browser = await Browser.getUserBrowser(user.id, config)
     }
     return user
 }
@@ -77,7 +77,7 @@ const getProfile = async (userId, tarId, config) => {
     const results = await db.query(query, [tarId])
     const row = checkPermission(userId, tarId, results)
     if (!row) throw new errors.UserNotFoundError()
-    const browsers = await Browser.getUserBrowsers(tarId, config)
+    const browser = await Browser.getUserBrowser(tarId, config)
     // get homeurls
     const queryUrl = `
         SELECT url
@@ -92,7 +92,7 @@ const getProfile = async (userId, tarId, config) => {
         name: row.name,
         expireIn: row.expire_in,
         icon: row.icon,
-        browsers,
+        browser,
         homeUrl,
     }
     return user

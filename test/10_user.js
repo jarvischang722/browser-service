@@ -1,7 +1,7 @@
 const client = require('./lib/client')
 
 const tripleone = {
-    username: 'tripleonetech',
+    username: 'tripleone',
     password: 'pass1234',
 }
 
@@ -43,7 +43,8 @@ describe('User', () => {
             res.body.should.have.property('browser')
             res.body.browser.should.have.property('link')
             res.body.browser.should.have.property('version')
-            res.body.browser.should.have.property('currentVersion')
+            res.body.browser.version.should.have.property('local')
+            res.body.browser.version.should.have.property('server')
             env.user = res.body
             done()
         })
@@ -99,7 +100,8 @@ describe('User', () => {
             res.body.should.have.property('browser')
             res.body.browser.should.have.property('link')
             res.body.browser.should.have.property('version')
-            res.body.browser.should.have.property('currentVersion')
+            res.body.browser.version.should.have.property('local')
+            res.body.browser.version.should.have.property('server')
             done()
         })
     })
@@ -120,7 +122,8 @@ describe('User', () => {
             res.body.should.have.property('browser')
             res.body.browser.should.have.property('link')
             res.body.browser.should.have.property('version')
-            res.body.browser.should.have.property('currentVersion')
+            res.body.browser.version.should.have.property('local')
+            res.body.browser.version.should.have.property('server')
             env.client2 = client2
             done()
         })
@@ -232,7 +235,8 @@ describe('User', () => {
             res.body.should.have.property('browser')
             res.body.browser.should.have.property('link')
             res.body.browser.should.have.property('version')
-            res.body.browser.should.have.property('currentVersion')
+            res.body.browser.version.should.have.property('local')
+            res.body.browser.version.should.have.property('server')
             res.body.should.have.property('homeUrl').and.instanceOf(Array)
             done()
         })
