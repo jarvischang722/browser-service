@@ -15,20 +15,20 @@ password        | body  | String     | Required   |                             
 
 ```javascript
 {
-    id: 1,
-    role: 1,
-    username: tripleone,
-    name: '合众科技',
-    expireIn: '2017-07-29 16:34:59'
-    browsers: {
-        platform: 'windows',
-        link: '/download/safety-browser-tripleone-setup-2.9.0.exe',
-        version: {
-            local: '2.9.0',
-            server: '2.9.2',
-        },
+    "id": 1,
+    "role": 1,
+    "username": "tripleone",
+    "name": "合众科技",
+    "expireIn": "2017-07-29 16:34:59",
+    "browsers": {
+        "platform": "windows",
+        "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+        "version": {
+            "local": "2.9.0",
+            "server": "2.9.2"
+        }
     },
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5ODc5NDc0MCwiZXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKztsgvTLQ'
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5ODc5NDc0MCwiZXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKztsgvTLQ"
 }
 ```
 + Role:
@@ -55,19 +55,19 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
 
 ```javascript
 {
-    id: 1,
-    role: 1,
-    username: tripleone,
-    name: '合众科技',
-    expireIn: '2017-07-29 16:34:59'
-    browsers: {
-        platform: 'windows',
-        link: '/download/safety-browser-tripleone-setup-2.9.0.exe',
-        version: {
-            local: '2.9.0',
-            server: '2.9.2',
-        },
-    },
+    "id": 1,
+    "role": 1,
+    "username": "tripleone",
+    "name": "合众科技",
+    "expireIn": "2017-07-29 16:34:59",
+    "browsers": {
+        "platform": "windows",
+        "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+        "version": {
+            "local": "2.9.0",
+            "server": "2.9.2"
+        }
+    }
 }
 ```
 ---------------------

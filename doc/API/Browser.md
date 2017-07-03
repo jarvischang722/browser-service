@@ -8,11 +8,11 @@
 
 ```javascript
 {
-    platform: 'windows',
-    link: '/download/safety-browser-tripleone-setup-2.9.0.exe',
-    version: {
-        local: '2.9.0',
-        server: '2.9.2',
+    "platform": "windows",
+    "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+    "version": {
+        "local": "2.9.0",
+        "server": "2.9.2"
     }
 }
 ```
