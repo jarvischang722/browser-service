@@ -2,15 +2,14 @@ const User = require('../schema/user')
 const Browser = require('../schema/browser')
 const path = require('path')
 const log4js = require('log4js')
-const multer = require('multer')
 const errors = require('../error')
 const browserUtils = require('../utils/browser')
 const { validate, getSchema, T } = require('../validator')
 
-const upload = multer({ dest: 'upload/' })
 const logger = log4js.getLogger()
 
 const SCHEMA = {
+    id: T.number().integer(),
     platform: T.string().required(),
     client: T.string().required(),
     link: T.string().uri().required(),
@@ -22,6 +21,9 @@ const SCHEMA = {
 
 const ERRORS = {
     CreateBrowserFailed: 400,
+    NameRequired: 400,
+    IconRequired: 400,
+    HomeUrlRequired: 400,
 }
 
 errors.register(ERRORS)
@@ -40,10 +42,14 @@ module.exports = (route, config, exempt) => {
 
     const createNewBrowser = async (req, res, next) => {
         try {
+            validate(req.body, getSchema(SCHEMA, 'id'))
             const tarId = req.body ? req.body.id : null
             const profile = await User.getProfile(req.user.id, tarId, config)
             // 信息不全的不允许生成浏览器
-            validate(profile, getSchema(SCHEMA, 'id', 'name', 'homepage', 'icon'))
+            if (!profile || !profile.username) throw new errors.UserNotFoundError()
+            if (!profile.name) throw new errors.NameRequiredError()
+            if (!profile.icon) throw new errors.IconRequiredError()
+            if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
             /* eslint-disable no-underscore-dangle */
             if (global.__TEST__) return res.send(profile)
             const setupFileName = await browserUtils.createBrowser(config, profile)
@@ -51,9 +57,7 @@ module.exports = (route, config, exempt) => {
             // await Browser.updateBrowser(platform, client, link, version)
             return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
-            if (!global.__TEST__) logger.error(err)
-            if (err && err.code === 'ValidationFailed') return next(err)
-            return next(new errors.CreateBrowserFailedError())
+            return next(err)
         }
     }
 
@@ -67,5 +71,5 @@ module.exports = (route, config, exempt) => {
 
     route.get('/browser/version', getVersion)
     route.get('/browser/new', getCreateClientPage)
-    route.post('/browser/create', upload.single('icon'), createNewBrowser)
+    route.post('/browser/create', createNewBrowser)
 }
