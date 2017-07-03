@@ -64,7 +64,7 @@ module.exports = (route, config, exempt) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl'))
             await User.updateProfile(req.user.id, req, config)
-            return res.json({ updated: true })
+            return res.status(204).send()
         } catch (err) {
             return next(err)
         }

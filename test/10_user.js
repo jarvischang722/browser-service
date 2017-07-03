@@ -173,10 +173,9 @@ describe('User', () => {
             'https://www.tripleonetech.com/',
         ])
         .attach('icon', 'test/files/icon.ico')
-        .expect(200)
+        .expect(204)
         .end((err, res) => {
             should.not.exist(err)
-            res.body.should.have.property('updated').and.be.ok
             done()
         })
     })
@@ -213,10 +212,9 @@ describe('User', () => {
             'http://www.agtop.t1t.games/',
         ])
         .attach('icon', 'test/files/icon.ico')
-        .expect(200)
+        .expect(204)
         .end((err, res) => {
             should.not.exist(err)
-            res.body.should.have.property('updated').and.be.ok
             done()
         })
     })
