@@ -66,6 +66,25 @@ describe('Generate browser', () => {
     })
 })
 
+describe('Get browser info', () => {
+    it('of self', (done) => {
+        client()
+        .get('/browser/info')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('link')
+            res.body.should.have.property('version')
+            res.body.version.should.have.property('local')
+            res.body.version.should.have.property('server')
+            done()
+        })
+    })
+})
+
 // describe('Update browser', () => {
 //     it('Update browser download link without updating version', (done) => {
 //         client()

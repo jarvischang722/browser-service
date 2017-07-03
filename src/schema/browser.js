@@ -177,7 +177,7 @@ return function(url, host) {
         DAPP_TITLE_CH: options.productName,
         DAPP_ICO: iconFile,
     })
-    const link = `/download/${setupFileName}`
+    const link = `/download/${setupFileName}.exe`
     // update version if needed
     await updateBrowser('windows', options.client, link, version)
     return link
