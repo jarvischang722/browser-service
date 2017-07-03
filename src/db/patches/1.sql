@@ -23,7 +23,7 @@ CREATE TABLE user (
 
 INSERT INTO user (username, password, name)
 VALUES
-    ('tripleonetech', 'pass1234', '合众科技'),
+    ('tripleone', 'pass1234', '合众科技'),
     ('agtop', 'pass1234', '澳门新葡京'),
     ('hxpj', 'pass1234', '澳门新葡京'),
     ('le18', 'pass1234', '乐赢'),

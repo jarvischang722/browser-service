@@ -55,10 +55,20 @@ module.exports = (route, config, exempt) => {
         return res.sendFile(page)
     }
 
+    const getBrowserInfo = async (req, res, next) => {
+        try {
+            const browser = await Browser.getUserBrowser(req.user.id, config)
+            return res.json(browser)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     exempt('/browser/version')
     exempt('/browser/new')
 
     route.get('/browser/version', getVersion)
     route.get('/browser/new', getCreateClientPage)
     route.post('/browser/create', createNewBrowser)
+    route.get('/browser/info', getBrowserInfo)
 }

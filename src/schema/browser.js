@@ -23,23 +23,16 @@ const getVersion = async (platform, client) => {
     }
 }
 
-const updateBrowser = async (platform, client, link, updateVersion) => {
-    const defaultVersion = '2.9.0'
-    const query = updateVersion ? `
+const updateBrowser = async (platform, client, link, version) => {
+    const query = `
         INSERT INTO browser (platform, client, version, link) 
         VALUES (?, ?, ?, ?)
         ON DUPLICATE KEY 
         UPDATE
-            version = CONCAT(SUBSTRING_INDEX(version, '.', 2), '.', (CONVERT(SUBSTRING_INDEX(version, '.', -1), UNSIGNED INTEGER) + 1)),
-            link = ?
-        ;` : `
-        INSERT INTO browser (platform, client, version, link) 
-        VALUES (?, ?, ?, ?)
-        ON DUPLICATE KEY 
-        UPDATE
+            version = ?,
             link = ?
         ;`
-    await db.query(query, [platform, client, defaultVersion, link, link])
+    await db.query(query, [platform, client, version, link, version, link])
 }
 
 // 先只支持windows版本
@@ -57,8 +50,10 @@ const getUserBrowser = async (userId, config) => {
         const row = results[0]
         browser = {
             link: row.link,
-            version: row.version,
-            currentVersion: config.browser.version,
+            version: {
+                local: row.version,
+                server: config.browser.version,
+            },
         }
     }
     return browser
@@ -182,12 +177,14 @@ return function(url, host) {
         DAPP_TITLE_CH: options.productName,
         DAPP_ICO: iconFile,
     })
-    return setupFileName
+    const link = `/download/${setupFileName}`
+    // update version if needed
+    await updateBrowser('windows', options.client, link, version)
+    return link
 }
 
 module.exports = {
     getVersion,
     createBrowser,
-    updateBrowser,
     getUserBrowser,
 }

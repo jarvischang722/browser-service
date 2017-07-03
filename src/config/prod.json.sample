@@ -6,7 +6,7 @@
   "database": {
     "mysql": {
       "host": "localhost",
-      "db": "tripleonetech-test",
+      "db": "browser-test",
       "port": 3306,
       "credentials": {
         "username": "user",
