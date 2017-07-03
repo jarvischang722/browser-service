@@ -34,6 +34,11 @@ password        | body  | String     | Required   |                             
             "server": "2.9.2"
         }
     },
+    "icon": "/icon/tripleone.ico",
+    "homeUrl": [
+        "https://www.tripleonetech.com",
+        "https://www.tripleonetech.net"
+    ],
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5ODc5NDc0MCwiZXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKztsgvTLQ"
 }
 ```
@@ -80,7 +85,12 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
             "local": "2.9.0",
             "server": "2.9.2"
         }
-    }
+    },
+    "icon": "/icon/tripleone.ico",
+    "homeUrl": [
+        "https://www.tripleonetech.com",
+        "https://www.tripleonetech.net"
+    ]
 }
 ```
 ---------------------
