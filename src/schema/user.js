@@ -31,6 +31,29 @@ const utils = require('../utils')
 //     })
 // }
 
+const checkPermission = (userId, tarId, results) => {
+    if (results.length <= 0) return null
+    const row = results[0]
+    if (tarId !== userId && row.parent && row.parent !== userId) {
+        // 如果目标用户不是自己 &
+        // 如果目标用户的上级存在 &
+        // 如果目标用户的上级不是自己
+        return null
+    }
+    return row
+}
+
+const getHomeUrl = async (userId) => {
+    const queryUrl = `
+        SELECT url
+        FROM homeurl
+        WHERE userid = ?
+        ;`
+    const resultsUrl = await db.query(queryUrl, [userId])
+    const homeUrl = resultsUrl.map(r => r.url)
+    return homeUrl
+}
+
 const login = async (userName, password, config) => {
     const query = `
         SELECT *
@@ -47,24 +70,14 @@ const login = async (userName, password, config) => {
         username: row.username,
         name: row.name,
         expireIn: row.expire_in,
+        icon: row.icon,
     }
     if (user) {
         // get client browser
         user.browser = await Browser.getUserBrowser(user.id, config)
+        user.homeUrl = await getHomeUrl(user.id)
     }
     return user
-}
-
-const checkPermission = (userId, tarId, results) => {
-    if (results.length <= 0) return null
-    const row = results[0]
-    if (tarId !== userId && row.parent && row.parent !== userId) {
-        // 如果目标用户不是自己 &
-        // 如果目标用户的上级存在 &
-        // 如果目标用户的上级不是自己
-        return null
-    }
-    return row
 }
 
 const getProfile = async (userId, tarId, config) => {
@@ -80,13 +93,7 @@ const getProfile = async (userId, tarId, config) => {
     if (!row) throw new errors.UserNotFoundError()
     const browser = await Browser.getUserBrowser(tarId, config)
     // get homeurls
-    const queryUrl = `
-        SELECT url
-        FROM homeurl
-        WHERE userid = ?
-        ;`
-    const resultsUrl = await db.query(queryUrl, [tarId])
-    const homeUrl = resultsUrl.map(r => r.url)
+    const homeUrl = await getHomeUrl(tarId)
     const user = {
         id: row.id,
         role: row.role,
