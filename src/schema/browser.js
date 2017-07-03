@@ -42,23 +42,26 @@ const updateBrowser = async (platform, client, link, updateVersion) => {
     await db.query(query, [platform, client, defaultVersion, link, link])
 }
 
-const getUserBrowsers = async (userId, config) => {
+// 先只支持windows版本
+const getUserBrowser = async (userId, config) => {
     const query = `
         SELECT *
         FROM browser
-        WHERE userid = ?
+        WHERE 
+            userid = ?
+            AND platform = ?
         ;`
-    const results = await db.query(query, [userId])
-    let browsers = []
+    const results = await db.query(query, [userId, 'windows'])
+    let browser = null
     if (results.length > 0) {
-        browsers = results.map(b => ({
-            platform: b.platform,
-            link: b.link,
-            version: b.version,
+        const row = results[0]
+        browser = {
+            link: row.link,
+            version: row.version,
             currentVersion: config.browser.version,
-        }))
+        }
     }
-    return browsers
+    return browser
 }
 
 const createBrowser = async (config, profile) => {
@@ -186,5 +189,5 @@ module.exports = {
     getVersion,
     createBrowser,
     updateBrowser,
-    getUserBrowsers,
+    getUserBrowser,
 }
