@@ -64,7 +64,6 @@ describe('Generate browser', () => {
             done()
         })
     })
-
 })
 
 // describe('Update browser', () => {

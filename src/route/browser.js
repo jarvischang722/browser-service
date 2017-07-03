@@ -1,12 +1,8 @@
 const User = require('../schema/user')
 const Browser = require('../schema/browser')
 const path = require('path')
-const log4js = require('log4js')
 const errors = require('../error')
-const browserUtils = require('../utils/browser')
 const { validate, getSchema, T } = require('../validator')
-
-const logger = log4js.getLogger()
 
 const SCHEMA = {
     id: T.number().integer(),
@@ -14,9 +10,6 @@ const SCHEMA = {
     client: T.string().required(),
     link: T.string().uri().required(),
     version: T.boolean().default(false),
-    homepage: T.string().required(),
-    company: T.string().required(),
-    useProxy: T.string().valid('on'),
 }
 
 const ERRORS = {
@@ -52,10 +45,13 @@ module.exports = (route, config, exempt) => {
             if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
             /* eslint-disable no-underscore-dangle */
             if (global.__TEST__) return res.send(profile)
-            const setupFileName = await browserUtils.createBrowser(config, profile)
+            const setupFileName = await Browser.createBrowser(config, profile)
             // update version
             // await Browser.updateBrowser(platform, client, link, version)
-            return res.redirect(`/download/${setupFileName}.exe`)
+            return res.json({
+                path: `/download/${setupFileName}.exe`,
+            })
+            // return res.redirect(`/download/${setupFileName}.exe`)
         } catch (err) {
             return next(err)
         }
