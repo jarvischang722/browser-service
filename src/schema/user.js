@@ -9,24 +9,31 @@ const utils = require('../utils')
 // 其他信息是下级代理的
 const createUser = async (userId, body) => {
     const { username, password, name, expireIn, role } = body
-    return db.transaction(async (client) => {
-        const salt = strUtils.random()
-        const query = `
-            INSERT INTO player (
-                username, salt, password, name, role, expire_in, parent
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            ;`
-        const hashedPwd = crypto.encrypt(password, salt)
-        const results = await client.query(query, [username, salt, hashedPwd, name, role, expireIn, userId])
-        const newUserId = results.insertId
-        if (!newUserId) return new errors.CreateUserFailedError()
-        return {
-            id: newUserId,
-            username,
-            password,
-        }
-    })
+    const queryProfile = `
+        SELECT expire_in
+        FROM user
+        WHERE id = ?
+        ;`
+    const resultsProfile = await db.query(queryProfile, [userId])
+    if (resultsProfile.length <= 0) throw new errors.UserNotFoundError()
+    const myExpireIn = resultsProfile[0].expire_in
+    if (myExpireIn && myExpireIn < expireIn) throw new errors.InvalidExpireInError()
+    const salt = strUtils.random()
+    const query = `
+        INSERT INTO user (
+            username, salt, password, name, role, expire_in, parent
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ;`
+    const hashedPwd = crypto.encrypt(password, salt)
+    const results = await db.query(query, [username, salt, hashedPwd, name, role, expireIn, userId])
+    const newUserId = results.insertId
+    if (!newUserId) throw new errors.CreateUserFailedError()
+    return {
+        id: newUserId,
+        username,
+        password,
+    }
 }
 
 const checkPermission = (userId, tarId, results) => {

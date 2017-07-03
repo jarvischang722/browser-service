@@ -56,7 +56,7 @@ describe('Generate browser', () => {
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
         .send({
-            id: env.client2.id,
+            id: env.user.id,
         })
         .expect(204)
         .end((err, res) => {

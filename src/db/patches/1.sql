@@ -16,7 +16,7 @@ CREATE TABLE user (
     icon varchar(255),
     status int DEFAULT 1,
     parent bigint,
-    expire_in timestamp,
+    expire_in bigint,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

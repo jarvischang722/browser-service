@@ -5,26 +5,12 @@ const tripleone = {
     password: 'pass1234',
 }
 
-const client2 = {
-    id: 2,
+const newAgent = {
+    username: `newagent_${Date.now()}`,
+    password: 'pass1234',
 }
 
 describe('User', () => {
-    // it('Sign up', (done) => {
-    //     client()
-    //     .post('/user/signup')
-    //     .set('Content-Type', 'application/json')
-    //     .set('Accept', 'application/json')
-    //     .send(user)
-    //     .expect(201)
-    //     .end((err, res) => {
-    //         should.not.exist(err)
-    //         res.body.should.have.property('id')
-    //         res.body.should.have.property('token')
-    //         done()
-    //     })
-    // })
-
     it('Sign in', (done) => {
         const { username, password } = tripleone
         client()
@@ -112,9 +98,92 @@ describe('User', () => {
         })
     })
 
+    it('Create new agent', (done) => {
+        client()
+        .post('/user/create')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .send({
+            username: newAgent.username,
+            password: newAgent.password,
+            role: 1,
+            expireIn: Math.round(Date.now() / 1000) + 3600,
+            name: '新代理',
+        })
+        .expect(201)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('id')
+            res.body.should.have.property('username')
+            res.body.should.have.property('password')
+            done()
+        })
+    })
+
+    it('Create new agent but username duplicated', (done) => {
+        client()
+        .post('/user/create')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .send({
+            username: newAgent.username,
+            password: newAgent.password,
+            role: 1,
+            expireIn: Math.round(Date.now() / 1000) + 3600,
+            name: '新代理',
+        })
+        .expect(400)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('UserDuplicatedError')
+            done()
+        })
+    })
+
+    it('Sign in by new agent', (done) => {
+        const { username, password } = newAgent
+        client()
+        .post('/user/login')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .send({ username, password })
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('token')
+            env.user2 = res.body
+            done()
+        })
+    })
+
+    it('Create new agent but invalid expire in time', (done) => {
+        client()
+        .post('/user/create')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user2.token)
+        .send({
+            username: `newagenttt_${Date.now()}`,
+            password: 'pass1234',
+            role: 1,
+            expireIn: Math.round(Date.now() / 1000) + 7200,
+            name: '新代理',
+        })
+        .expect(400)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('InvalidExpireInError')
+            done()
+        })
+    })
+
     it('Get child user profile', (done) => {
         client()
-        .get(`/user/profile?id=${client2.id}`)
+        .get(`/user/profile?id=${env.user2.id}`)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
@@ -129,11 +198,6 @@ describe('User', () => {
             res.body.should.have.property('homeUrl')
             res.body.should.have.property('expireIn')
             res.body.should.have.property('browser')
-            res.body.browser.should.have.property('link')
-            res.body.browser.should.have.property('version')
-            res.body.browser.version.should.have.property('local')
-            res.body.browser.version.should.have.property('server')
-            env.client2 = client2
             done()
         })
     })
@@ -212,7 +276,7 @@ describe('User', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
-        .field('id', env.client2.id)
+        .field('id', env.user.id)
         .field('name', '澳门新葡京')
         .field('homeUrl', [
             'http://www.agtop.t1t.games/',

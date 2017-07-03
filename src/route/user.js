@@ -10,7 +10,7 @@ const SCHEMA = {
     id: T.number().integer(),
     role: T.number().integer().valid(1, 2),
     name: T.string().required(),
-    expireIn: T.date().min('now').required(),
+    expireIn: T.number().required(),
     username: T.string().required(),
     password: T.string().required(),
     homeUrl: T.alternatives().try(
@@ -22,6 +22,8 @@ const SCHEMA = {
 const ERRORS = {
     UserNotFound: 404,
     CreateUserFailed: 400,
+    UserDuplicated: 400,
+    InvalidExpireIn: 400,
 }
 
 errors.register(ERRORS)
@@ -77,7 +79,7 @@ module.exports = (route, config, exempt) => {
     exempt('/user/login')
 
     route.post('/user/login', login)
-    route.post('/user/new', createUser)
+    route.post('/user/create', createUser)
     route.get('/user/profile', getProfile)
     route.post('/user/profile', upload.single('icon'), updateProfile)
 }
