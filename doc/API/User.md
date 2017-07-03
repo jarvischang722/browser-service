@@ -122,3 +122,60 @@ icon               | file    | String          | Required   |                   
 + Return: `HTTP Status: 204`
 
 ---------------------
+
+#### ✔ `POST` `/user/create` - 创建下级代理/客户
+
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+
++ Parameters:
+
+Field Name     | Scope | Type       | Attributes | Validation                | Description      
+---------------- | ------- | ----------- | ----------- | -----------------------   | -------------
+username      | body   | String     | Required   |                               | 用户名(唯一)
+password       | body   | String     | Required   |                               | 密码
+name            | body   | String     | Required   |                               | 名称
+role               | body   | Number   | Required   |   Valid(1, 2)            | 权限 1: 代理 2: 客户
+expireIn        | file      | Number    | Required   |                            | 过期时间, 不能超过自己的
+
++ Return: `HTTP Status: 201`
+
+```javascript
+{
+    "id": 10,
+    "username": "tripleone",
+    "password": "pass1234"
+}
+```
+---------------------
+
+#### ✔ `GET` `/user/list` - 获取下级用户列表
+
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+
++ Return: `HTTP Status: 200`
+
+```javascript
+{
+    "total": 10,
+    "items": [
+        {
+            "id": 1,
+            "role": 1,
+            "username": "tripleone",
+            "name": "合众科技",
+            "expireIn": "2017-07-29 16:34:59"
+        }
+    ]
+}
+```
+---------------------
