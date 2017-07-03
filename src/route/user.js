@@ -20,35 +20,24 @@ const SCHEMA = {
 }
 
 const ERRORS = {
+    NoPermission: 400,
     UserNotFound: 404,
     CreateUserFailed: 400,
     UserDuplicated: 400,
     InvalidExpireIn: 400,
+    UserExpired: 400,
 }
 
 errors.register(ERRORS)
 
 module.exports = (route, config, exempt) => {
-    const createUser = async (req, res, next) => {
-        try {
-            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'role', 'name', 'expireIn'))
-            const user = await User.createUser(req.user.id, req.body)
-            return res.status(201).send(user)
-        } catch (err) {
-            if (err && err.message.includes('ER_DUP_ENTRY')) {
-                return next(new errors.UserDuplicatedError())
-            }
-            return next(err)
-        }
-    }
-
     const login = async (req, res, next) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'username', 'password'))
             const { username, password } = req.body
             const user = await User.login(username, password, config)
             if (!user) return next(new errors.UnauthorizedError())
-            user.token = generateToken(config, user.id)
+            user.token = generateToken(config, user.id, user.role)
             return res.json(user)
         } catch (err) {
             return next(err)
@@ -76,8 +65,23 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const createUser = async (req, res, next) => {
+        try {
+            if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'role', 'name', 'expireIn'))
+            const user = await User.createUser(req.user.id, req.body)
+            return res.status(201).send(user)
+        } catch (err) {
+            if (err && err.message.includes('ER_DUP_ENTRY')) {
+                return next(new errors.UserDuplicatedError())
+            }
+            return next(err)
+        }
+    }
+
     const getChildren = async (req, res, next) => {
         try {
+            if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
             const users = await User.getChildren(req.user.id)
             return res.json(users)
         } catch (err) {
@@ -88,8 +92,8 @@ module.exports = (route, config, exempt) => {
     exempt('/user/login')
 
     route.post('/user/login', login)
-    route.post('/user/create', createUser)
     route.get('/user/profile', getProfile)
     route.post('/user/profile', upload.single('icon'), updateProfile)
+    route.post('/user/create', createUser)
     route.get('/user/list', getChildren)
 }

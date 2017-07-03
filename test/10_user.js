@@ -314,7 +314,7 @@ describe('User', () => {
             done()
         })
     })
-    
+
     it('Get children', (done) => {
         client()
         .get('/user/list')

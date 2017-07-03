@@ -18,6 +18,7 @@ const authorize = (config) => {
             const credentials = jwt.verify(token, config.secret.jwt)
             req.user = {
                 id: credentials.userId,
+                role: credentials.role,
                 token,
             }
         }
@@ -26,8 +27,8 @@ const authorize = (config) => {
     return auth
 }
 
-const generateToken = (config, userId) => {
-    return jwt.sign({ userId }, config.secret.jwt, config.jwtOptions)
+const generateToken = (config, userId, role) => {
+    return jwt.sign({ userId, role }, config.secret.jwt, config.jwtOptions)
 }
 
 module.exports = { authorize, generateToken }
