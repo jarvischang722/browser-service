@@ -1,4 +1,7 @@
 {
     "Unauthorized": "身份验证失败，请重新登录",
-    "CreateBrowserFailed": "请回退并刷新网页重试"
+    "UserNotFound": "未找到指定用户",
+    "NameRequired": "请填写名称",
+    "IconRequired": "请上传图标",
+    "HomeUrlRequired": "请填写主页"
 }
