@@ -43,15 +43,8 @@ module.exports = (route, config, exempt) => {
             if (!profile.name) throw new errors.NameRequiredError()
             if (!profile.icon) throw new errors.IconRequiredError()
             if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
-            /* eslint-disable no-underscore-dangle */
-            if (global.__TEST__) return res.send(profile)
-            const setupFileName = await Browser.createBrowser(config, profile)
-            // update version
-            // await Browser.updateBrowser(platform, client, link, version)
-            return res.json({
-                path: `/download/${setupFileName}.exe`,
-            })
-            // return res.redirect(`/download/${setupFileName}.exe`)
+            Browser.createBrowser(config, profile)
+            return res.status(204).send()
         } catch (err) {
             return next(err)
         }

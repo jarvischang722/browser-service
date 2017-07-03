@@ -1,7 +1,7 @@
 const client = require('./lib/client')
 
 const tripleone = {
-    username: 'tripleone',
+    username: 'tripleonetech',
     password: 'pass1234',
 }
 
@@ -225,5 +225,4 @@ describe('User', () => {
             done()
         })
     })
-
 })

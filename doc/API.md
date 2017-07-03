@@ -14,7 +14,7 @@ password        | body  | String     | Required   |                             
 ```javascript
 {
     id: 1,
-    username: tripleone,
+    username: tripleonetech,
     name: '合众科技',
     expireIn: '2017-07-29 16:34:59'
     browsers: [
@@ -48,7 +48,7 @@ id                 | query  | Int          | Optional   |                       
 ```javascript
 {
     id: 1,
-    username: tripleone,
+    username: tripleonetech,
     name: '合众科技',
     expireIn: '2017-07-29 16:34:59'
     browsers: [

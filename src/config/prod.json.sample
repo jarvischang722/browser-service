@@ -1,5 +1,5 @@
 {
-  "name": "Tripleonetech service",
+  "name": "Tripleonetech browser service",
   "server": {
     "port": 7001
   },

@@ -14,7 +14,7 @@ CREATE TABLE browser (
 
 INSERT INTO browser (userid, platform, client, version, link)
 VALUES
-    (1, 'windows', 'tripleone', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/install.exe'),
+    (1, 'windows', 'tripleonetech', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/install.exe'),
     (2, 'windows', 'agtop', '2.8.88', 'http://www.agtop.t1t.games/safetybrowser-agtop-setup.exe'),
     (3, 'windows', 'hxpj', '2.8.88', 'http://www.hxpj.t1t.games/safetybrowser-hxpj-setup.exe'),
     (4, 'windows', 'le18', '2.9.2', 'http://www.le18.com/safetybrowser-le18-setup.exe'),
@@ -25,11 +25,11 @@ VALUES
     (9, 'windows', 'xpj', '2.8.88', 'http://www.xpj.t1t.games/safetybrowser-xpj-setup.exe'),
     (10, 'windows', 'yuanbao361', '2.9.2', 'http://www.demo.tripleonetech.com/safety-browser/safety-browser-yuanbao361-setup.exe'),
     (11, 'windows', 'wb88', '2.9.1', 'http://www.demo.tripleonetech.com/safety-browser/safety-browser-wb88-setup.exe'),
-    (1, 'mac', 'tripleone', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/Tripleonetech.zip'),
+    (1, 'mac', 'tripleonetech', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/Tripleonetech.zip'),
     (4, 'mac', 'le18', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/Le18.zip'),
     (7, 'mac', 'twinbet', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/Twinbet.zip'),
     (8, 'mac', 'xc33', '2.8.88', 'http://www.demo.tripleonetech.com/safety-browser/XC33.zip'),
-    (1, 'android', 'tripleone', '2.8.88', 'http://www.demo.tripleonetech.com/app-TripleOneTech1.apk'),
+    (1, 'android', 'tripleonetech', '2.8.88', 'http://www.demo.tripleonetech.com/app-TripleOneTech1.apk'),
     (2, 'android', 'agtop', '2.8.88', 'http://www.agtop.t1t.games/app-Agtop.apk'),
     (4, 'android', 'le18', '2.8.88', 'http://www.le18.com/app-Leyin.apk'),
     (5, 'android', 'macaopj', '2.8.88', 'http://www.macaopj.t1t.games/app-Macaopj.apk'),

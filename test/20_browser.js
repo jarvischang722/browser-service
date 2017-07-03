@@ -42,7 +42,7 @@ describe('Generate browser', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
-        .expect(200)
+        .expect(204)
         .end((err, res) => {
             should.not.exist(err)
             done()
@@ -58,7 +58,7 @@ describe('Generate browser', () => {
         .send({
             id: env.client2.id,
         })
-        .expect(200)
+        .expect(204)
         .end((err, res) => {
             should.not.exist(err)
             done()

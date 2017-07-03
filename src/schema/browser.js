@@ -67,7 +67,7 @@ const createBrowser = async (config, profile) => {
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     // copy icon to client folder
-    await utils.copy(path.join(__dirname, icon), path.join(optionPath, 'icon.ico'))
+    await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
     // generate options
     const options = {
         client: username,
