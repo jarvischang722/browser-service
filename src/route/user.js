@@ -8,7 +8,9 @@ const upload = multer({ dest: 'upload/' })
 
 const SCHEMA = {
     id: T.number().integer(),
+    role: T.number().integer().valid(1, 2),
     name: T.string().required(),
+    expireIn: T.date().min('now').required(),
     username: T.string().required(),
     password: T.string().required(),
     homeUrl: T.alternatives().try(
@@ -19,19 +21,21 @@ const SCHEMA = {
 
 const ERRORS = {
     UserNotFound: 404,
+    CreateUserFailed: 400,
 }
 
 errors.register(ERRORS)
 
 module.exports = (route, config, exempt) => {
-    const createNewUser = async (req, res, next) => {
+    const createUser = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'email'))
-            const { username, email, password } = req.body
-            const user = await User.signup(username, email, password, config.secret.token)
-            user.token = generateToken(config, user.id)
+            validate(req.body, getSchema(SCHEMA, 'username', 'password', 'role', 'name', 'expireIn'))
+            const user = await User.createUser(req.user.id, req.body)
             return res.status(201).send(user)
         } catch (err) {
+            if (err && err.message.includes('ER_DUP_ENTRY')) {
+                return next(new errors.UserDuplicatedError())
+            }
             return next(err)
         }
     }
@@ -73,7 +77,7 @@ module.exports = (route, config, exempt) => {
     exempt('/user/login')
 
     route.post('/user/login', login)
-    route.post('/user/new', createNewUser)
+    route.post('/user/new', createUser)
     route.get('/user/profile', getProfile)
     route.post('/user/profile', upload.single('icon'), updateProfile)
 }

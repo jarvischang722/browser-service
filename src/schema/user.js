@@ -1,35 +1,33 @@
-const uuidV4 = require('uuid/v4')
 const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
 const Browser = require('./browser')
-const fs = require('fs')
 const path = require('path')
 const utils = require('../utils')
 
-// // userId 是自己的
-// // 其他信息是下级代理的
-// // TODO
-// const createUser = async (userId, userName, password, role, expire_in) => {
-//     return db.transaction(async (client) => {
-//         const salt = strUtils.random()
-//         const query = `
-//             INSERT INTO player (
-//                 username, salt, password
-//             )
-//             VALUES (?, ?, ?, ?, '-')
-//             ;`
-//         password = crypto.encrypt(password, salt)
-//         payPassword = crypto.encrypt(payPassword, salt)
-//         const results = await client.query(query, [userName, salt, password, payPassword])
-//         const playerId = results.insertId
-//         if (!playerId) return new errors.CreatePlayerFailedError()
-
-//         return {
-//             id: playerId,
-//         }
-//     })
-// }
+// userId 是自己的
+// 其他信息是下级代理的
+const createUser = async (userId, body) => {
+    const { username, password, name, expireIn, role } = body
+    return db.transaction(async (client) => {
+        const salt = strUtils.random()
+        const query = `
+            INSERT INTO player (
+                username, salt, password, name, role, expire_in, parent
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ;`
+        const hashedPwd = crypto.encrypt(password, salt)
+        const results = await client.query(query, [username, salt, hashedPwd, name, role, expireIn, userId])
+        const newUserId = results.insertId
+        if (!newUserId) return new errors.CreateUserFailedError()
+        return {
+            id: newUserId,
+            username,
+            password,
+        }
+    })
+}
 
 const checkPermission = (userId, tarId, results) => {
     if (results.length <= 0) return null
@@ -158,5 +156,6 @@ module.exports = {
     login,
     getProfile,
     updateProfile,
+    createUser,
     // updateExpireIn,
 }
