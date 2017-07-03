@@ -4,6 +4,13 @@
 
 获得自己的浏览器信息
 
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+
 + Return: `HTTP Status: 200`
 
 ```javascript
@@ -22,6 +29,13 @@
 #### ✔ `POST` `/browser/create` - 生成浏览器
 
 为目标用户生成浏览器
+
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
 
 + 说明
     1. 如果没有传id, 则获取自己的profile

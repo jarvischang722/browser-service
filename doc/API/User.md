@@ -4,6 +4,12 @@
 
 登陆
 
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
@@ -41,6 +47,13 @@ password        | body  | String     | Required   |                             
 
 获得目标用户的信息
 
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
@@ -75,6 +88,13 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
 #### ✔ `POST` `/user/profile` - 更新用户信息
 
 更新目标用户的信息
+
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
 
 + Parameters:
 
