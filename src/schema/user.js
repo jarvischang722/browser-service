@@ -78,6 +78,8 @@ const login = async (userName, password, config) => {
         icon: row.icon,
     }
     if (user) {
+        // check expire time
+        if (user.expireIn && user.expireIn <= Date.now() / 1000) throw new errors.UserExpiredError() 
         // get client browser
         user.browser = await Browser.getUserBrowser(user.id, config)
         user.homeUrl = await getHomeUrl(user.id)
