@@ -78,8 +78,7 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
     "username": "tripleone",
     "name": "合众科技",
     "expireIn": "2017-07-29 16:34:59",
-    "browsers": {
-        "platform": "windows",
+    "browser": {
         "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
         "version": {
             "local": "2.9.0",
