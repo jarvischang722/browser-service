@@ -159,10 +159,31 @@ const updateProfile = async (userId, req) => {
     })
 }
 
+const getChildren = async (userId) => {
+    const query = `
+        SELECT *
+        FROM user
+        WHERE
+            parent = ?
+        ;`
+    const results = await db.query(query, [userId])
+    const users = results.map(r => ({
+        id: r.id,
+        username: r.username,
+        name: r.name,
+        role: r.role,
+        expireIn: r.expire_in,
+    }))
+    return {
+        total: users.length,
+        items: users,
+    }
+}
+
 module.exports = {
     login,
     getProfile,
     updateProfile,
     createUser,
-    // updateExpireIn,
+    getChildren,
 }

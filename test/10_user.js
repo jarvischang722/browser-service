@@ -314,4 +314,26 @@ describe('User', () => {
             done()
         })
     })
+    
+    it('Get children', (done) => {
+        client()
+        .get('/user/list')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('total')
+            res.body.should.have.property('items').and.instanceOf(Array)
+            for (const i of res.body.items) {
+                i.should.have.property('id')
+                i.should.have.property('username')
+                i.should.have.property('name')
+                i.should.have.property('expireIn')
+                i.should.have.property('role')
+            }
+            done()
+        })
+    })
 })

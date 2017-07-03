@@ -76,10 +76,20 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const getChildren = async (req, res, next) => {
+        try {
+            const users = await User.getChildren(req.user.id)
+            return res.json(users)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     exempt('/user/login')
 
     route.post('/user/login', login)
     route.post('/user/create', createUser)
     route.get('/user/profile', getProfile)
     route.post('/user/profile', upload.single('icon'), updateProfile)
+    route.get('/user/list', getChildren)
 }
