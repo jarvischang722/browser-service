@@ -20,4 +20,4 @@ src/config/*.json
 
 /upload/
 /deploy/
-/icons/
+/icon/
