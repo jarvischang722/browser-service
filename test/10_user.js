@@ -36,6 +36,7 @@ describe('User', () => {
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('id')
+            res.body.should.have.property('role')
             res.body.should.have.property('token')
             res.body.should.have.property('username')
             res.body.should.have.property('name')
@@ -94,6 +95,7 @@ describe('User', () => {
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('id')
+            res.body.should.have.property('role')
             res.body.should.have.property('username')
             res.body.should.have.property('name')
             res.body.should.have.property('expireIn')
@@ -116,6 +118,7 @@ describe('User', () => {
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('id')
+            res.body.should.have.property('role')
             res.body.should.have.property('username')
             res.body.should.have.property('name')
             res.body.should.have.property('expireIn')
@@ -228,6 +231,7 @@ describe('User', () => {
         .end((err, res) => {
             should.not.exist(err)
             res.body.should.have.property('id')
+            res.body.should.have.property('role')
             res.body.should.have.property('username')
             res.body.should.have.property('name')
             res.body.should.have.property('expireIn')

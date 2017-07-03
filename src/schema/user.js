@@ -43,6 +43,7 @@ const login = async (userName, password, config) => {
     const hashedPwd = row.salt ? crypto.encrypt(password, row.salt) : password
     const user = hashedPwd !== row.password ? null : {
         id: row.id,
+        role: row.role,
         username: row.username,
         name: row.name,
         expireIn: row.expire_in,
@@ -88,6 +89,7 @@ const getProfile = async (userId, tarId, config) => {
     const homeUrl = resultsUrl.map(r => r.url)
     const user = {
         id: row.id,
+        role: row.role,
         username: row.username,
         name: row.name,
         expireIn: row.expire_in,
