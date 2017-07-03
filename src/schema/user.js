@@ -100,7 +100,9 @@ const getProfile = async (userId, tarId, config) => {
 
 const updateProfile = async (userId, req) => {
     return db.transaction(async (client) => {
-        const { id, name, homeUrl } = req.body
+        const { id, name } = req.body
+        let { homeUrl } = req.body
+        if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
         const tarId = id || userId
         const queryCheck = `
             SELECT *
@@ -114,7 +116,7 @@ const updateProfile = async (userId, req) => {
         let iconPath = null
         if (req.file && req.file.path) {
             iconPath = `icon/${row.username}.ico`
-            await utils.copy(req.file.path, path.join(__dirname, '../..', 'icons', `${row.username}.ico`))
+            await utils.copy(req.file.path, path.join(__dirname, '../..', 'icon', `${row.username}.ico`))
         }
         // upload icon
         const query = `

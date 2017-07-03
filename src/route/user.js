@@ -11,7 +11,10 @@ const SCHEMA = {
     name: T.string().required(),
     username: T.string().required(),
     password: T.string().required(),
-    homeUrl: T.array().items(T.string()).required(),
+    homeUrl: T.alternatives().try(
+        T.array().items(T.string().uri()),
+        T.string().uri()
+    ).required(),
 }
 
 const ERRORS = {
