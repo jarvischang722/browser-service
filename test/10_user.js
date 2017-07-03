@@ -170,7 +170,6 @@ describe('User', () => {
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
-            console.log(res.body)
             res.body.should.have.property('id')
             res.body.should.have.property('username')
             res.body.should.have.property('name')

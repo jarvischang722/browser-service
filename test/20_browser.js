@@ -1,39 +1,39 @@
-// const client = require('./lib/client')
+const client = require('./lib/client')
 
-// const platform = 'windows'
-// const clientName = 'agtop'
-// const newClient = `client_${Date.now()}`
+const platform = 'windows'
+const clientName = 'agtop'
+const newClient = `client_${Date.now()}`
 
-// describe('Get browser latest version and download link', () => {
-//     it('by platform and client name', (done) => {
-//         client()
-//         .get(`/browser/version?platform=${platform}&client=${clientName}`)
-//         .set('Content-Type', 'application/json')
-//         .set('Accept', 'application/json')
-//         .expect(200)
-//         .end((err, res) => {
-//             should.not.exist(err)
-//             res.body.should.have.property('version')
-//             res.body.should.have.property('link')
-//             env.browser = res.body
-//             done()
-//         })
-//     })
+describe('Get browser latest version and download link', () => {
+    it('by platform and client name', (done) => {
+        client()
+        .get(`/browser/version?platform=${platform}&client=${clientName}`)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('version')
+            res.body.should.have.property('link')
+            env.browser = res.body
+            done()
+        })
+    })
 
-//     it('without params', (done) => {
-//         client()
-//         .get('/browser/version')
-//         .set('Content-Type', 'application/json')
-//         .set('Accept', 'application/json')
-//         .expect(400)
-//         .end((err, res) => {
-//             should.not.exist(err)
-//             res.body.should.have.property('error')
-//             res.body.error.should.have.property('code').and.equal('ValidationFailedError')
-//             done()
-//         })
-//     })
-// })
+    it('without params', (done) => {
+        client()
+        .get('/browser/version')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .expect(400)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('ValidationFailedError')
+            done()
+        })
+    })
+})
 
 // describe('Generate browser', () => {
 //     it('with all required fileds', (done) => {
