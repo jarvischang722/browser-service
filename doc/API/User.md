@@ -118,7 +118,19 @@ icon               | file    | String          | Required   |                   
     1. 如果没有传id, 则更新自己的profile
     2. 如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError
 
-+ Return: `HTTP Status: 204`
++ Return: `HTTP Status: 200`
+
+```javascript
+{
+    "id": 1,
+    "name": "合众科技",
+    "icon": "/icon/tripleone.ico",
+    "homeUrl": [
+        "https://www.tripleonetech.com",
+        "https://www.tripleonetech.net"
+    ]
+}
+```
 
 ---------------------
 
