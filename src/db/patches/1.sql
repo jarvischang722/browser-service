@@ -23,17 +23,20 @@ CREATE TABLE user (
 
 INSERT INTO user (username, password, name)
 VALUES
-    ('tripleone', 'pass1234', '合众科技'),
-    ('agtop', 'pass1234', '澳门新葡京'),
-    ('hxpj', 'pass1234', '澳门新葡京'),
-    ('le18', 'pass1234', '乐赢'),
-    ('macaopj', 'pass1234', '澳门葡京'),
-    ('mgm', 'pass1234', '美高梅'),
-    ('twinbet', 'pass1234', 'Twinbet'),
-    ('xc33', 'pass1234', '新橙娱乐'),
-    ('xpj', 'pass1234', '新葡京'),
-    ('yuanbao361', 'pass1234', '元宝娱乐'),
-    ('wb88', 'pass1234', '万博娱乐城')
+    ('tripleone', 'pass1234', '合众科技'), -- 1
+    ('agtop', 'pass1234', '澳门新葡京'), -- 2
+    ('hxpj', 'pass1234', '澳门新葡京'), -- 3
+    ('le18', 'pass1234', '乐赢'), -- 4
+    ('macaopj', 'pass1234', '澳门葡京'), -- 5
+    ('mgm', 'pass1234', '美高梅'), -- 6
+    ('twinbet', 'pass1234', 'Twinbet'), -- 7
+    ('xc33', 'pass1234', '新橙娱乐'), -- 8
+    ('xpj', 'pass1234', '新葡京'), -- 9
+    ('yuanbao361', 'pass1234', '元宝娱乐'), -- 10
+    ('wb88', 'pass1234', '万博娱乐城'), -- 11
+    ('olobet', 'pass1234', 'Olobet'), -- 12
+    ('win007', 'pass1234', '亿博'), -- 13
+    ('dw777', 'pass1234', '大旺') -- 14
 ;
 
 UPDATE user
