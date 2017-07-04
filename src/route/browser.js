@@ -43,6 +43,7 @@ module.exports = (route, config, exempt) => {
             if (!profile.name) throw new errors.NameRequiredError()
             if (!profile.icon) throw new errors.IconRequiredError()
             if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
+            // await Browser.createBrowser(config, profile)
             Browser.createBrowser(config, profile)
             return res.status(204).send()
         } catch (err) {

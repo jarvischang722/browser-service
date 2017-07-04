@@ -59,45 +59,29 @@ const getUserBrowser = async (userId, config) => {
     return browser
 }
 
-const createBrowser = async (config, profile) => {
-    const { username, name, homeUrl, icon } = profile
-    const { projectPath, version, legalCopyright } = config.browser
-    const optionPath = path.join(projectPath, `src/clients/${username}`)
-    if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
-    // copy icon to client folder
-    await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
-    // generate options
-    const options = {
-        client: username,
-        homeUrl,
-        companyName: name,
-        productName: `${name}安全浏览器`,
-        productNameEn: `${username.toUpperCase()} Safety Browser`,
-        fileDescription: `${name}安全浏览器`,
-        enabledFlash: true,
-        enabledProxy: true,
-        clientId: uuidV4().toUpperCase(),
-    }
-    // get available local port
-    const localPortFile = path.join(__dirname, '..', 'meta/local-port.json')
-    const currentLocalPort = require(localPortFile)
-    let localPort
-    if (currentLocalPort[username]) {
-        localPort = currentLocalPort[username]
-    } else {
-        localPort = Math.max(...Object.values(currentLocalPort)) + 1
-        currentLocalPort[username] = localPort
-        fs.writeFileSync(localPortFile, JSON.stringify(currentLocalPort, null, 4))
-    }
-    options.proxyOptions = {
-        localAddr: '127.0.0.1',
-        localPort,
-        serverAddr: '106.75.147.144',
-        serverPort: 17777,
-        password: 'dBbQMP8Nd9vyjvN',
-        method: 'aes-256-cfb',
-        timeout: 180,
-    }
+const getLocalPort = async (userId, username) => {
+    const query = `
+        SELECT port
+        FROM port
+        WHERE client = ?
+    ;`
+    const results = await db.query(query, [username])
+    if (results.length > 0) return results[0].port
+    const queryMax = `
+        SELECT MAX(port) AS port
+        FROM port
+        ;`
+    const resultsMax = await db.query(queryMax)
+    const localPort = resultsMax.length > 0 ? resultsMax[0].port + 1 : 22870
+    const querySave = `
+        INSERT INTO port (userid, client, port) 
+        VALUES (?, ?, ?)
+    ;`
+    await db.query(querySave, [userId, username, localPort])
+    return localPort
+}
+
+const getPacContent = async (homeUrl, localPort) => {
     // write pac file
     let filterString = ''
     for (const page of homeUrl) {
@@ -136,6 +120,39 @@ return function(url, host) {
 }
 });
 `
+    return pac
+}
+
+const createBrowser = async (config, profile) => {
+    const { id, username, name, homeUrl, icon } = profile
+    const { projectPath, version, legalCopyright } = config.browser
+    const optionPath = path.join(projectPath, `src/clients/${username}`)
+    if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
+    // copy icon to client folder
+    await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
+    const localPort = await getLocalPort(id, username)
+    // generate options
+    const options = {
+        client: username,
+        homeUrl,
+        companyName: name,
+        productName: `${name}安全浏览器`,
+        productNameEn: `${username.toUpperCase()} Safety Browser`,
+        fileDescription: `${name}安全浏览器`,
+        enabledFlash: true,
+        enabledProxy: true,
+        clientId: uuidV4().toUpperCase(),
+        proxyOptions: {
+            localAddr: '127.0.0.1',
+            localPort,
+            serverAddr: '106.75.147.144',
+            serverPort: 17777,
+            password: 'dBbQMP8Nd9vyjvN',
+            method: 'aes-256-cfb',
+            timeout: 180,
+        },
+    }
+    const pac = await getPacContent(homeUrl, localPort)
     const pacFile = path.join(optionPath, 'default.pac')
     fs.writeFileSync(pacFile, pac)
     await utils.copy(pacFile, path.join(projectPath, 'src/app/config/default.pac'))
@@ -162,7 +179,7 @@ return function(url, host) {
     await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
 
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
-    const setupFileName = `safety-browser-${options.client}-setup-${version}`
+    const setupFileName = `safety-browser-${options.client}-setup`
     await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
         gui: false,
         verbose: true,
