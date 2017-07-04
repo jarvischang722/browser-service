@@ -89,6 +89,18 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const changeChildExpireTime = async (req, res, next) => {
+        try {
+            if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
+            validate(req.body, getSchema(SCHEMA, 'id', 'expireIn'))
+            const { id, expireIn } = req.body
+            const user = await User.changeChildExpireTime(req.user.id, id, expireIn)
+            return res.json(user)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     exempt('/user/login')
 
     route.post('/user/login', login)
@@ -96,4 +108,5 @@ module.exports = (route, config, exempt) => {
     route.post('/user/profile', upload.single('icon'), updateProfile)
     route.post('/user/create', createUser)
     route.get('/user/list', getChildren)
+    route.post('/user/expire', changeChildExpireTime)
 }

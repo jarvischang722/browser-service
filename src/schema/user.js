@@ -5,19 +5,23 @@ const Browser = require('./browser')
 const path = require('path')
 const utils = require('../utils')
 
-// userId 是自己的
-// 其他信息是下级代理的
-const createUser = async (userId, body) => {
-    const { username, password, name, expireIn, role } = body
-    const queryProfile = `
+const checkExpireTime = async (userId, expireIn) => {
+    const query = `
         SELECT expire_in
         FROM user
         WHERE id = ?
         ;`
-    const resultsProfile = await db.query(queryProfile, [userId])
-    if (resultsProfile.length <= 0) throw new errors.UserNotFoundError()
-    const myExpireIn = resultsProfile[0].expire_in
+    const results = await db.query(query, [userId])
+    if (results.length <= 0) throw new errors.UserNotFoundError()
+    const myExpireIn = results[0].expire_in
     if (myExpireIn && myExpireIn < expireIn) throw new errors.InvalidExpireInError()
+}
+
+// userId 是自己的
+// 其他信息是下级代理的
+const createUser = async (userId, body) => {
+    const { username, password, name, expireIn, role } = body
+    await checkExpireTime(userId, expireIn)
     const salt = strUtils.random()
     const query = `
         INSERT INTO user (
@@ -36,14 +40,20 @@ const createUser = async (userId, body) => {
     }
 }
 
-const checkPermission = (userId, tarId, results) => {
-    if (results.length <= 0) return null
+const checkPermission = async (userId, tarId) => {
+    const query = `
+        SELECT *
+        FROM user
+        WHERE id = ?
+        ;`
+    const results = await db.query(query, [tarId])
+    if (results.length <= 0) throw new errors.UserNotFoundError()
     const row = results[0]
     if (tarId !== userId && row.parent && row.parent !== userId) {
         // 如果目标用户不是自己 &
         // 如果目标用户的上级存在 &
         // 如果目标用户的上级不是自己
-        return null
+        throw new errors.UserNotFoundError()
     }
     return row
 }
@@ -89,15 +99,7 @@ const login = async (userName, password, config) => {
 
 const getProfile = async (userId, tarId, config) => {
     tarId = tarId || userId
-    const query = `
-        SELECT *
-        FROM user
-        WHERE
-            id = ?
-        ;`
-    const results = await db.query(query, [tarId])
-    const row = checkPermission(userId, tarId, results)
-    if (!row) throw new errors.UserNotFoundError()
+    const row = await checkPermission(userId, tarId)
     const browser = await Browser.getUserBrowser(tarId, config)
     // get homeurls
     const homeUrl = await getHomeUrl(tarId)
@@ -120,15 +122,7 @@ const updateProfile = async (userId, req) => {
         let { homeUrl } = req.body
         if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
         const tarId = id || userId
-        const queryCheck = `
-            SELECT *
-            FROM user
-            WHERE
-                id = ?
-            ;`
-        const resultsCheck = await client.query(queryCheck, [tarId])
-        const row = checkPermission(userId, tarId, resultsCheck)
-        if (!row) throw new errors.UserNotFoundError()
+        const row = await checkPermission(userId, tarId)
         let iconPath = null
         if (req.file && req.file.path) {
             iconPath = `icon/${row.username}.ico`
@@ -189,10 +183,30 @@ const getChildren = async (userId) => {
     }
 }
 
+const changeChildExpireTime = async (userId, tarId, expireIn) => {
+    if (userId === tarId) throw new errors.NoPermissionError()
+    // 不需另外check permission 因为更新时的where条件有parent
+    await checkExpireTime(userId, expireIn)
+    const query = `
+        UPDATE user
+        SET expire_in = ?
+        WHERE 
+            id = ?
+            AND parent = ?
+        ;`
+    const results = await db.query(query, [expireIn, tarId, userId])
+    if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
+    return {
+        id: tarId,
+        expireIn,
+    }
+}
+
 module.exports = {
     login,
     getProfile,
     updateProfile,
     createUser,
     getChildren,
+    changeChildExpireTime,
 }

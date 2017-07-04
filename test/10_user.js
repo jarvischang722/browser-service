@@ -297,6 +297,44 @@ describe('User', () => {
         })
     })
 
+    it('Update child expire time', (done) => {
+        client()
+        .post('/user/expire')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .send({
+            id: env.user2.id,
+            expireIn: Math.round(Date.now() / 1000) + 3000,
+        })
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('id')
+            res.body.should.have.property('expireIn')
+            done()
+        })
+    })
+
+    it('Cannot change expire time of self', (done) => {
+        client()
+        .post('/user/expire')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .send({
+            id: env.user.id,
+            expireIn: Math.round(Date.now() / 1000) + 3000,
+        })
+        .expect(400)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('error')
+            res.body.error.should.have.property('code').and.equal('NoPermissionError')
+            done()
+        })
+    })
+
     it('Get user profile after sign in', (done) => {
         client()
         .get('/user/profile')

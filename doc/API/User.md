@@ -151,7 +151,7 @@ username      | body   | String     | Required   |                              
 password       | body   | String     | Required   |                               | 密码
 name            | body   | String     | Required   |                               | 名称
 role               | body   | Number   | Required   |   Valid(1, 2)            | 权限 1: 代理 2: 客户
-expireIn        | file      | Number    | Required   |                            | 过期时间, 不能超过自己的
+expireIn        | body      | Number    | Required   |                            | 过期时间, 不能超过自己的
 
 + Return: `HTTP Status: 201`
 
@@ -187,6 +187,32 @@ X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token
             "expireIn": "2017-07-29 16:34:59"
         }
     ]
+}
+```
+---------------------
+
+#### ✔ `POST` `/user/expire` - 修改下级代理过期时间
+
++ Headers:
+
+Key                   | Value                 | Description      
+------------------- | -------------------- | -----------
+Content-Type      | application/json  |      
+X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+
++ Parameters:
+
+Field Name     | Scope | Type       | Attributes    | Validation                | Description      
+---------------- | ------- | ----------- | -------------- | -----------------------   | -------------
+id                 | body   | String     | Required      |                               | 用户id
+expireIn        | body   | Number    | Required   |                            | 过期时间, 不能超过自己的
+
++ Return: `HTTP Status: 201`
+
+```javascript
+{
+    "id": 10,
+    "expireIn": "2017-07-29 16:34:59"
 }
 ```
 ---------------------
