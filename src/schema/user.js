@@ -166,8 +166,8 @@ const getChildren = async (userId) => {
     const query = `
         SELECT *
         FROM user
-        WHERE
-            parent = ?
+        WHERE parent = ?
+        ORDER BY id
         ;`
     const results = await db.query(query, [userId])
     const users = results.map(r => ({
