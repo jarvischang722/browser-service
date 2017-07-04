@@ -158,6 +158,13 @@ const updateProfile = async (userId, req) => {
         for (const url of homeUrl) {
             await client.query(queryAddUrl, [tarId, url])
         }
+        const user = {
+            id: tarId,
+            name,
+            homeUrl,
+            icon: iconPath,
+        }
+        return user
     })
 }
 

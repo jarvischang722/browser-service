@@ -2,7 +2,6 @@ const client = require('./lib/client')
 
 const platform = 'windows'
 const clientName = 'agtop'
-const newClient = `client_${Date.now()}`
 
 describe('Get browser latest version and download link', () => {
     it('by platform and client name', (done) => {

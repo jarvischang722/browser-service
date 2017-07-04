@@ -58,8 +58,8 @@ module.exports = (route, config, exempt) => {
     const updateProfile = async (req, res, next) => {
         try {
             validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl'))
-            await User.updateProfile(req.user.id, req, config)
-            return res.status(204).send()
+            const user = await User.updateProfile(req.user.id, req, config)
+            return res.json(user)
         } catch (err) {
             return next(err)
         }

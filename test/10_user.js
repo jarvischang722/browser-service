@@ -243,9 +243,13 @@ describe('User', () => {
             'https://www.tripleonetech.com/',
         ])
         .attach('icon', 'test/files/icon.ico')
-        .expect(204)
+        .expect(200)
         .end((err, res) => {
             should.not.exist(err)
+            res.body.should.have.property('id')
+            res.body.should.have.property('name')
+            res.body.should.have.property('icon')
+            res.body.should.have.property('homeUrl')
             done()
         })
     })
@@ -276,15 +280,19 @@ describe('User', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
-        .field('id', env.user.id)
+        .field('id', env.user2.id)
         .field('name', '澳门新葡京')
         .field('homeUrl', [
             'http://www.agtop.t1t.games/',
         ])
         .attach('icon', 'test/files/icon.ico')
-        .expect(204)
+        .expect(200)
         .end((err, res) => {
             should.not.exist(err)
+            res.body.should.have.property('id')
+            res.body.should.have.property('name')
+            res.body.should.have.property('icon')
+            res.body.should.have.property('homeUrl')
             done()
         })
     })
