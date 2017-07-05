@@ -4,7 +4,10 @@ const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const { generateToken } = require('../authorization')
 
-const upload = multer({ dest: 'upload/' })
+const upload = multer({
+    dest: 'upload/',
+    limits: { fileSize: 1000000, files: 1 },
+})
 
 const SCHEMA = {
     id: T.number().integer(),
