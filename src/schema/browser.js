@@ -200,8 +200,17 @@ const createBrowser = async (config, profile) => {
     return link
 }
 
+const getBrowserInfo = async (userId, tarId, config) => {
+    const User = require('./user')
+    tarId = tarId || userId
+    await User.checkPermission(userId, tarId)
+    const browser = await getUserBrowser(tarId, config)
+    return browser
+}
+
 module.exports = {
     getVersion,
     createBrowser,
     getUserBrowser,
+    getBrowserInfo,
 }

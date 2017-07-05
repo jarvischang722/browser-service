@@ -58,7 +58,8 @@ module.exports = (route, config, exempt) => {
 
     const getBrowserInfo = async (req, res, next) => {
         try {
-            const browser = await Browser.getUserBrowser(req.user.id, config)
+            validate(req.query, getSchema(SCHEMA, 'id'))
+            const browser = await Browser.getBrowserInfo(req.user.id, req.query.id, config)
             return res.json(browser)
         } catch (err) {
             return next(err)

@@ -214,4 +214,5 @@ module.exports = {
     createUser,
     getChildren,
     changeChildExpireTime,
+    checkPermission,
 }

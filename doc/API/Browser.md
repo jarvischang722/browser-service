@@ -11,6 +11,12 @@ Key                   | Value                 | Description
 Content-Type      | application/json  |      
 X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
 
++ Parameters:
+
+Field Name     | Scope | Type       | Attributes | Validation                | Description      
+---------------- | ------- | ----------- | ----------- | -----------------------   | -------------
+id                  | query  | Int          | Optional   |   Number, Min(1)      | 用户id 
+
 + Return: `HTTP Status: 200`
 
 ```javascript
