@@ -4,7 +4,6 @@ const tripleone = {
     username: 'tripleone',
     password: 'pass1234',
 }
-
 const newAgent = {
     username: `newagent_${Date.now()}`,
     password: 'pass1234',
@@ -231,36 +230,18 @@ describe('User', () => {
         })
     })
 
-    it('Upload icon', (done) => {
-        client()
-        .post('/user/icon')
-        .set('Content-Type', 'multipart/form-data')
-        .set('Accept', 'application/json')
-        .set('X-Auth-Key', env.user.token)
-        .attach('icon', 'test/files/icon.ico')
-        .expect(200)
-        .end((err, res) => {
-            should.not.exist(err)
-            res.body.should.have.property('path')
-            env.iconPath = res.body.path
-            done()
-        })
-    })
-
     it('Update profile', (done) => {
         client()
         .post('/user/profile')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'multipart/form-data')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
-        .send({
-            name: 'tripleonetech',
-            homeUrl: [
-                'http://www.demo.tripleonetech.com/',
-                'https://www.tripleonetech.com/',
-            ],
-            icon: env.iconPath,
-        })
+        .field('name', 'tripleonetech')
+        .field('homeUrl', [
+            'http://www.demo.tripleonetech.com/',
+            'https://www.tripleonetech.com/',
+        ])
+        .attach('icon', 'test/files/icon.ico')
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
@@ -275,17 +256,15 @@ describe('User', () => {
     it('Invalid homeurl', (done) => {
         client()
         .post('/user/profile')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'multipart/form-data')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
-        .send({
-            name: 'tripleonetech',
-            homeUrl: [
-                'xxxx/',
-                'https://www.tripleonetech.com/',
-            ],
-            icon: env.iconPath,
-        })
+        .field('name', 'tripleonetech')
+        .field('homeUrl', [
+            'xxx',
+            'https://www.tripleonetech.com/',
+        ])
+        .attach('icon', 'test/files/icon.ico')
         .expect(400)
         .end((err, res) => {
             res.body.should.have.property('error')
@@ -297,15 +276,15 @@ describe('User', () => {
     it('Update child profile', (done) => {
         client()
         .post('/user/profile')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'multipart/form-data')
         .set('Accept', 'application/json')
         .set('X-Auth-Key', env.user.token)
-        .send({
-            id: env.user2.id,
-            name: '澳门新葡京',
-            homeUrl: 'http://www.agtop.t1t.games/',
-            icon: env.iconPath,
-        })
+        .field('id', env.user2.id)
+        .field('name', '澳门新葡京')
+        .field('homeUrl', [
+            'http://www.agtop.t1t.games/',
+        ])
+        .attach('icon', 'test/files/icon.ico')
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)

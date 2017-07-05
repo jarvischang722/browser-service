@@ -2,7 +2,6 @@ const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
 const Browser = require('./browser')
-const fs = require('fs')
 const path = require('path')
 const utils = require('../utils')
 
@@ -117,21 +116,18 @@ const getProfile = async (userId, tarId, config) => {
     return user
 }
 
-const uploadIcon = async (req) => {
-    const iconPath = req.file && req.file.path ? req.file.path : null
-    return { path: iconPath }
-}
-
 const updateProfile = async (userId, req) => {
     return db.transaction(async (client) => {
-        const { id, name, icon } = req.body
-        if (!fs.existsSync(icon)) throw new errors.IconNotExistsError()
+        const { id, name } = req.body
         let { homeUrl } = req.body
         if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
         const tarId = id || userId
         const row = await checkPermission(userId, tarId)
-        const iconPath = `icon/${row.username}.ico`
-        await utils.copy(icon, path.join(__dirname, '../..', 'icon', `${row.username}.ico`))
+        let iconPath = null
+        if (req.file && req.file.path) {
+            iconPath = `icon/${row.username}.ico`
+            await utils.copy(req.file.path, path.join(__dirname, '../..', 'icon', `${row.username}.ico`))
+        }
         // upload icon
         const query = `
             UPDATE user
@@ -209,7 +205,6 @@ const changeChildExpireTime = async (userId, tarId, expireIn) => {
 module.exports = {
     login,
     getProfile,
-    uploadIcon,
     updateProfile,
     createUser,
     getChildren,

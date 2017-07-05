@@ -94,41 +94,16 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
 ```
 ---------------------
 
-#### ✔ `POST` `/user/icon` - 上传图标
-
-+ Headers:
-
-Key                   | Value                      | Description      
-------------------- | ------------------------ | -----------
-Content-Type      | multipart/form-data  |      
-X-Auth-Key        | eyJhbGci...               |  登陆之后返回的auth token      
-
-+ Parameters:
-
-Field Name     | Scope | Type       | Attributes | Validation                | Description      
----------------- | ------- | ----------- | ----------- | -----------------------   | -------------
-icon               | file    | String       | Required   |                             | 用户图标
-
-+ Return: `HTTP Status: 200`
-
-```javascript
-{
-    "path": "upload\\d99b5fc5c4a5580bc68d9af4642b68d6"
-}
-```
-
----------------------
-
 #### ✔ `POST` `/user/profile` - 更新用户信息
 
 更新目标用户的信息
 
 + Headers:
 
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+Key                   | Value                       | Description      
+------------------- | ------------------------- | -----------
+Content-Type      | multipart/form-data  |      
+X-Auth-Key        | eyJhbGci...               |  登陆之后返回的auth token      
 
 + Parameters:
 
@@ -137,7 +112,7 @@ Field Name     | Scope | Type       | Attributes | Validation                | D
 id                 | body   | Int          | Optional   |    Number, Min(1)     | 用户id
 name            | body   | String     | Required   |                               | 名称
 homeUrl        | body  | Array[String]   | Required   |   Uri                 | 主页列表
-icon              | body    | String          | Required   |                         | 用户图标
+icon              | file     | String          | Required   |                         | 用户图标
 
 + 说明
     1. 如果没有传id, 则更新自己的profile

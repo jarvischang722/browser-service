@@ -8,6 +8,5 @@
     "UserDuplicated": "用户名重复",
     "NameRequired": "请填写名称",
     "IconRequired": "请上传图标",
-    "HomeUrlRequired": "请填写主页",
-    "IconNotExists": "图标不存在, 请重新上传"
+    "HomeUrlRequired": "请填写主页"
 }
