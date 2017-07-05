@@ -98,10 +98,10 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
 
 + Headers:
 
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+Key                   | Value                      | Description      
+------------------- | ------------------------ | -----------
+Content-Type      | multipart/form-data  |      
+X-Auth-Key        | eyJhbGci...               |  登陆之后返回的auth token      
 
 + Parameters:
 
