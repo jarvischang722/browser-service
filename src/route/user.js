@@ -10,6 +10,7 @@ const SCHEMA = {
     id: T.number().integer(),
     role: T.number().integer().valid(1, 2),
     name: T.string().required(),
+    icon: T.string().required(),
     expireIn: T.number().required(),
     username: T.string().required(),
     password: T.string().required(),
@@ -26,6 +27,7 @@ const ERRORS = {
     UserDuplicated: 400,
     InvalidExpireIn: 400,
     UserExpired: 400,
+    IconNotExists: 400,
 }
 
 errors.register(ERRORS)
@@ -55,10 +57,19 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const uploadIcon = async (req, res, next) => {
+        try {
+            const icon = await User.uploadIcon(req)
+            return res.json(icon)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     const updateProfile = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl'))
-            const user = await User.updateProfile(req.user.id, req, config)
+            validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon'))
+            const user = await User.updateProfile(req.user.id, req)
             return res.json(user)
         } catch (err) {
             return next(err)
@@ -105,7 +116,8 @@ module.exports = (route, config, exempt) => {
 
     route.post('/user/login', login)
     route.get('/user/profile', getProfile)
-    route.post('/user/profile', upload.single('icon'), updateProfile)
+    route.post('/user/icon', upload.single('icon'), uploadIcon)
+    route.post('/user/profile', updateProfile)
     route.post('/user/create', createUser)
     route.get('/user/list', getChildren)
     route.post('/user/expire', changeChildExpireTime)
