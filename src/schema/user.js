@@ -2,6 +2,7 @@ const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
 const Browser = require('./browser')
+const fs = require('fs')
 const path = require('path')
 const utils = require('../utils')
 
@@ -89,7 +90,9 @@ const login = async (userName, password, config) => {
     }
     if (user) {
         // check expire time
-        if (user.expireIn && user.expireIn <= Date.now() / 1000) throw new errors.UserExpiredError() 
+        if (user.expireIn && user.expireIn <= Date.now() / 1000) {
+            throw new errors.UserExpiredError()
+        }
         // get client browser
         user.browser = await Browser.getUserBrowser(user.id, config)
         user.homeUrl = await getHomeUrl(user.id)
@@ -126,7 +129,9 @@ const updateProfile = async (userId, req) => {
         let iconPath = null
         if (req.file && req.file.path) {
             iconPath = `icon/${row.username}.ico`
-            await utils.copy(req.file.path, path.join(__dirname, '../..', 'icon', `${row.username}.ico`))
+            const iconFolder = path.join(__dirname, '../..', 'icon')
+            if (!fs.existsSync(iconFolder)) fs.mkdirSync(iconFolder)
+            await utils.copy(req.file.path, path.join(iconFolder, `${row.username}.ico`))
         }
         // upload icon
         const query = `
