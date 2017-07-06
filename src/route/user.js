@@ -20,6 +20,7 @@ const SCHEMA = {
         T.array().items(T.string().uri()),
         T.string().uri()
     ).required(),
+    icon: T.string(),
 }
 
 const ERRORS = {
@@ -60,7 +61,7 @@ module.exports = (route, config, exempt) => {
 
     const updateProfile = async (req, res, next) => {
         try {
-            validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl'))
+            validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon'))
             const user = await User.updateProfile(req.user.id, req)
             return res.json(user)
         } catch (err) {
