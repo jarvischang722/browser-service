@@ -5,6 +5,7 @@ CREATE TABLE browser (
     platform varchar(255),
     client varchar(255),
     version varchar(255),
+    status int DEFAULT 1,
     link text,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

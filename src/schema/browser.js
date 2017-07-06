@@ -5,6 +5,12 @@ const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 
+const STATUS = {
+    VALID: 1,
+    CREATING: 2,
+    FAILED: 3,
+}
+
 const getVersion = async (platform, client) => {
     const query = `
         SELECT *
@@ -21,6 +27,17 @@ const getVersion = async (platform, client) => {
         version: row.version,
         link: row.link,
     }
+}
+
+const updateCreatingBrowserStatus = async (platform, client) => {
+    const query = `
+        INSERT INTO browser (platform, client, status) 
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY 
+        UPDATE
+            status = ?
+        ;`
+    await db.query(query, [platform, client, STATUS.CREATING, STATUS.CREATING])
 }
 
 const updateBrowser = async (platform, client, link, version) => {
@@ -49,6 +66,7 @@ const getUserBrowser = async (userId, config) => {
     if (results.length > 0) {
         const row = results[0]
         browser = {
+            status: row.status,
             link: row.link,
             version: {
                 local: row.version,
@@ -125,6 +143,7 @@ return function(url, host) {
 
 const createBrowser = async (config, profile) => {
     const { id, username, name, homeUrl, icon } = profile
+    await updateCreatingBrowserStatus('windows', username)
     const { projectPath, version, legalCopyright } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)

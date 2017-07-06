@@ -75,6 +75,7 @@ describe('Get browser info', () => {
         .expect(200)
         .end((err, res) => {
             should.not.exist(err)
+            res.body.should.have.property('status')
             res.body.should.have.property('link')
             res.body.should.have.property('version')
             res.body.version.should.have.property('local')
