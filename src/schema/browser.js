@@ -42,14 +42,15 @@ const updateCreatingBrowserStatus = async (platform, client) => {
 
 const updateBrowser = async (platform, client, link, version) => {
     const query = `
-        INSERT INTO browser (platform, client, version, link) 
-        VALUES (?, ?, ?, ?)
+        INSERT INTO browser (platform, client, version, link, status) 
+        VALUES (?, ?, ?, ?, ?)
         ON DUPLICATE KEY 
         UPDATE
             version = ?,
-            link = ?
+            link = ?,
+            status = ?
         ;`
-    await db.query(query, [platform, client, version, link, version, link])
+    await db.query(query, [platform, client, version, link, STATUS.VALID, version, link, STATUS.VALID])
 }
 
 // 先只支持windows版本
