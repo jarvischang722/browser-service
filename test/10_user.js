@@ -350,7 +350,6 @@ describe('User', () => {
             res.body.should.have.property('name')
             res.body.should.have.property('expireIn')
             res.body.should.have.property('icon')
-            res.body.should.have.property('homeUrl')
             res.body.should.have.property('browser')
             res.body.browser.should.have.property('status')
             res.body.browser.should.have.property('link')
