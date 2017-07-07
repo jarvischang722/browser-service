@@ -51,11 +51,6 @@ module.exports = (route, config, exempt) => {
         }
     }
 
-    const getCreateClientPage = (req, res) => {
-        const page = path.join(__dirname, '..', 'public/view/client.html')
-        return res.sendFile(page)
-    }
-
     const getBrowserInfo = async (req, res, next) => {
         try {
             validate(req.query, getSchema(SCHEMA, 'id'))
@@ -67,10 +62,8 @@ module.exports = (route, config, exempt) => {
     }
 
     exempt('/browser/version')
-    exempt('/browser/new')
 
     route.get('/browser/version', getVersion)
-    route.get('/browser/new', getCreateClientPage)
     route.post('/browser/create', createNewBrowser)
     route.get('/browser/info', getBrowserInfo)
 }
