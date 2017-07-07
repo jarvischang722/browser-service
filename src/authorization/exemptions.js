@@ -1,6 +1,7 @@
 const url = require('url')
+const mm = require('micromatch')
 
-const routes = {}
+const routes = []
 
 const add = (path) => {
     if (!path) return
@@ -8,14 +9,13 @@ const add = (path) => {
     if (!path.startsWith('/')) {
         path = `/${path}`
     }
-    routes[path] = true
+    routes.push(path)
 }
 
 const has = (path) => {
-    if (routes['*']) return true
     if (!path) return false
     const pathname = url.parse(path).pathname.toLowerCase()
-    return routes[pathname] || false
+    return mm.any(pathname, routes)
 }
 
 module.exports = { add, has }
