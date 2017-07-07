@@ -30,6 +30,7 @@ const getVersion = async (platform, client) => {
 }
 
 const updateCreatingBrowserStatus = async (userId, platform, client, status) => {
+    status = status || STATUS.CREATING
     const query = `
         INSERT INTO browser (userid, platform, client, status) 
         VALUES (?, ?, ?, ?)
@@ -145,7 +146,6 @@ return function(url, host) {
 const createBrowser = async (config, profile) => {
     const { id, username, name, homeUrl, icon } = profile
     try {
-        await updateCreatingBrowserStatus(id, 'windows', username, STATUS.CREATING)
         const { projectPath, version, legalCopyright } = config.browser
         const optionPath = path.join(projectPath, `src/clients/${username}`)
         if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
@@ -237,4 +237,5 @@ module.exports = {
     createBrowser,
     getUserBrowser,
     getBrowserInfo,
+    updateCreatingBrowserStatus,
 }

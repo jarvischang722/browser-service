@@ -44,6 +44,8 @@ module.exports = (route, config, exempt) => {
             if (!profile.icon) throw new errors.IconRequiredError()
             if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
             // await Browser.createBrowser(config, profile)
+            const { id, username } = profile
+            await Browser.updateCreatingBrowserStatus(id, 'windows', username)
             Browser.createBrowser(config, profile)
             return res.status(204).send()
         } catch (err) {
