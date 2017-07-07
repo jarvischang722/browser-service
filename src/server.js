@@ -30,6 +30,7 @@ const server = async () => {
     app.use('/styles', express.static('src/public/css'))
     app.use('/download', express.static('deploy'))
     app.use('/icon', express.static('icon'))
+    app.use('/smart', express.static('src/public/dist'))
 
     const apiRouter = new express.Router()
     apiRouter.use(cookieParser(config.secret.cookie))
@@ -64,6 +65,10 @@ const server = async () => {
     })
 
     app.use('/', apiRouter)
+
+    app.use((req, res) => {
+        res.redirect('/smart/')
+    })
 
     const port = config.server.port
 
