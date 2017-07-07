@@ -29,28 +29,28 @@ const getVersion = async (platform, client) => {
     }
 }
 
-const updateCreatingBrowserStatus = async (platform, client, status) => {
+const updateCreatingBrowserStatus = async (userId, platform, client, status) => {
     const query = `
-        INSERT INTO browser (platform, client, status) 
-        VALUES (?, ?, ?)
+        INSERT INTO browser (userid, platform, client, status) 
+        VALUES (?, ?, ?, ?)
         ON DUPLICATE KEY 
         UPDATE
             status = ?
         ;`
-    await db.query(query, [platform, client, status, status])
+    await db.query(query, [userId, platform, client, status, status])
 }
 
-const updateBrowser = async (platform, client, link, version) => {
+const updateBrowser = async (userId, platform, client, link, version) => {
     const query = `
-        INSERT INTO browser (platform, client, version, link, status) 
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO browser (userid, platform, client, version, link, status) 
+        VALUES (?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY 
         UPDATE
             version = ?,
             link = ?,
             status = ?
         ;`
-    await db.query(query, [platform, client, version, link, STATUS.VALID, version, link, STATUS.VALID])
+    await db.query(query, [userId, platform, client, version, link, STATUS.VALID, version, link, STATUS.VALID])
 }
 
 // 先只支持windows版本
@@ -145,7 +145,7 @@ return function(url, host) {
 const createBrowser = async (config, profile) => {
     const { id, username, name, homeUrl, icon } = profile
     try {
-        await updateCreatingBrowserStatus('windows', username, STATUS.CREATING)
+        await updateCreatingBrowserStatus(id, 'windows', username, STATUS.CREATING)
         const { projectPath, version, legalCopyright } = config.browser
         const optionPath = path.join(projectPath, `src/clients/${username}`)
         if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
@@ -217,10 +217,10 @@ const createBrowser = async (config, profile) => {
         })
         const link = `/download/${setupFileName}.exe`
         // update version if needed
-        await updateBrowser('windows', options.client, link, version)
+        await updateBrowser(id, 'windows', options.client, link, version)
         return link
     } catch (err) {
-        await updateCreatingBrowserStatus('windows', username, STATUS.FAILED)
+        await updateCreatingBrowserStatus(id, 'windows', username, STATUS.FAILED)
     }
 }
 
