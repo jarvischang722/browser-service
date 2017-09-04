@@ -10,6 +10,7 @@ const SCHEMA = {
     client: T.string().required(),
     link: T.string().uri().required(),
     version: T.boolean().default(false),
+    q: T.string(),
 }
 
 const ERRORS = {
@@ -63,8 +64,20 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const getLong = async (req, res, next) => {
+        try {
+            validate(req.query, getSchema(SCHEMA, 'q'))
+            const long = await Browser.getLong(req.query.q)
+            return res.json({ long })
+        } catch (err) {
+            return next(err)
+        }
+    }
+
+    exempt('/browser/short')
     exempt('/browser/version')
 
+    route.get('/browser/short', getLong)
     route.get('/browser/version', getVersion)
     route.post('/browser/create', createNewBrowser)
     route.get('/browser/info', getBrowserInfo)

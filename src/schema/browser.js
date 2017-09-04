@@ -166,8 +166,8 @@ const createBrowser = async (config, profile) => {
             proxyOptions: {
                 localAddr: '127.0.0.1',
                 localPort,
-                serverAddr: '106.75.147.144',
-                serverPort: 17777,
+                serverAddr: '52.198.79.141',
+                serverPort: 19999,
                 password: 'dBbQMP8Nd9vyjvN',
                 method: 'aes-256-cfb',
                 timeout: 180,
@@ -232,10 +232,16 @@ const getBrowserInfo = async (userId, tarId, config) => {
     return browser
 }
 
+const getLong = (str) => {
+    if (str === 't1t' || str === 'tot') return 'www.tripleonetech.net'
+    return ''
+}
+
 module.exports = {
     getVersion,
     createBrowser,
     getUserBrowser,
     getBrowserInfo,
     updateCreatingBrowserStatus,
+    getLong,
 }
