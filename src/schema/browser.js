@@ -234,6 +234,7 @@ const getBrowserInfo = async (userId, tarId, config) => {
 
 const getLong = (str) => {
     if (str === 't1t' || str === 'tot') return 'www.tripleonetech.net'
+    if (str === 'apple') return 'www.apple.com'
     return ''
 }
 
