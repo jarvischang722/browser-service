@@ -18,7 +18,7 @@ const SCHEMA = {
     password: T.string().required(),
     homeUrl: T.alternatives().try(
         T.array().items(T.string().uri()),
-        T.string().uri()
+        T.string().uri(),
     ).required(),
     icon: T.string(),
 }

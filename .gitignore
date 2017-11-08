@@ -21,6 +21,5 @@ src/config/*.json
 /upload/
 /deploy/
 /icon/
-/src/public/
 
 package-lock.json

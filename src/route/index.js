@@ -13,6 +13,7 @@ const bind = (route, config) => {
 
 exempt('/')
 exempt('/smart')
+exempt('/smart/')
 exempt('/smart/*')
 
 module.exports = { bind }
