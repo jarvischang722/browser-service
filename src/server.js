@@ -7,6 +7,7 @@ const config = require('./config')
 const route = require('./route')
 const errors = require('./error')
 const authorization = require('./authorization')
+const cors = require('cors')
 
 global.db = require('./db')
 
@@ -21,11 +22,14 @@ const server = async () => {
     const app = express()
 
     app.use(helmet())
-    app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*')
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-        next()
-    })
+
+    app.use(cors({
+        origin: (origin, callback) => {
+            callback(null, true)
+        },
+        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Key',
+        credentials: true,
+    }))
 
     app.use('/styles', express.static('src/public/css'))
     app.use('/download', express.static('deploy'))
