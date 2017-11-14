@@ -21,6 +21,8 @@ const SCHEMA = {
         T.string().uri(),
     ).required(),
     icon: T.string(),
+    page: T.number().integer().min(1).default(1),
+    pagesize: T.number().integer().min(1).default(10),
 }
 
 const ERRORS = {
@@ -97,7 +99,9 @@ module.exports = (route, config, exempt) => {
     const getChildren = async (req, res, next) => {
         try {
             if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
-            const users = await User.getChildren(req.user.id)
+            const v = validate(req.query, getSchema(SCHEMA, 'page', 'pagesize'))
+            const { page, pagesize } = v
+            const users = await User.getChildren(req.user.id, page, pagesize)
             return res.json(users)
         } catch (err) {
             return next(err)

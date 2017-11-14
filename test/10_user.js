@@ -388,4 +388,41 @@ describe('User', () => {
             done()
         })
     })
+
+    it('Get children by page', (done) => {
+        client()
+        .get('/user/list?pagesize=1')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('total')
+            res.body.should.have.property('items').and.instanceOf(Array).with.lengthOf(1)
+            for (const i of res.body.items) {
+                i.should.have.property('id')
+                i.should.have.property('username')
+                i.should.have.property('name')
+                i.should.have.property('expireIn')
+                i.should.have.property('role')
+            }
+            done()
+        })
+    })
+
+    it('Get children by page', (done) => {
+        client()
+        .get('/user/list?page=999999')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('total')
+            res.body.should.have.property('items').and.instanceOf(Array).and.be.empty
+            done()
+        })
+    })
 })

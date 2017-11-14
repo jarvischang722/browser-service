@@ -25,7 +25,7 @@ password        | body  | String     | Required   |                             
     "role": 1,
     "username": "tripleone",
     "name": "合众科技",
-    "expireIn": "2017-07-29 16:34:59",
+    "expireIn": "1510641466",
     "browsers": {
         "platform": "windows",
         "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
@@ -77,7 +77,7 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
     "role": 1,
     "username": "tripleone",
     "name": "合众科技",
-    "expireIn": "2017-07-29 16:34:59",
+    "expireIn": "1510641466",
     "browser": {
         "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
         "version": {
@@ -151,7 +151,7 @@ username      | body   | String     | Required   |                              
 password       | body   | String     | Required   |                               | 密码
 name            | body   | String     | Required   |                               | 名称
 role               | body   | Number   | Required   |   Valid(1, 2)            | 权限 1: 代理 2: 客户
-expireIn        | body      | Number    | Required   |                            | 过期时间, 不能超过自己的
+expireIn        | body      | Date    | Required   |  Unix timestamp           | 过期时间, 不能超过自己的
 
 + Return: `HTTP Status: 201`
 
@@ -184,7 +184,7 @@ X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token
             "role": 1,
             "username": "tripleone",
             "name": "合众科技",
-            "expireIn": "2017-07-29 16:34:59"
+            "expireIn": "1510641466"
         }
     ]
 }
@@ -212,7 +212,7 @@ expireIn        | body   | Number    | Required   |                            |
 ```javascript
 {
     "id": 10,
-    "expireIn": "2017-07-29 16:34:59"
+    "expireIn": "1510641466"
 }
 ```
 ---------------------

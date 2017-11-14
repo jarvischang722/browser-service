@@ -174,14 +174,27 @@ const updateProfile = async (userId, req) => {
     })
 }
 
-const getChildren = async (userId) => {
+const getChildren = async (userId, page, pagesize) => {
+    const queryCount = `
+        SELECT COUNT(id) AS cnt
+        FROM user
+        WHERE parent = ?
+    ;`
+    const resultsCount = await db.query(queryCount, [userId])
+    if (resultsCount.length <= 0 || resultsCount[0].cnt <= 0) {
+        return {
+            total: 0,
+        }
+    }
     const query = `
         SELECT *
         FROM user
         WHERE parent = ?
         ORDER BY id
+        LIMIT ?
+        OFFSET ?
         ;`
-    const results = await db.query(query, [userId])
+    const results = await db.query(query, [userId, pagesize, (page - 1) * pagesize])
     const users = results.map(r => ({
         id: r.id,
         username: r.username,
@@ -190,7 +203,7 @@ const getChildren = async (userId) => {
         expireIn: r.expire_in,
     }))
     return {
-        total: users.length,
+        total: resultsCount[0].cnt,
         items: users,
     }
 }
