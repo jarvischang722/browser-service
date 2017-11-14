@@ -13,7 +13,7 @@ const SCHEMA = {
     id: T.number().integer(),
     role: T.number().integer().valid(1, 2),
     name: T.string().required(),
-    expireIn: T.number().required(),
+    expireIn: T.date().timestamp('unix').raw().required(),
     username: T.string().required(),
     password: T.string().required(),
     homeUrl: T.alternatives().try(
