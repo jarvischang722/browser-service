@@ -4,12 +4,6 @@
 
 登陆
 
-+ Headers:
-
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
@@ -23,22 +17,6 @@ password        | body  | String     | Required   |                             
 {
     "id": 1,
     "role": 1,
-    "username": "tripleone",
-    "name": "合众科技",
-    "expireIn": "1510641466",
-    "browsers": {
-        "platform": "windows",
-        "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
-        "version": {
-            "local": "2.9.0",
-            "server": "2.9.2"
-        }
-    },
-    "icon": "/icon/tripleone.ico",
-    "homeUrl": [
-        "https://www.tripleonetech.com",
-        "https://www.tripleonetech.net"
-    ],
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5ODc5NDc0MCwiZXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKztsgvTLQ"
 }
 ```
@@ -48,22 +26,29 @@ password        | body  | String     | Required   |                             
 
 ---------------------
 
+#### ✔ `GET` `/user/recurrent` - recurrent
+
++ Return: `HTTP Status: 200`
+
+```javascript
+{
+    "id": 1,
+    "role": 1,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5ODc5NDc0MCwiZXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKztsgvTLQ"
+}
+```
+
+---------------------
+
 #### ✔ `GET` `/user/profile` - 获取用户信息
 
 获得目标用户的信息
-
-+ Headers:
-
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
 
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
 ---------------- | ------- | ----------- | ----------- | -----------------------   | -------------
-id                 | query  | Int          | Optional   |   Number, Min(1)      | 用户id
+id               | query  | Int          | Optional   |   Number, Min(1)      | 用户id
 
 + 说明
     1. 如果没有传id, 则获取自己的profile
@@ -98,13 +83,6 @@ id                 | query  | Int          | Optional   |   Number, Min(1)      
 
 更新目标用户的信息
 
-+ Headers:
-
-Key                   | Value                       | Description      
-------------------- | ------------------------- | -----------
-Content-Type      | multipart/form-data  |      
-X-Auth-Key        | eyJhbGci...               |  登陆之后返回的auth token      
-
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
@@ -136,13 +114,6 @@ icon              | file     | String          | Required   |                   
 
 #### ✔ `POST` `/user/create` - 创建下级代理/客户
 
-+ Headers:
-
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
-
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
@@ -166,12 +137,12 @@ expireIn        | body      | Date    | Required   |  Unix timestamp           |
 
 #### ✔ `GET` `/user/list` - 获取下级用户列表
 
-+ Headers:
++ Parameters:
 
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
+Field Name     | Scope   | Type       | Attributes | Validation                  | Description      
+-------------- | ------- | ----------- | ----------- | -----------------------   | -------------
+page           | query   | Number     | Optional   |   Int, Min(1), Default(1)   | 页码
+pagesize       | query   | Number     | Optional   |   Int, Min(1), Default(10)  | 每页数量
 
 + Return: `HTTP Status: 200`
 
@@ -193,19 +164,12 @@ X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token
 
 #### ✔ `POST` `/user/expire` - 修改下级代理过期时间
 
-+ Headers:
-
-Key                   | Value                 | Description      
-------------------- | -------------------- | -----------
-Content-Type      | application/json  |      
-X-Auth-Key        | eyJhbGci...         |  登陆之后返回的auth token      
-
 + Parameters:
 
 Field Name     | Scope | Type       | Attributes    | Validation                | Description      
 ---------------- | ------- | ----------- | -------------- | -----------------------   | -------------
-id                 | body   | String     | Required      |                               | 用户id
-expireIn        | body   | Number    | Required   |                            | 过期时间, 不能超过自己的
+id              | body   | String     | Required      |                               | 用户id
+expireIn        | body   | Date    | Required   |  Unix timestamp                     | 过期时间, 不能超过自己的
 
 + Return: `HTTP Status: 201`
 
