@@ -48,6 +48,17 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const recurrent = async (req, res, next) => {
+        try {
+            const user = await User.getUser(req.user.id)
+            if (!user) return next(new errors.UnauthorizedError())
+            user.token = generateToken(config, user.id, user.role)
+            return res.json(user)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     const getProfile = async (req, res, next) => {
         try {
             validate(req.query, getSchema(SCHEMA, 'id'))
@@ -108,6 +119,7 @@ module.exports = (route, config, exempt) => {
     exempt('/user/login')
 
     route.post('/user/login', login)
+    route.get('/user/recurrent', recurrent)
     route.get('/user/profile', getProfile)
     route.post('/user/profile', upload.single('icon'), updateProfile)
     route.post('/user/create', createUser)

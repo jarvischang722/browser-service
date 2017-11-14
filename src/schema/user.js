@@ -70,7 +70,7 @@ const getHomeUrl = async (userId) => {
     return homeUrl
 }
 
-const login = async (userName, password, config) => {
+const login = async (userName, password) => {
     const query = `
         SELECT *
         FROM user
@@ -83,19 +83,22 @@ const login = async (userName, password, config) => {
     const user = hashedPwd !== row.password ? null : {
         id: row.id,
         role: row.role,
-        username: row.username,
-        name: row.name,
-        expireIn: row.expire_in,
-        icon: row.icon,
     }
-    if (user) {
-        // check expire time
-        if (user.expireIn && user.expireIn <= Date.now() / 1000) {
-            throw new errors.UserExpiredError()
-        }
-        // get client browser
-        user.browser = await Browser.getUserBrowser(user.id, config)
-        user.homeUrl = await getHomeUrl(user.id)
+    return user
+}
+
+const getUser = async (userId) => {
+    const query = `
+        SELECT *
+        FROM user
+        WHERE id = ?
+        ;`
+    const results = await db.query(query, [userId])
+    if (results.length <= 0) return null
+    const row = results[0]
+    const user = {
+        id: row.id,
+        role: row.role,
     }
     return user
 }
@@ -213,6 +216,7 @@ const changeChildExpireTime = async (userId, tarId, expireIn) => {
 
 module.exports = {
     login,
+    getUser,
     getProfile,
     updateProfile,
     createUser,
