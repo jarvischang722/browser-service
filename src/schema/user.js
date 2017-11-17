@@ -15,7 +15,9 @@ const checkExpireTime = async (userId, expireIn) => {
     const results = await db.query(query, [userId])
     if (results.length <= 0) throw new errors.UserNotFoundError()
     const myExpireIn = results[0].expire_in
-    if (myExpireIn && myExpireIn < expireIn) throw new errors.InvalidExpireInError()
+    if (!myExpireIn) return
+    if (!expireIn) throw new errors.ExpireInRequiredError()
+    if (myExpireIn < expireIn) throw new errors.InvalidExpireInError()
 }
 
 // userId 是自己的

@@ -13,7 +13,7 @@ const SCHEMA = {
     id: T.number().integer(),
     role: T.number().integer().valid(1, 2),
     name: T.string().required(),
-    expireIn: T.date().timestamp('unix').raw().required(),
+    expireIn: T.date().timestamp('unix').raw().allow(null, ''),
     username: T.string().required(),
     password: T.string().required(),
     homeUrl: T.alternatives().try(
@@ -30,6 +30,7 @@ const ERRORS = {
     UserNotFound: 404,
     CreateUserFailed: 400,
     UserDuplicated: 400,
+    ExpireInRequired: 400,
     InvalidExpireIn: 400,
     UserExpired: 400,
 }

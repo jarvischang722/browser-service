@@ -4,6 +4,7 @@
     "UserExpired": "账户已过期",
     "UserNotFound": "未找到指定用户",
     "CreateUserFailed": "创建用户失败",
+    "ExpireInRequired": "请设置过期时间",
     "InvalidExpireIn": "过期时间不能超过自己的",
     "UserDuplicated": "用户名重复",
     "NameRequired": "请填写名称",
