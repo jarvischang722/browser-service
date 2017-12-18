@@ -5,10 +5,10 @@ const { validate, getSchema, T } = require('../validator')
 
 const SCHEMA = {
     id: T.number().integer(),
-    platform: T.string().required(),
+    platform: T.string().valid(['windows', 'android', 'mac']).required(),
     client: T.string().required(),
     link: T.string().uri().required(),
-    version: T.boolean().default(false),
+    version: T.string().required(),
     q: T.string(),
 }
 
@@ -44,8 +44,8 @@ module.exports = (route, config, exempt) => {
             if (!profile.icon) throw new errors.IconRequiredError()
             if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
             // await Browser.createBrowser(config, profile)
-            const { id, username } = profile
-            await Browser.updateCreatingBrowserStatus(id, 'windows', username)
+            const { id } = profile
+            await Browser.updateCreatingBrowserStatus(id, 'windows')
             Browser.createBrowser(config, profile)
             return res.status(204).send()
         } catch (err) {
@@ -73,6 +73,20 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const updateBrowser = async (req, res, next) => {
+        try {
+            validate(req.body, getSchema(SCHEMA, 'id', 'platform', 'link', 'version'))
+            const tarId = req.body ? req.body.id : null
+            const profile = await User.getProfile(req.user.id, tarId, config)
+            const { id } = profile
+            const { platform, link, version } = req.body
+            await Browser.updateBrowser(id, platform, link, version)
+            return res.status(204).send()
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     const getBrowserList = async (req, res, next) => {
         try {
             const results = await Browser.getBrowserList(req.user.id)
@@ -89,5 +103,6 @@ module.exports = (route, config, exempt) => {
     route.get('/browser/version', getVersion)
     route.post('/browser/create', createNewBrowser)
     route.get('/browser/info', getBrowserInfo)
+    route.post('/browser/info', updateBrowser)
     route.get('/browser/list', getBrowserList)
 }

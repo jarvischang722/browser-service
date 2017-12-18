@@ -174,3 +174,42 @@ describe('Get browser list', () => {
         })
     })
 })
+
+describe('Update browser', () => {
+    it('for self', (done) => {
+        client()
+        .post('/browser/info')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .send({
+            platform: 'windows',
+            version: '2.9.9',
+            link: 'https://google.com',
+        })
+        .expect(204)
+        .end((err, res) => {
+            should.not.exist(err)
+            done()
+        })
+    })
+
+    it('for child', (done) => {
+        client()
+        .post('/browser/info')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .send({
+            id: env.user2.id,
+            platform: 'mac',
+            version: '2.9.10',
+            link: 'https://live.com',
+        })
+        .expect(204)
+        .end((err, res) => {
+            should.not.exist(err)
+            done()
+        })
+    })
+})

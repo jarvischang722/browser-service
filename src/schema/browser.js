@@ -14,10 +14,13 @@ const STATUS = {
 const getVersion = async (platform, client) => {
     const query = `
         SELECT *
-        FROM browser
+        FROM
+            browser AS a,
+            user AS b
         WHERE
-            platform = ?
-            AND client = ?
+            a.userid = b.id
+            AND a.platform = ?
+            AND b.username = ?
         LIMIT 1
         ;`
     const results = await db.query(query, [platform, client])
@@ -29,29 +32,29 @@ const getVersion = async (platform, client) => {
     }
 }
 
-const updateCreatingBrowserStatus = async (userId, platform, client, status) => {
+const updateCreatingBrowserStatus = async (userId, platform, status) => {
     status = status || STATUS.CREATING
     const query = `
-        INSERT INTO browser (userid, platform, client, status) 
-        VALUES (?, ?, ?, ?)
+        INSERT INTO browser (userid, platform, status) 
+        VALUES (?, ?, ?)
         ON DUPLICATE KEY 
         UPDATE
             status = ?
         ;`
-    await db.query(query, [userId, platform, client, status, status])
+    await db.query(query, [userId, platform, status, status])
 }
 
-const updateBrowser = async (userId, platform, client, link, version) => {
+const updateBrowser = async (userId, platform, link, version) => {
     const query = `
-        INSERT INTO browser (userid, platform, client, version, link, status) 
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO browser (userid, platform, version, link, status) 
+        VALUES (?, ?, ?, ?, ?)
         ON DUPLICATE KEY 
         UPDATE
             version = ?,
             link = ?,
             status = ?
         ;`
-    await db.query(query, [userId, platform, client, version, link, STATUS.VALID, version, link, STATUS.VALID])
+    await db.query(query, [userId, platform, version, link, STATUS.VALID, version, link, STATUS.VALID])
 }
 
 // 先只支持windows版本
@@ -217,10 +220,10 @@ const createBrowser = async (config, profile) => {
         })
         const link = `/download/${setupFileName}.exe`
         // update version if needed
-        await updateBrowser(id, 'windows', options.client, link, version)
+        await updateBrowser(id, 'windows', link, version)
         return link
     } catch (err) {
-        await updateCreatingBrowserStatus(id, 'windows', username, STATUS.FAILED)
+        await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
     }
 }
 
@@ -270,4 +273,5 @@ module.exports = {
     updateCreatingBrowserStatus,
     getLong,
     getBrowserList,
+    updateBrowser,
 }
