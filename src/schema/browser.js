@@ -238,6 +238,30 @@ const getLong = (str) => {
     return ''
 }
 
+const getBrowserList = async (userId) => {
+    const query = `
+        SELECT *
+        FROM browser
+        WHERE userid = ?
+        ;`
+    const results = await db.query(query, [userId])
+    if (results.length <= 0) {
+        return {
+            total: 0,
+        }
+    }
+    const items = results.map(r => ({
+        platform: r.platform,
+        status: r.status,
+        link: r.link,
+        version: r.version,
+    }))
+    return {
+        total: items.length,
+        items,
+    }
+}
+
 module.exports = {
     getVersion,
     createBrowser,
@@ -245,4 +269,5 @@ module.exports = {
     getBrowserInfo,
     updateCreatingBrowserStatus,
     getLong,
+    getBrowserList,
 }

@@ -1,6 +1,5 @@
 const User = require('../schema/user')
 const Browser = require('../schema/browser')
-const path = require('path')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 
@@ -74,6 +73,15 @@ module.exports = (route, config, exempt) => {
         }
     }
 
+    const getBrowserList = async (req, res, next) => {
+        try {
+            const results = await Browser.getBrowserList(req.user.id)
+            return res.json(results)
+        } catch (err) {
+            return next(err)
+        }
+    }
+
     exempt('/browser/short')
     exempt('/browser/version')
 
@@ -81,4 +89,5 @@ module.exports = (route, config, exempt) => {
     route.get('/browser/version', getVersion)
     route.post('/browser/create', createNewBrowser)
     route.get('/browser/info', getBrowserInfo)
+    route.get('/browser/list', getBrowserList)
 }

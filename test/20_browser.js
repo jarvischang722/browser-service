@@ -151,3 +151,26 @@ describe('Get long by short', () => {
         })
     })
 })
+
+describe('Get browser list', () => {
+    it('of self', (done) => {
+        client()
+        .get('/browser/list')
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .set('X-Auth-Key', env.user.token)
+        .expect(200)
+        .end((err, res) => {
+            should.not.exist(err)
+            res.body.should.have.property('total')
+            res.body.should.have.property('items')
+            for (const i of res.body.items) {
+                i.should.have.property('platform')
+                i.should.have.property('status')
+                i.should.have.property('link')
+                i.should.have.property('version')
+            }
+            done()
+        })
+    })
+})
