@@ -4,6 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
+const builder = require('electron-builder')
+const mv = require('mv')
 
 const STATUS = {
     VALID: 1,
@@ -148,6 +150,8 @@ return function(url, host) {
 
 const createBrowser = async (config, profile) => {
     const { id, username, name, homeUrl, icon } = profile
+
+    const rmpath = path.join(__dirname, '../..', 'deploy')
     try {
         const { projectPath, version, legalCopyright } = config.browser
         const optionPath = path.join(projectPath, `src/clients/${username}`)
@@ -184,44 +188,97 @@ const createBrowser = async (config, profile) => {
         const optionFile = path.join(optionPath, 'client.json')
         fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
         const iconFile = path.join(optionPath, 'icon.ico')
-        const rceditOptions = {
-            'version-string': {
-                CompanyName: options.companyName,
-                FileDescription: options.fileDescription,
-                LegalCopyright: legalCopyright || 'Copyright 2017',
-                ProductName: options.productName,
-            },
-            'file-version': version,
-            'product-version': version,
-            icon: iconFile,
-        }
-        await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
-        await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe'), rceditOptions)
+        // const rceditOptions = {
+        //     'version-string': {
+        //         CompanyName: options.companyName,
+        //         FileDescription: options.fileDescription,
+        //         LegalCopyright: legalCopyright || 'Copyright 2017',
+        //         ProductName: options.productName,
+        //     },
+        //     'file-version': version,
+        //     'product-version': version,
+        //     icon: iconFile,
+        // }
+        // await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
+        // await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe'), rceditOptions)
 
+        // await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
+        // await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
+        // await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
+
+        // await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
+        // const setupFileName = `safety-browser-${options.client}-setup`
+        // await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
+        //     gui: false,
+        //     verbose: true,
+        //     signtool: 'tripleonesign=$p',
+        //     O: path.join(__dirname, '../..', 'deploy'),
+        //     F: setupFileName,
+        //     DProjectHomeBase: projectPath,
+        //     DCLIENT: options.client,
+        //     DCLIENT_GUID: `{${options.clientId}}`,
+        //     DAPP_VERSION: version,
+        //     DAPP_TITLE_EN: options.productNameEn,
+        //     DAPP_TITLE_CH: options.productName,
+        //     DAPP_ICO: iconFile,
+        // })
+        // const link = `/download/${setupFileName}.exe`
+        // // update version if needed
+        // await updateBrowser(id, 'windows', link, version)
+        // return link
+        const setupFileName = `safety-browser-${username}-setup.exe`
         await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
         await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
-        await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
-
-        await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
-        const setupFileName = `safety-browser-${options.client}-setup`
-        await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
-            gui: false,
-            verbose: true,
-            signtool: 'tripleonesign=$p',
-            O: path.join(__dirname, '../..', 'deploy'),
-            F: setupFileName,
-            DProjectHomeBase: projectPath,
-            DCLIENT: options.client,
-            DCLIENT_GUID: `{${options.clientId}}`,
-            DAPP_VERSION: version,
-            DAPP_TITLE_EN: options.productNameEn,
-            DAPP_TITLE_CH: options.productName,
-            DAPP_ICO: iconFile,
+        builder.build({
+            extraMetadata: {
+                name: `${name}`,
+                description: `${name}`,
+                author: 'TripleOneTech',
+            },
+            config: {
+                appId: uuidV4().toUpperCase(),
+                buildVersion: version,
+                copyright: '',
+                directories: {
+                    app: `${projectPath}/src/app/`,
+                    output: `${projectPath}/dist/client/`,
+                },
+                win: {
+                    target: ['nsis'],
+                    icon: iconFile,
+                    certificateFile: `${projectPath}/build/install-script/smartbrowser.pfx`,
+                    certificatePassword: '12345678',
+                    extraResources: `${projectPath}/src/plugins/*.dll`,
+                    artifactName: setupFileName,
+                },
+                nsis: {
+                    oneClick: false,
+                    perMachine: true,
+                    installerIcon: iconFile,
+                    installerHeaderIcon: iconFile,
+                    uninstallerIcon: iconFile,
+                },
+                extraFiles: [{
+                    from: `${projectPath}/src/plugins`,
+                    to: 'resources/src/plugins',
+                    filter: ['**/*'],
+                }],
+            },
         })
-        const link = `/download/${setupFileName}.exe`
-        // update version if needed
-        await updateBrowser(id, 'windows', link, version)
-        return link
+        .then(() => {
+            const link = `/download/${setupFileName}`
+            // update version if needed
+            updateBrowser(id, 'windows', link, version)
+            fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)
+            mv(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`, (err) => {
+                if (err) return err
+                console.log('FILE TRANSFER SUCCESSFUL')
+                return link
+            })
+        })
+        .catch((error) => {
+            console.log(error)
+        })
     } catch (err) {
         await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
     }
