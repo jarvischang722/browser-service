@@ -124,7 +124,7 @@ const getProfile = async (userId, tarId, config) => {
     return user
 }
 
-const updateProfile = async (userId, req) => {
+const updateProfile = async (userId, browser, req) => {
     return db.transaction(async (client) => {
         const { id, name, icon } = req.body
         let { homeUrl } = req.body
@@ -142,6 +142,7 @@ const updateProfile = async (userId, req) => {
             // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
             iconPath = icon
         }
+        await Browser.updateBrowser(tarId, 'windows', browser.link, 'update')
         // upload icon
         const query = `
             UPDATE user
