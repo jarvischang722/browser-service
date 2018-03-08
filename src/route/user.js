@@ -1,6 +1,5 @@
 const multer = require('multer')
 const User = require('../schema/user')
-const Browser = require('../schema/browser')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const { generateToken } = require('../authorization')
@@ -76,10 +75,8 @@ module.exports = (route, config, exempt) => {
 
     const updateProfile = async (req, res, next) => {
         try {
-            console.log('updating....:', req.body.id)
             validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon'))
-            const browser = await Browser.getBrowserInfo(req.user.id, req.body.id, config)
-            const user = await User.updateProfile(req.user.id, browser, req)
+            const user = await User.updateProfile(req.user.id, req)
             return res.json(user)
         } catch (err) {
             return next(err)
