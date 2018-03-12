@@ -34,9 +34,9 @@ module.exports = (route, config, exempt) => {
   const getDetail = async (req, res, next) => {
     try {
       if (req.user.id !== CONST.ADMIN_ID) throw new errors.NoPermissionError()
-      const { page, pagesize } = validate(req.query, getSchema(SCHEMA, 'page', 'pagesize'))
-      const long = await Short.getDetail(page, pagesize)
-      return res.json(long)
+      validate(req.query, getSchema(SCHEMA, 'id'))
+      const result = await Short.getDetail(req.query.id)
+      return res.json(result)
     } catch (err) {
       return next(err)
     }
@@ -45,9 +45,11 @@ module.exports = (route, config, exempt) => {
   const updateShort = async (req, res, next) => {
     try {
       if (req.user.id !== CONST.ADMIN_ID) throw new errors.NoPermissionError()
-      const { page, pagesize } = validate(req.query, getSchema(SCHEMA, 'page', 'pagesize'))
-      const long = await Short.updateShort(page, pagesize)
-      return res.json(long)
+      const { id, short, long, site_name, logo_url } = validate(req.body, getSchema(
+        SCHEMA, 'id', 'short', 'long', 'site_name', 'logo_url')
+      )
+      const result = await Short.updateShort(id, short, long, site_name, logo_url)
+      return res.json(result)
     } catch (err) {
       return next(err)
     }
