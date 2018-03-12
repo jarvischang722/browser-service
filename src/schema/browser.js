@@ -35,7 +35,7 @@ const getVersion = async (platform, client) => {
 }
 
 const updateCreatingBrowserStatus = async (userId, platform, status) => {
-  status = status || STATUS.CREATING
+  const st = status || STATUS.CREATING
   const query = `
     INSERT INTO browser (userid, platform, status) 
     VALUES (?, ?, ?)
@@ -43,7 +43,7 @@ const updateCreatingBrowserStatus = async (userId, platform, status) => {
     UPDATE
       status = ?
     ;`
-  await db.query(query, [userId, platform, status, status])
+  await db.query(query, [userId, platform, st, st])
 }
 
 const updateBrowser = async (userId, platform, link, version) => {
@@ -84,13 +84,13 @@ const getUserBrowser = async (userId, config) => {
   return browser
 }
 
-const getLocalPort = async (userId, username) => {
+const getLocalPort = async (userId) => {
   const query = `
     SELECT port
     FROM port
-    WHERE client = ?
+    WHERE userid = ?
   ;`
-  const results = await db.query(query, [username])
+  const results = await db.query(query, [userId])
   if (results.length > 0) return results[0].port
   const queryMax = `
     SELECT MAX(port) AS port
@@ -99,10 +99,10 @@ const getLocalPort = async (userId, username) => {
   const resultsMax = await db.query(queryMax)
   const localPort = resultsMax.length > 0 ? resultsMax[0].port + 1 : 22870
   const querySave = `
-    INSERT INTO port (userid, client, port) 
-    VALUES (?, ?, ?)
+    INSERT INTO port (userid, port) 
+    VALUES (?, ?)
   ;`
-  await db.query(querySave, [userId, username, localPort])
+  await db.query(querySave, [userId, localPort])
   return localPort
 }
 
@@ -158,7 +158,7 @@ const createBrowser = async (config, profile) => {
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     // copy icon to client folder
     await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
-    const localPort = await getLocalPort(id, username)
+    const localPort = await getLocalPort(id)
     // generate options
     const options = {
       client: username,
