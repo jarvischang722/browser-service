@@ -23,8 +23,9 @@ const checkExpireTime = async (userId, expireIn) => {
 // userId 是自己的
 // 其他信息是下级代理的
 const createUser = async (userId, body) => {
-  const { username, password, name, expireIn, role } = body
+  const { username, name, expireIn, role } = body
   await checkExpireTime(userId, expireIn)
+  const password = strUtils.random()
   const salt = strUtils.random()
   const query = `
     INSERT INTO user (

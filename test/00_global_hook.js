@@ -6,12 +6,12 @@ chai.use(charAsPromised)
 
 /* eslint-disable no-undef */
 before(async () => {
-    process.env.NODE_ENV = 'test'
-    global.should = chai.should()
-    global.server = await getServer()
-    global.env = {}
+  process.env.NODE_ENV = 'test'
+  global.should = chai.should()
+  global.server = await getServer()
+  global.env = {}
 })
 
 after((done) => {
-    done()
+  done()
 })

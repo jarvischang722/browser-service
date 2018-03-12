@@ -7,8 +7,8 @@ global.__TEST__ = true
 let app = null
 
 module.exports = async () => {
-    if (app === null) {
-        app = await server()
-    }
-    return app
+  if (app === null) {
+    app = await server()
+  }
+  return app
 }

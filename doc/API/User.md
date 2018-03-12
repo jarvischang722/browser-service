@@ -119,7 +119,6 @@ icon              | file     | String          | Required   |                   
 Field Name     | Scope | Type       | Attributes | Validation                | Description      
 ---------------- | ------- | ----------- | ----------- | -----------------------   | -------------
 username      | body   | String     | Required   |                               | 用户名(唯一)
-password       | body   | String     | Required   |                               | 密码
 name            | body   | String     | Required   |                               | 名称
 role               | body   | Number   | Required   |   Valid(1, 2)            | 权限 1: 代理 2: 客户
 expireIn        | body      | Date    | Required   |  Unix timestamp           | 过期时间, 不能超过自己的

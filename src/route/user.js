@@ -86,7 +86,7 @@ module.exports = (route, config, exempt) => {
   const createUser = async (req, res, next) => {
     try {
       if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
-      validate(req.body, getSchema(SCHEMA, 'username', 'password', 'role', 'name', 'expireIn'))
+      validate(req.body, getSchema(SCHEMA, 'username', 'role', 'name', 'expireIn'))
       const user = await User.createUser(req.user.id, req.body)
       return res.status(201).send(user)
     } catch (err) {
