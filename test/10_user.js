@@ -329,7 +329,7 @@ describe('User', () => {
       id: env.user.id,
       expireIn: Math.round(Date.now() / 1000) + 3000,
     })
-    .expect(400)
+    .expect(403)
     .end((err, res) => {
       should.not.exist(err)
       res.body.should.have.property('error')

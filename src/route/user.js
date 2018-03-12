@@ -26,7 +26,7 @@ const SCHEMA = {
 }
 
 const ERRORS = {
-  NoPermission: 400,
+  NoPermission: 403,
   UserNotFound: 404,
   CreateUserFailed: 400,
   UserDuplicated: 400,

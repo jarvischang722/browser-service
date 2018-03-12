@@ -107,11 +107,11 @@ const getUser = async (userId) => {
 }
 
 const getProfile = async (userId, tarId, config) => {
-  tarId = tarId || userId
-  const row = await checkPermission(userId, tarId)
-  const browser = await Browser.getUserBrowser(tarId, config)
+  const targetId = tarId || userId
+  const row = await checkPermission(userId, targetId)
+  const browser = await Browser.getUserBrowser(targetId, config)
   // get homeurls
-  const homeUrl = await getHomeUrl(tarId)
+  const homeUrl = await getHomeUrl(targetId)
   const user = {
     id: row.id,
     role: row.role,

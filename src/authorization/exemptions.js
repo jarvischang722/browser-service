@@ -5,11 +5,11 @@ const routes = []
 
 const add = (path) => {
   if (!path) return
-  path = path.toLowerCase()
+  let p = path.toLowerCase()
   if (!path.startsWith('/')) {
-    path = `/${path}`
+    p = `/${path}`
   }
-  routes.push(path)
+  routes.push(p)
 }
 
 const has = (path) => {
