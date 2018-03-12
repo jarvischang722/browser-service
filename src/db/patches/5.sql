@@ -2,7 +2,7 @@ ALTER TABLE port DROP COLUMN client;
 
 CREATE TABLE short (
   id bigint PRIMARY KEY AUTO_INCREMENT,
-  short varchar(255),
+  short varchar(255) UNIQUE,
   `long` varchar(255),
   site_name varchar(255),
   logo_url text,
