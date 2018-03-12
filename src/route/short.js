@@ -9,6 +9,12 @@ const SCHEMA = {
   pagesize: T.number().integer().min(1).default(10),
 }
 
+const ERRORS = {
+  ShortItemNotFound: 404,
+}
+
+errors.register(ERRORS)
+
 module.exports = (route, config, exempt) => {
   const getLong = async (req, res, next) => {
     try {
