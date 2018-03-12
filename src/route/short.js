@@ -7,6 +7,11 @@ const SCHEMA = {
   q: T.string(),
   page: T.number().integer().min(1).default(1),
   pagesize: T.number().integer().min(1).default(10),
+  id: T.number().integer().min(1).required(),
+  short: T.string().required(),
+  long: T.string().required(),
+  site_name: T.string(),
+  logo_url: T.string(),
 }
 
 const ERRORS = {
@@ -65,6 +70,6 @@ module.exports = (route, config, exempt) => {
 
   route.get('/browser/short', getLong)
   route.get('/short/list', getList)
-  route.get('/short', getDetail)
+  route.get('/short/detail', getDetail)
   route.post('/short', updateShort)
 }

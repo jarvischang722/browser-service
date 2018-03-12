@@ -43,6 +43,7 @@ const getList = async (page, pagesize) => {
   const results = await db.query(query, [pagesize, (page - 1) * pagesize])
   for (const row of results) {
     list.items.push({
+      id: row.id,
       short: row.short,
       long: row.long,
       site_name: row.site_name,
@@ -62,6 +63,7 @@ const getDetail = async (id) => {
   if (results.length <= 0) throw new errors.ShortItemNotFoundError()
   const row = results[0]
   return {
+    id,
     short: row.short,
     long: row.long,
     site_name: row.site_name,
@@ -74,6 +76,7 @@ const updateShort = async (id, short, long, site_name, logo_url) => {
     UPDATE short
     SET
       short = ?,
+      \`long\` = ?,
       site_name = ?,
       logo_url = ?
     WHERE
@@ -84,6 +87,7 @@ const updateShort = async (id, short, long, site_name, logo_url) => {
   ])
   if (results.affectedRows <= 0) throw new errors.ShortItemNotFoundError()
   return {
+    id,
     short,
     long,
     site_name,
