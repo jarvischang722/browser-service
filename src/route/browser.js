@@ -67,7 +67,7 @@ module.exports = (route, config, exempt) => {
         try {
             validate(req.query, getSchema(SCHEMA, 'q'))
             const long = await Browser.getLong(req.query.q)
-            return res.json({ long })
+            return res.json(long)
         } catch (err) {
             return next(err)
         }
