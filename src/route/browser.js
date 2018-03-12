@@ -23,17 +23,6 @@ const ERRORS = {
 errors.register(ERRORS)
 
 module.exports = (route, config, exempt) => {
-  const getVersion = async (req, res, next) => {
-    try {
-      validate(req.query, getSchema(SCHEMA, 'platform', 'client'))
-      const { platform, client } = req.query
-      const version = await Browser.getVersion(platform, client)
-      return res.json(version)
-    } catch (err) {
-      return next(err)
-    }
-  }
-
   const createNewBrowser = async (req, res, next) => {
     try {
       validate(req.body, getSchema(SCHEMA, 'id'))
@@ -64,16 +53,6 @@ module.exports = (route, config, exempt) => {
     }
   }
 
-  const getLong = async (req, res, next) => {
-    try {
-      validate(req.query, getSchema(SCHEMA, 'q'))
-      const long = await Short.getLong(req.query.q)
-      return res.json(long)
-    } catch (err) {
-      return next(err)
-    }
-  }
-
   const updateBrowser = async (req, res, next) => {
     try {
       validate(req.body, getSchema(SCHEMA, 'id', 'platform', 'link', 'version'))
@@ -97,11 +76,6 @@ module.exports = (route, config, exempt) => {
     }
   }
 
-  exempt('/browser/short')
-  exempt('/browser/version')
-
-  route.get('/browser/short', getLong)
-  route.get('/browser/version', getVersion)
   route.post('/browser/create', createNewBrowser)
   route.get('/browser/info', getBrowserInfo)
   route.post('/browser/info', updateBrowser)

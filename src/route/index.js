@@ -4,6 +4,8 @@ const path = require('path')
 const bind = (route, config) => {
   require('./user')(route, config, exempt)
   require('./browser')(route, config, exempt)
+  require('./short')(route, config, exempt)
+  require('./version')(route, config, exempt)
 
   // website
   route.get('/smart', (req, res) => {
