@@ -1,5 +1,6 @@
 const User = require('../schema/user')
 const Browser = require('../schema/browser')
+const Short = require('../schema/short')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 
@@ -66,7 +67,7 @@ module.exports = (route, config, exempt) => {
   const getLong = async (req, res, next) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'q'))
-      const long = await Browser.getLong(req.query.q)
+      const long = await Short.getLong(req.query.q)
       return res.json(long)
     } catch (err) {
       return next(err)
