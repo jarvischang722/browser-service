@@ -16,7 +16,7 @@ INSERT INTO short (
   ('t1t', 'www.tripleonetech.net', '合众科技', ''),
   ('tot', 'www.tripleonetech.net', '合众科技', ''),
   ('apple', 'www.apple.com', '苹果', ''),
-  ('lanhai', 'www.lanhai.t1t.games', '', ''),
+  ('lanhai', 'm.lanhai.t1t.games', '蓝海娱乐', 'http://52.198.79.141/download/icon/lanhai.png'),
   ('xc', 'm.xc33.com', '新橙', 'http://52.198.79.141/download/icon/xc.png'),
   ('youhu', 'm.youhu.t1t.games', '游虎娱乐', 'http://52.198.79.141/download/icon/youhu.png'),
   ('macaopj', 'm.p9601.com', '澳门葡京', 'http://52.198.79.141/download/icon/macaopj.png'),
