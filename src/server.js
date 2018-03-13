@@ -27,7 +27,7 @@ const server = async () => {
     origin: (origin, callback) => {
       callback(null, true)
     },
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Key',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Key, If-None-Match',
     credentials: true,
   }))
 
