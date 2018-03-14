@@ -119,7 +119,8 @@ module.exports = (route, config, exempt) => {
   const storage = multer.diskStorage({
     destination: 'upload/icon',
     filename: (req, file, cb) => {
-      cb(null, `${req.user.id}.ico`)
+      const tarId = req.body.id || req.user.id
+      cb(null, `${tarId}.ico`)
     }
   })
 
