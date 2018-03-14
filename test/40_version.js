@@ -78,9 +78,27 @@ describe('Get browser list', () => {
 })
 
 describe('Update browser', () => {
+  it('for self by new platform', (done) => {
+    client()
+    .post('/browser/info')
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .send({
+      platform: 'ios',
+      version: '2.9.9',
+      link: 'https://apple.com',
+    })
+    .expect(204)
+    .end((err, res) => {
+      should.not.exist(err)
+      done()
+    })
+  })
+
   it('for self', (done) => {
     client()
-    .post('/browser/update')
+    .post('/browser/info')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
@@ -98,7 +116,7 @@ describe('Update browser', () => {
 
   it('for child', (done) => {
     client()
-    .post('/browser/update')
+    .post('/browser/info')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
@@ -107,6 +125,25 @@ describe('Update browser', () => {
       platform: 'mac',
       version: '2.9.10',
       link: 'https://live.com',
+    })
+    .expect(204)
+    .end((err, res) => {
+      should.not.exist(err)
+      done()
+    })
+  })
+
+  it('for child by new platform', (done) => {
+    client()
+    .post('/browser/info')
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .send({
+      id: env.user2.id,
+      platform: 'ios',
+      version: '2.10.10',
+      link: 'https://apple2.com',
     })
     .expect(204)
     .end((err, res) => {

@@ -4,7 +4,7 @@ const { validate, getSchema, T } = require('../validator')
 
 const SCHEMA = {
   id: T.number().integer(),
-  platform: T.string().valid(['windows', 'android', 'mac']).required(),
+  platform: T.string().valid(['windows', 'android', 'mac', 'ios']).required(),
   client: T.string().required(),
   link: T.string().uri().required(),
   version: T.string().required(),
@@ -23,22 +23,9 @@ module.exports = (route, config, exempt) => {
     }
   }
 
-  const addBrowserInfo = async (req, res, next) => {
-    try {
-      validate(req.body, getSchema(SCHEMA, 'id', 'platform', 'link', 'version'))
-      const tarId = req.body ? req.body.id : null
-      const profile = await User.getProfile(req.user.id, tarId, config)
-      const { id } = profile
-      const { platform, link, version } = req.body
-      await Version.addBrowserInfo(id, platform, link, version)
-      return res.status(204).send()
-    } catch (err) {
-      return next(err)
-    }
-  }
-
   const updateBrowserInfo = async (req, res, next) => {
     try {
+      // id: 用户id
       validate(req.body, getSchema(SCHEMA, 'id', 'platform', 'link', 'version'))
       const tarId = req.body ? req.body.id : null
       const profile = await User.getProfile(req.user.id, tarId, config)
@@ -73,8 +60,7 @@ module.exports = (route, config, exempt) => {
 
   route.get('/browser/version', getVersion)
 
-  route.post('/browser/add', addBrowserInfo)
-  route.post('/browser/update', updateBrowserInfo)
+  route.post('/browser/info', updateBrowserInfo)
   route.get('/browser/list', getBrowserList)
   route.get('/browser/detail', getBrowserDetail)
 }
