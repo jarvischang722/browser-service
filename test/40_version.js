@@ -121,7 +121,7 @@ describe('Update browser', () => {
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
     .send({
-      id: env.user2.id,
+      user: env.user2.id,
       platform: 'mac',
       version: '2.9.10',
       link: 'https://live.com',
@@ -140,7 +140,7 @@ describe('Update browser', () => {
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
     .send({
-      id: env.user2.id,
+      user: env.user2.id,
       platform: 'ios',
       version: '2.10.10',
       link: 'https://apple2.com',
