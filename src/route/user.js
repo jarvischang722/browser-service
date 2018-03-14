@@ -4,11 +4,6 @@ const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const { generateToken } = require('../authorization')
 
-const upload = multer({
-  dest: 'upload/',
-  limits: { fileSize: 1000000, files: 1 },
-})
-
 const SCHEMA = {
   id: T.number().integer(),
   role: T.number().integer().valid(1, 2),
@@ -121,12 +116,19 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const storage = multer.diskStorage({
+    destination: 'upload/icon',
+    filename: (req, file, cb) => {
+      cb(null, `${req.user.id}.ico`)
+    }
+  })
+
   exempt('/user/login')
 
   route.post('/user/login', login)
   route.get('/user/recurrent', recurrent)
   route.get('/user/profile', getProfile)
-  route.post('/user/profile', upload.single('icon'), updateProfile)
+  route.post('/user/profile', multer({ storage }).single('icon'), updateProfile)
   route.post('/user/create', createUser)
   route.get('/user/list', getChildren)
   route.post('/user/expire', changeChildExpireTime)

@@ -1,3 +1,4 @@
+const multer = require('multer')
 const Short = require('../schema/short')
 const { validate, getSchema, T } = require('../validator')
 const CONST = require('../schema/const')
@@ -66,10 +67,19 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const storage = multer.diskStorage({
+    destination: 'upload/image',
+    filename: (req, file, cb) => {
+      cb(null, `${req.body.short}.png`)
+    }
+  })
+
   exempt('/browser/short')
 
   route.get('/browser/short', getLong)
   route.get('/short/list', getList)
   route.get('/short/detail', getDetail)
-  route.post('/short', updateShort)
+  // route.post('/short', multer({ storage }).single('image'), updateShort)
+  // route.post('/short/create', addShort)
+  route.post('/short/update', updateShort)
 }

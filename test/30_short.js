@@ -111,7 +111,7 @@ describe('Long item', () => {
 
   it('update', (done) => {
     client()
-    .post('/short')
+    .post('/short/update')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)

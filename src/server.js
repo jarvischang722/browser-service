@@ -33,7 +33,7 @@ const server = async () => {
 
   app.use('/styles', express.static('src/public/css'))
   app.use('/download', express.static('deploy'))
-  app.use('/icon', express.static('icon'))
+  app.use('/upload', express.static('upload'))
   app.use('/smart', express.static('src/public/dist'))
 
   const apiRouter = new express.Router()

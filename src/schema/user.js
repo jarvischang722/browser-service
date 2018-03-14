@@ -131,14 +131,11 @@ const updateProfile = async (userId, req) => {
     let { homeUrl } = req.body
     if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
     const tarId = id || userId
-    const row = await checkPermission(userId, tarId)
+    await checkPermission(userId, tarId)
     let iconPath = null
     if (req.file && req.file.path) {
       // 优先判断req.file里是否有值, 有的话说明正在上传或更新图标
-      iconPath = `icon/${row.username}.ico`
-      const iconFolder = path.join(__dirname, '../..', 'icon')
-      if (!fs.existsSync(iconFolder)) fs.mkdirSync(iconFolder)
-      await utils.copy(req.file.path, path.join(iconFolder, `${row.username}.ico`))
+      iconPath = `upload/icon/${tarId}.ico`
     } else if (icon) {
       // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
       iconPath = icon
