@@ -1,3 +1,5 @@
+const Browser = require('./browser')
+
 const getVersion = async (platform, client) => {
   const query = `
     SELECT *
@@ -19,6 +21,46 @@ const getVersion = async (platform, client) => {
   }
 }
 
+const updateBrowserInfo = async (userId, platform, link, version) => {
+  const query = `
+    INSERT INTO browser (userid, platform, version, link, status) 
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY 
+    UPDATE
+      version = ?,
+      link = ?,
+      status = ?
+    ;`
+  const status = Browser.STATUS.VALID
+  await db.query(query, [userId, platform, version, link, status, version, link, status])
+}
+
+const getBrowserList = async (userId) => {
+  const query = `
+    SELECT *
+    FROM browser
+    WHERE userid = ?
+    ;`
+  const results = await db.query(query, [userId])
+  if (results.length <= 0) {
+    return {
+      total: 0,
+    }
+  }
+  const items = results.map(r => ({
+    platform: r.platform,
+    status: r.status,
+    link: r.link,
+    version: r.version,
+  }))
+  return {
+    total: items.length,
+    items,
+  }
+}
+
 module.exports = {
   getVersion,
+  updateBrowserInfo,
+  getBrowserList,
 }

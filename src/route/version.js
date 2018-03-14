@@ -1,6 +1,5 @@
 const User = require('../schema/user')
 const Version = require('../schema/version')
-const Browser = require('../schema/browser')
 const { validate, getSchema, T } = require('../validator')
 
 const SCHEMA = {
@@ -24,24 +23,28 @@ module.exports = (route, config, exempt) => {
     }
   }
 
-  const getBrowserInfo = async (req, res, next) => {
-    try {
-      validate(req.query, getSchema(SCHEMA, 'id'))
-      const browser = await Browser.getBrowserInfo(req.user.id, req.query.id, config)
-      return res.json(browser)
-    } catch (err) {
-      return next(err)
-    }
-  }
-
-  const updateBrowser = async (req, res, next) => {
+  const addBrowserInfo = async (req, res, next) => {
     try {
       validate(req.body, getSchema(SCHEMA, 'id', 'platform', 'link', 'version'))
       const tarId = req.body ? req.body.id : null
       const profile = await User.getProfile(req.user.id, tarId, config)
       const { id } = profile
       const { platform, link, version } = req.body
-      await Browser.updateBrowser(id, platform, link, version)
+      await Version.addBrowserInfo(id, platform, link, version)
+      return res.status(204).send()
+    } catch (err) {
+      return next(err)
+    }
+  }
+
+  const updateBrowserInfo = async (req, res, next) => {
+    try {
+      validate(req.body, getSchema(SCHEMA, 'id', 'platform', 'link', 'version'))
+      const tarId = req.body ? req.body.id : null
+      const profile = await User.getProfile(req.user.id, tarId, config)
+      const { id } = profile
+      const { platform, link, version } = req.body
+      await Version.updateBrowserInfo(id, platform, link, version)
       return res.status(204).send()
     } catch (err) {
       return next(err)
@@ -50,7 +53,16 @@ module.exports = (route, config, exempt) => {
 
   const getBrowserList = async (req, res, next) => {
     try {
-      const results = await Browser.getBrowserList(req.user.id)
+      const results = await Version.getBrowserList(req.user.id)
+      return res.json(results)
+    } catch (err) {
+      return next(err)
+    }
+  }
+
+  const getBrowserDetail = async (req, res, next) => {
+    try {
+      const results = await Version.getBrowserDetail(req.user.id)
       return res.json(results)
     } catch (err) {
       return next(err)
@@ -60,7 +72,9 @@ module.exports = (route, config, exempt) => {
   exempt('/browser/version')
 
   route.get('/browser/version', getVersion)
-  route.get('/browser/info', getBrowserInfo)
-  route.post('/browser/info', updateBrowser)
+
+  route.post('/browser/add', addBrowserInfo)
+  route.post('/browser/update', updateBrowserInfo)
   route.get('/browser/list', getBrowserList)
+  route.get('/browser/detail', getBrowserDetail)
 }

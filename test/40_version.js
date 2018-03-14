@@ -80,7 +80,7 @@ describe('Get browser list', () => {
 describe('Update browser', () => {
   it('for self', (done) => {
     client()
-    .post('/browser/info')
+    .post('/browser/update')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
@@ -98,7 +98,7 @@ describe('Update browser', () => {
 
   it('for child', (done) => {
     client()
-    .post('/browser/info')
+    .post('/browser/update')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)

@@ -36,5 +36,16 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const getBrowserInfo = async (req, res, next) => {
+    try {
+      validate(req.query, getSchema(SCHEMA, 'id'))
+      const browser = await Browser.getBrowserInfo(req.user.id, req.query.id, config)
+      return res.json(browser)
+    } catch (err) {
+      return next(err)
+    }
+  }
+
   route.post('/browser/create', createNewBrowser)
+  route.get('/browser/info', getBrowserInfo)
 }

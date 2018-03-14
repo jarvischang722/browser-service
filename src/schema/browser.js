@@ -25,19 +25,6 @@ const updateCreatingBrowserStatus = async (userId, platform, status) => {
   await db.query(query, [userId, platform, st, st])
 }
 
-const updateBrowser = async (userId, platform, link, version) => {
-  const query = `
-    INSERT INTO browser (userid, platform, version, link, status) 
-    VALUES (?, ?, ?, ?, ?)
-    ON DUPLICATE KEY 
-    UPDATE
-      version = ?,
-      link = ?,
-      status = ?
-    ;`
-  await db.query(query, [userId, platform, version, link, STATUS.VALID, version, link, STATUS.VALID])
-}
-
 // 先只支持windows版本
 const getUserBrowser = async (userId, config) => {
   const query = `
@@ -269,35 +256,10 @@ const getBrowserInfo = async (userId, tarId, config) => {
   return browser
 }
 
-const getBrowserList = async (userId) => {
-  const query = `
-    SELECT *
-    FROM browser
-    WHERE userid = ?
-    ;`
-  const results = await db.query(query, [userId])
-  if (results.length <= 0) {
-    return {
-      total: 0,
-    }
-  }
-  const items = results.map(r => ({
-    platform: r.platform,
-    status: r.status,
-    link: r.link,
-    version: r.version,
-  }))
-  return {
-    total: items.length,
-    items,
-  }
-}
-
 module.exports = {
+  STATUS,
   createBrowser,
   getUserBrowser,
   getBrowserInfo,
   updateCreatingBrowserStatus,
-  getBrowserList,
-  updateBrowser,
 }

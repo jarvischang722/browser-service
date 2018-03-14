@@ -137,7 +137,7 @@ describe('Long item', () => {
     const short = `short_${Date.now()}`
     const { long, site_name } = env.longItem
     client()
-    .post('/short/create')
+    .post('/short/add')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)

@@ -93,6 +93,6 @@ module.exports = (route, config, exempt) => {
   route.get('/browser/short', getLong)
   route.get('/short/list', getList)
   route.get('/short/detail', getDetail)
-  route.post('/short/create', multer({ storage }).single('image'), addShort)
+  route.post('/short/add', multer({ storage }).single('image'), addShort)
   route.post('/short/update', multer({ storage }).single('image'), updateShort)
 }
