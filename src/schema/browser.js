@@ -129,7 +129,6 @@ return function(url, host) {
 
 const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
-
   const rmpath = path.join(__dirname, '../..', 'deploy')
   try {
     const { projectPath, version, legalCopyright } = config.browser
@@ -251,12 +250,11 @@ const createBrowser = async (config, profile) => {
       fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)
       mv(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`, (err) => {
         if (err) return err
-        console.log('FILE TRANSFER SUCCESSFUL')
         return link
       })
     })
     .catch((error) => {
-      console.log(error)
+      console.error(error)
     })
   } catch (err) {
     await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
