@@ -1,4 +1,6 @@
 const Browser = require('./browser')
+const User = require('./user')
+const errors = require('../error')
 
 const getVersion = async (platform, client) => {
   const query = `
@@ -48,6 +50,7 @@ const getBrowserList = async (userId) => {
     }
   }
   const items = results.map(r => ({
+    id: r.id,
     platform: r.platform,
     status: r.status,
     link: r.link,
@@ -59,8 +62,29 @@ const getBrowserList = async (userId) => {
   }
 }
 
+const getBrowserDetail = async (userId, id) => {
+  const query = `
+    SELECT *
+    FROM browser
+    WHERE id = ?
+    ;`
+  const results = await db.query(query, [id])
+  if (results.length <= 0) throw new errors.BrowserInfoNotFoundError()
+  const row = results[0]
+  await User.checkPermission(userId, row.userid)
+  const info = {
+    id,
+    platform: row.platform,
+    status: row.status,
+    link: row.link,
+    version: row.version,
+  }
+  return info
+}
+
 module.exports = {
   getVersion,
   updateBrowserInfo,
   getBrowserList,
+  getBrowserDetail,
 }

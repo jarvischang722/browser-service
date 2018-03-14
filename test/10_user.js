@@ -207,7 +207,7 @@ describe('User', () => {
 
   it('Get user profile, but not child', (done) => {
     client()
-    .get('/user/profile?id=99')
+    .get('/user/profile?id=999999')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)

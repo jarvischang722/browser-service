@@ -12,6 +12,7 @@ const ERRORS = {
   NameRequired: 400,
   IconRequired: 400,
   HomeUrlRequired: 400,
+  BrowserInfoNotFound: 404,
 }
 
 errors.register(ERRORS)

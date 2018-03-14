@@ -67,10 +67,12 @@ describe('Get browser list', () => {
       res.body.should.have.property('total')
       res.body.should.have.property('items')
       for (const i of res.body.items) {
+        i.should.have.property('id')
         i.should.have.property('platform')
         i.should.have.property('status')
         i.should.have.property('link')
         i.should.have.property('version')
+        env.browserId = i.id
       }
       done()
     })
