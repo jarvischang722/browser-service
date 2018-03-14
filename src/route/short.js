@@ -16,6 +16,7 @@ const SCHEMA = {
 }
 
 const ERRORS = {
+  AddShortItemFailed: 400,
   ShortItemNotFound: 404,
 }
 
@@ -54,13 +55,26 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const addShort = async (req, res, next) => {
+    try {
+      if (req.user.id !== CONST.ADMIN_ID) throw new errors.NoPermissionError()
+      validate(req.body, getSchema(
+        SCHEMA, 'short', 'long', 'site_name')
+      )
+      const result = await Short.addShort(req)
+      return res.json(result)
+    } catch (err) {
+      return next(err)
+    }
+  }
+
   const updateShort = async (req, res, next) => {
     try {
       if (req.user.id !== CONST.ADMIN_ID) throw new errors.NoPermissionError()
-      const { id, short, long, site_name, logo_url } = validate(req.body, getSchema(
+      validate(req.body, getSchema(
         SCHEMA, 'id', 'short', 'long', 'site_name', 'logo_url')
       )
-      const result = await Short.updateShort(id, short, long, site_name, logo_url)
+      const result = await Short.updateShort(req)
       return res.json(result)
     } catch (err) {
       return next(err)
@@ -79,7 +93,6 @@ module.exports = (route, config, exempt) => {
   route.get('/browser/short', getLong)
   route.get('/short/list', getList)
   route.get('/short/detail', getDetail)
-  // route.post('/short', multer({ storage }).single('image'), updateShort)
-  // route.post('/short/create', addShort)
-  route.post('/short/update', updateShort)
+  route.post('/short/create', multer({ storage }).single('image'), addShort)
+  route.post('/short/update', multer({ storage }).single('image'), updateShort)
 }

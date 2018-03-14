@@ -110,12 +110,41 @@ describe('Long item', () => {
   })
 
   it('update', (done) => {
+    const { id, short, long, site_name } = env.longItem
     client()
     .post('/short/update')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
-    .send(env.longItem)
+    .field('id', id)
+    .field('short', short)
+    .field('long', long)
+    .field('site_name', site_name)
+    .attach('image', 'test/files/image.png')
+    .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('id')
+      res.body.should.have.property('short')
+      res.body.should.have.property('long')
+      res.body.should.have.property('site_name')
+      res.body.should.have.property('logo_url')
+      done()
+    })
+  })
+
+  it('add', (done) => {
+    const short = `short_${Date.now()}`
+    const { long, site_name } = env.longItem
+    client()
+    .post('/short/create')
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .field('short', short)
+    .field('long', long)
+    .field('site_name', site_name)
+    .attach('image', 'test/files/image.png')
     .expect(200)
     .end((err, res) => {
       should.not.exist(err)

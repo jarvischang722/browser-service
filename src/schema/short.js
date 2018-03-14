@@ -71,7 +71,39 @@ const getDetail = async (id) => {
   }
 }
 
-const updateShort = async (id, short, long, site_name, logo_url) => {
+const addShort = async (req) => {
+  const { short, long, site_name } = req.body
+  let logoPath = null
+  if (req.file && req.file.path) {
+    logoPath = `upload/image/${short}.png`
+  }
+  const query = `
+    INSERT short (short, \`long\`, site_name, logo_url)
+    VALUES (?, ?, ?, ?)
+    ;`
+  const results = await db.query(query, [
+    short, long, site_name, logoPath,
+  ])
+  if (!results.insertId) throw new errors.AddShortItemFailedError()
+  return {
+    id: results.insertId,
+    short,
+    long,
+    site_name,
+    logo_url: logoPath,
+  }
+}
+
+const updateShort = async (req) => {
+  const { id, short, long, site_name, logo_url } = req.body
+  let logoPath = null
+  if (req.file && req.file.path) {
+    // 优先判断req.file里是否有值
+    logoPath = `upload/image/${short}.png`
+  } else if (logo_url) {
+    // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
+    logoPath = logo_url
+  }
   const query = `
     UPDATE short
     SET
@@ -83,7 +115,7 @@ const updateShort = async (id, short, long, site_name, logo_url) => {
       id = ?
     ;`
   const results = await db.query(query, [
-    short, long, site_name, logo_url, id,
+    short, long, site_name, logoPath, id,
   ])
   if (results.affectedRows <= 0) throw new errors.ShortItemNotFoundError()
   return {
@@ -91,7 +123,7 @@ const updateShort = async (id, short, long, site_name, logo_url) => {
     short,
     long,
     site_name,
-    logo_url,
+    logo_url: logoPath,
   }
 }
 
@@ -99,5 +131,6 @@ module.exports = {
   getLong,
   getList,
   getDetail,
+  addShort,
   updateShort,
 }
