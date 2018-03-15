@@ -145,7 +145,7 @@ describe('Long item', () => {
     .field('long', long)
     .field('site_name', site_name)
     .attach('image', 'test/files/image.png')
-    .expect(200)
+    .expect(201)
     .end((err, res) => {
       should.not.exist(err)
       res.body.should.have.property('id')

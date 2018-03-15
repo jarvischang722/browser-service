@@ -62,7 +62,7 @@ module.exports = (route, config, exempt) => {
         SCHEMA, 'short', 'long', 'site_name')
       )
       const result = await Short.addShort(req)
-      return res.json(result)
+      return res.status(201).send(result)
     } catch (err) {
       return next(err)
     }
