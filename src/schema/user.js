@@ -2,9 +2,6 @@ const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
 const Browser = require('./browser')
-const fs = require('fs')
-const path = require('path')
-const utils = require('../utils')
 
 const checkExpireTime = async (userId, expireIn) => {
   const query = `
