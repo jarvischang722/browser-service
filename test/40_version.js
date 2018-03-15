@@ -54,8 +54,8 @@ describe('Get browser info', () => {
   })
 })
 
-describe('Get browser list', () => {
-  it('of self', (done) => {
+describe('Get browser', () => {
+  it('list of self', (done) => {
     client()
     .get('/browser/list')
     .set('Content-Type', 'application/json')
@@ -74,6 +74,65 @@ describe('Get browser list', () => {
         i.should.have.property('version')
         env.browserId = i.id
       }
+      done()
+    })
+  })
+
+  it('list of child', (done) => {
+    client()
+    .get(`/browser/list?user=${env.user2.id}`)
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('total')
+      res.body.should.have.property('items')
+      for (const i of res.body.items) {
+        i.should.have.property('id')
+        i.should.have.property('platform')
+        i.should.have.property('status')
+        i.should.have.property('link')
+        i.should.have.property('version')
+        env.browserId2 = i.id
+      }
+      done()
+    })
+  })
+
+  it('detail of self', (done) => {
+    client()
+    .get(`/browser/detail?id=${env.browserId}`)
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    // .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('id')
+      res.body.should.have.property('platform')
+      res.body.should.have.property('status')
+      res.body.should.have.property('link')
+      res.body.should.have.property('version')
+      done()
+    })
+  })
+
+  it('detail of child', (done) => {
+    client()
+    .get(`/browser/detail?id=${env.browserId2}`)
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    // .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('id')
+      res.body.should.have.property('platform')
+      res.body.should.have.property('status')
+      res.body.should.have.property('link')
+      res.body.should.have.property('version')
       done()
     })
   })
