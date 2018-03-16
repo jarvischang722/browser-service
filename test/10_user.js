@@ -147,6 +147,25 @@ describe('User', () => {
     })
   })
 
+  it('Create new agent with only username', (done) => {
+    client()
+    .post('/user/create')
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .send({
+      username: `agent2_${Date.now()}`,
+    })
+    .expect(201)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('id')
+      res.body.should.have.property('username')
+      res.body.should.have.property('password')
+      done()
+    })
+  })
+
   it('Sign in by new agent', (done) => {
     const { username, password } = newAgent
     client()
