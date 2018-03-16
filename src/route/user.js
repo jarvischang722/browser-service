@@ -6,14 +6,14 @@ const { generateToken } = require('../authorization')
 
 const SCHEMA = {
   id: T.number().integer(),
-  role: T.number().integer().valid(1, 2),
-  name: T.string().required(),
+  role: T.number().integer().valid(1, 2).default(1),
+  name: T.string(),
   expireIn: T.date().timestamp('unix').raw().allow(null, ''),
   username: T.string().required(),
   password: T.string().required(),
   homeUrl: T.alternatives().try(
     T.array().items(T.string().uri()),
-    T.string().uri(),
+    T.string().uri()
   ).required(),
   icon: T.string(),
   page: T.number().integer().min(1).default(1),
@@ -70,7 +70,7 @@ module.exports = (route, config, exempt) => {
 
   const updateProfile = async (req, res, next) => {
     try {
-      validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon'))
+      validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon'), ['name'])
       const user = await User.updateProfile(req.user.id, req)
       return res.json(user)
     } catch (err) {
