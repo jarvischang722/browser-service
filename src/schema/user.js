@@ -187,7 +187,7 @@ const getChildren = async (userId, page, pagesize) => {
     SELECT *
     FROM user
     WHERE parent = ?
-    ORDER BY id
+    ORDER BY id DESC
     LIMIT ?
     OFFSET ?
     ;`
