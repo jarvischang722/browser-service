@@ -75,7 +75,8 @@ const addShort = async (req) => {
   const { short, long, site_name } = req.body
   let logoPath = null
   if (req.file && req.file.path) {
-    logoPath = req.file.path
+    const host = `${req.protocol}://${req.get('host')}`
+    logoPath = `${host}/${req.file.path}`
   }
   const query = `
     INSERT short (short, \`long\`, site_name, logo_url)
@@ -99,7 +100,8 @@ const updateShort = async (req) => {
   let logoPath = null
   if (req.file && req.file.path) {
     // 优先判断req.file里是否有值
-    logoPath = req.file.path
+    const host = `${req.protocol}://${req.get('host')}`
+    logoPath = `${host}/${req.file.path}`
   } else if (logo_url) {
     // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
     logoPath = logo_url
