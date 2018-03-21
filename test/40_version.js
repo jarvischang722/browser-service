@@ -107,7 +107,7 @@ describe('Get browser', () => {
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
-    // .expect(200)
+    .expect(200)
     .end((err, res) => {
       should.not.exist(err)
       res.body.should.have.property('id')
@@ -125,7 +125,7 @@ describe('Get browser', () => {
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
-    // .expect(200)
+    .expect(200)
     .end((err, res) => {
       should.not.exist(err)
       res.body.should.have.property('id')

@@ -115,10 +115,13 @@ return function(url, host) {
 }
 
 const createBrowser = async (config, profile) => {
+  const Version = require('./version')
   const { id, username, name, homeUrl, icon } = profile
   const rmpath = path.join(__dirname, '../..', 'deploy')
   try {
-    const { projectPath, version, legalCopyright } = config.browser
+    const { projectPath, version: ver, legalCopyright } = config.browser
+    const buildNum = new Date().toFormat('MMDDHH24MI')
+    const version = `${ver}.${buildNum}`
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     // copy icon to client folder
@@ -233,7 +236,7 @@ const createBrowser = async (config, profile) => {
     .then(() => {
       const link = `/download/${setupFileName}`
       // update version if needed
-      updateBrowser(id, 'windows', link, version)
+      Version.updateBrowserInfo(id, 'windows', link, version)
       fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)
       mv(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`, (err) => {
         if (err) return err
