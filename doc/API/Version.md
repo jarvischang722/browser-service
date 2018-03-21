@@ -1,4 +1,4 @@
-### ✔ 短地址管理
+### ✔ 版本号管理
 
 只有tripleone可以调用
 
@@ -42,7 +42,7 @@ user           | query   | Number     | Required    |   Int, Min(1)           | 
 ```
 ---------------------
 
-#### ✔ `GET` `/browser/detail` - 获取短地址详情
+#### ✔ `GET` `/browser/detail` - 获取版本号详情
 
 + Parameters:
 
