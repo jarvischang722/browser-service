@@ -17,7 +17,7 @@ version         | body   | String     | Required   |                            
 
 ---------------------
 
-#### ✔ `GET` `/version/list` - 获取某客户下版本号列表
+#### ✔ `GET` `/browser/list` - 获取某客户下版本号列表
 
 + Parameters:
 
@@ -42,7 +42,7 @@ user           | query   | Number     | Required    |   Int, Min(1)           | 
 ```
 ---------------------
 
-#### ✔ `GET` `/short/detail` - 获取短地址详情
+#### ✔ `GET` `/browser/detail` - 获取短地址详情
 
 + Parameters:
 
