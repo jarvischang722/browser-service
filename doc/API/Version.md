@@ -2,7 +2,7 @@
 
 只有tripleone可以调用
 
-#### ✔ `POST` `/version/info` - 新增或更新版本号
+#### ✔ `POST` `/browser/info` - 新增或更新版本号
 
 + Parameters:
 
