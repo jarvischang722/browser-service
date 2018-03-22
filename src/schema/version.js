@@ -2,7 +2,15 @@ const Browser = require('./browser')
 const User = require('./user')
 const errors = require('../error')
 
-const getVersion = async (platform, client) => {
+const getLink = (link, platform, host) => {
+  if (!host || !link) return link
+  if (platform !== 'windows') return link
+  if (link.includes('http')) return link
+  if (!host.includes('http')) return link
+  return `${host}/${link}`
+}
+
+const getVersion = async (platform, client, host) => {
   const query = `
     SELECT *
     FROM
@@ -19,7 +27,7 @@ const getVersion = async (platform, client) => {
   const row = results[0]
   return {
     version: row.version,
-    link: row.link,
+    link: getLink(row.link, platform, host),
   }
 }
 
@@ -37,7 +45,7 @@ const updateBrowserInfo = async (userId, platform, link, version) => {
   await db.query(query, [userId, platform, version, link, status, version, link, status])
 }
 
-const getBrowserList = async (userId) => {
+const getBrowserList = async (userId, host) => {
   const query = `
     SELECT *
     FROM browser
@@ -53,7 +61,7 @@ const getBrowserList = async (userId) => {
     id: r.id,
     platform: r.platform,
     status: r.status,
-    link: r.link,
+    link: getLink(r.link, r.platform, host),
     version: r.version,
   }))
   return {
@@ -62,7 +70,7 @@ const getBrowserList = async (userId) => {
   }
 }
 
-const getBrowserDetail = async (userId, id) => {
+const getBrowserDetail = async (userId, id, host) => {
   const query = `
     SELECT *
     FROM browser
@@ -76,7 +84,7 @@ const getBrowserDetail = async (userId, id) => {
     id,
     platform: row.platform,
     status: row.status,
-    link: row.link,
+    link: getLink(row.link, row.platform, host),
     version: row.version,
   }
   return info

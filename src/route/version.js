@@ -24,7 +24,8 @@ module.exports = (route, config, exempt) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'platform', 'client'))
       const { platform, client } = req.query
-      const version = await Version.getVersion(platform, client)
+      const host = `${req.protocol}://${req.get('host')}`
+      const version = await Version.getVersion(platform, client, host)
       return res.json(version)
     } catch (err) {
       return next(err)
@@ -47,7 +48,8 @@ module.exports = (route, config, exempt) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'user'))
       const id = await getUserId(req)
-      const results = await Version.getBrowserList(id)
+      const host = `${req.protocol}://${req.get('host')}`
+      const results = await Version.getBrowserList(id, host)
       return res.json(results)
     } catch (err) {
       return next(err)
@@ -57,7 +59,8 @@ module.exports = (route, config, exempt) => {
   const getBrowserDetail = async (req, res, next) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'id'))
-      const results = await Version.getBrowserDetail(req.user.id, req.query.id)
+      const host = `${req.protocol}://${req.get('host')}`
+      const results = await Version.getBrowserDetail(req.user.id, req.query.id, host)
       return res.json(results)
     } catch (err) {
       return next(err)
