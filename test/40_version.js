@@ -1,6 +1,6 @@
 const client = require('./lib/client')
 
-const platform = 'windows'
+const platform = 'Windows'
 const clientName = 'agtop'
 
 describe('Get browser latest version and download link', () => {
@@ -146,7 +146,7 @@ describe('Update browser', () => {
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
     .send({
-      platform: 'ios',
+      platform: 'iOS',
       version: '2.9.9',
       link: 'https://apple.com',
     })
@@ -164,7 +164,7 @@ describe('Update browser', () => {
     .set('Accept', 'application/json')
     .set('X-Auth-Key', env.user.token)
     .send({
-      platform: 'windows',
+      platform: 'Windows',
       version: '2.9.9',
       link: 'https://google.com',
     })
@@ -183,7 +183,7 @@ describe('Update browser', () => {
     .set('X-Auth-Key', env.user.token)
     .send({
       user: env.user2.id,
-      platform: 'mac',
+      platform: 'macOS',
       version: '2.9.10',
       link: 'https://live.com',
     })
@@ -202,7 +202,7 @@ describe('Update browser', () => {
     .set('X-Auth-Key', env.user.token)
     .send({
       user: env.user2.id,
-      platform: 'ios',
+      platform: 'iOS',
       version: '2.10.10',
       link: 'https://apple2.com',
     })
