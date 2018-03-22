@@ -31,10 +31,10 @@ const server = async () => {
     credentials: true,
   }))
 
-  app.use('/styles', express.static('src/public/css'))
   app.use('/download', express.static('deploy'))
   app.use('/upload', express.static('upload'))
   app.use('/smart', express.static('src/public/dist'))
+  app.use('/styles', express.static('src/public/css'))
 
   const apiRouter = new express.Router()
   apiRouter.use(cookieParser(config.secret.cookie))

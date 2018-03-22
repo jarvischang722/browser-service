@@ -20,7 +20,6 @@ errors.register(ERRORS)
 module.exports = (route, config, exempt) => {
   const createNewBrowser = async (req, res, next) => {
     try {
-      const host = `${req.protocol}://${req.get('host')}`
       validate(req.body, getSchema(SCHEMA, 'id'))
       const tarId = req.body ? req.body.id : null
       const profile = await User.getProfile(req.user.id, tarId, config)
@@ -31,7 +30,7 @@ module.exports = (route, config, exempt) => {
       if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
       const { id } = profile
       await Browser.updateCreatingBrowserStatus(id, 'windows')
-      Browser.createBrowser(config, profile, host)
+      Browser.createBrowser(config, profile)
       return res.status(204).send()
     } catch (err) {
       return next(err)

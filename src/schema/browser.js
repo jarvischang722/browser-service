@@ -114,7 +114,7 @@ return function(url, host) {
   return pac
 }
 
-const createBrowser = async (config, profile, host) => {
+const createBrowser = async (config, profile) => {
   const Version = require('./version')
   const { id, username, name, homeUrl, icon } = profile
   const rmpath = path.join(__dirname, '../..', 'deploy')
@@ -234,7 +234,7 @@ const createBrowser = async (config, profile, host) => {
       },
     })
     .then(() => {
-      const link = `${host}/download/${setupFileName}`
+      const link = `download/${setupFileName}`
       // update version if needed
       Version.updateBrowserInfo(id, 'windows', link, version)
       fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)

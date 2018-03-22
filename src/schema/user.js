@@ -131,9 +131,8 @@ const updateProfile = async (userId, req) => {
     await checkPermission(userId, tarId)
     let iconPath = null
     if (req.file && req.file.path) {
-      const host = `${req.protocol}://${req.get('host')}`
       // 优先判断req.file里是否有值, 有的话说明正在上传或更新图标
-      iconPath = `${host}/${req.file.path}`
+      iconPath = `${req.file.path}`
     } else if (icon) {
       // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
       iconPath = icon
