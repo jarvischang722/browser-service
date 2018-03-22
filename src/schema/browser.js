@@ -118,7 +118,7 @@ const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
   const rmpath = path.join(__dirname, '../..', 'deploy')
   try {
-    const { projectPath, version: ver } = config.browser
+    const { projectPath, version: ver, legalCopyright } = config.browser
     const buildNum = new Date().toFormat('MMDDHH24MI')
     const version = `${ver}.${buildNum}`
     const optionPath = path.join(projectPath, `src/clients/${username}`)
@@ -167,7 +167,7 @@ const createBrowser = async (config, profile) => {
       config: {
         appId: uuidV4().toUpperCase(),
         buildVersion: version,
-        copyright: '',
+        copyright: legalCopyright,
         directories: {
           app: `${projectPath}/src/app/`,
           output: `${projectPath}/dist/client/`,
