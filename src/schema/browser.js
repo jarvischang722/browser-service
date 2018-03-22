@@ -5,7 +5,6 @@ const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const builder = require('electron-builder')
-const mv = require('mv')
 
 const STATUS = {
   VALID: 1,
@@ -200,7 +199,7 @@ const createBrowser = async (config, profile) => {
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
     console.log(3333)
-    builder.build({
+    const buildOpt = {
       extraMetadata: {
         name: `${name}`,
         description: `${name}`,
@@ -235,21 +234,14 @@ const createBrowser = async (config, profile) => {
           filter: ['**/*'],
         }],
       },
-    })
-    .then(() => {
-      console.log(44555)
-      const link = `download/${setupFileName}`
-      // update version if needed
-      Version.updateBrowserInfo(id, 'windows', link, version)
-      fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)
-      mv(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`, (err) => {
-        if (err) return err
-        return link
-      })
-    })
-    .catch((error) => {
-      console.error(error)
-    })
+    }
+    await builder.build(buildOpt)
+    const link = `download/${setupFileName}`
+    // update version if needed
+    await Version.updateBrowserInfo(id, 'windows', link, version)
+    fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)
+    await utils.copy(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`)
+    return link
   } catch (err) {
     console.log(err)
     await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
