@@ -118,7 +118,6 @@ const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
   const rmpath = path.join(__dirname, '../..', 'deploy')
   try {
-    console.log(1111)
     const { projectPath, version: ver, legalCopyright } = config.browser
     const buildNum = new Date().toFormat('MMDDHH24MI')
     const version = `${ver}.${buildNum}`
@@ -148,7 +147,6 @@ const createBrowser = async (config, profile) => {
         timeout: 180,
       },
     }
-    console.log(222)
     const pac = await getPacContent(homeUrl, localPort)
     const pacFile = path.join(optionPath, 'default.pac')
     fs.writeFileSync(pacFile, pac)
@@ -198,7 +196,6 @@ const createBrowser = async (config, profile) => {
     const setupFileName = `safety-browser-${username}-setup.exe`
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
-    console.log(3333)
     const buildOpt = {
       extraMetadata: {
         name: `${name}`,
@@ -243,7 +240,7 @@ const createBrowser = async (config, profile) => {
     await utils.copy(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`)
     return link
   } catch (err) {
-    console.log(err)
+    console.error(err)
     await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
   }
 }
