@@ -11,7 +11,7 @@ Field Name     | Scope | Type       | Attributes | Validation                | D
 short            | body   | String    | Required   |                               | 短地址
 long            | body   | String     | Required   |                               | 长地址
 site_name       | body   | String     | Optional   |                               | 网站名称
-image          | file   | String     | Optional   |                               | 网站图片
+logo_url          | file   | String     | Optional   |                               | 网站图片
 
 + Return: `HTTP Status: 201`
 

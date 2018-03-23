@@ -82,7 +82,7 @@ module.exports = (route, config, exempt) => {
   }
 
   const storage = multer.diskStorage({
-    destination: 'upload/image',
+    destination: 'upload/logo_url',
     filename: (req, file, cb) => {
       cb(null, `${req.body.short}.png`)
     }
@@ -93,6 +93,6 @@ module.exports = (route, config, exempt) => {
   route.get('/browser/short', getLong)
   route.get('/short/list', getList)
   route.get('/short/detail', getDetail)
-  route.post('/short/add', multer({ storage }).single('image'), addShort)
-  route.post('/short/update', multer({ storage }).single('image'), updateShort)
+  route.post('/short/add', multer({ storage }).single('logo_url'), addShort)
+  route.post('/short/update', multer({ storage }).single('logo_url'), updateShort)
 }

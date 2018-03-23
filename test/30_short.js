@@ -120,7 +120,7 @@ describe('Long item', () => {
     .field('short', short)
     .field('long', long)
     .field('site_name', site_name)
-    .attach('image', 'test/files/image.png')
+    .attach('logo_url', 'test/files/logo_url.png')
     .expect(200)
     .end((err, res) => {
       should.not.exist(err)
@@ -144,7 +144,7 @@ describe('Long item', () => {
     .field('short', short)
     .field('long', long)
     .field('site_name', site_name)
-    .attach('image', 'test/files/image.png')
+    .attach('logo_url', 'test/files/logo_url.png')
     .expect(201)
     .end((err, res) => {
       should.not.exist(err)
