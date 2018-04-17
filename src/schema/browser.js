@@ -189,7 +189,7 @@ const createBrowser = async (config, profile) => {
         },
         extraFiles: [{
           from: `${projectPath}/src/plugins`,
-          to: 'resources/src/plugins',
+          to: 'resources/plugins',
           filter: ['**/*'],
         }],
       },
