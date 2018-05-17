@@ -5,7 +5,7 @@ const { validate, getSchema, T } = require('../validator')
 const SCHEMA = {
   id: T.number().integer().required(),
   user: T.number().integer(),
-  platform: T.string().valid(['Windows', 'macOS', 'iOS', 'Andorid']).required(),
+  platform: T.string().valid(['Windows', 'macOS', 'iOS', 'Android']).required(),
   client: T.string().required(),
   link: T.string().uri().required(),
   version: T.string().required(),
