@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name"                : "Browser-service",
+      "name"                : "browser-api-service",
       "script"              : "src/index.js",
       "ignore_watch"        : ["log", "pid"],
       "instances"           : 1,
