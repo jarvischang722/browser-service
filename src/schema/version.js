@@ -4,7 +4,7 @@ const errors = require('../error')
 
 const getLink = (link, platform, host) => {
   if (!host || !link) return link
-  if (platform !== 'windows') return link
+  if (platform !== 'Windows') return link
   if (link.includes('http')) return link
   if (!host.includes('http')) return link
   return `${host}/${link}`

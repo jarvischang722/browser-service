@@ -21,7 +21,7 @@ id                  | query  | Int          | Optional   |   Number, Min(1)     
 
 ```javascript
 {
-    "platform": "windows",
+    "platform": "Windows",
     "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
     "version": {
         "local": "2.9.0",

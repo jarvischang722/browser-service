@@ -9,7 +9,7 @@
 Field Name       | Scope | Type       | Attributes | Validation                | Description      
 ---------------- | ------- | ----------- | ----------- | -----------------------  | -------------
 user               | body   | Number    | Required   |                            | 用户id
-platform        | body   | String    | Required   |  valid(windows, mac, ios, android) | 平台
+platform        | body   | String    | Required   |  valid(Windows, mac, ios, android) | 平台
 link            | body   | String     | Required   |                               | 长地址
 version         | body   | String     | Required   |                               | 网站名称
 

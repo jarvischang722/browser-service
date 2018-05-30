@@ -24,7 +24,7 @@ const updateCreatingBrowserStatus = async (userId, platform, status) => {
   await db.query(query, [userId, platform, st, st])
 }
 
-// 先只支持windows版本
+// 先只支持Windows版本
 const getUserBrowser = async (userId, config) => {
   const query = `
     SELECT *
@@ -33,7 +33,7 @@ const getUserBrowser = async (userId, config) => {
       userid = ?
       AND platform = ?
     ;`
-  const results = await db.query(query, [userId, 'windows'])
+  const results = await db.query(query, [userId, 'Windows'])
   let browser = null
   if (results.length > 0) {
     const row = results[0]
@@ -135,7 +135,7 @@ const createBrowser = async (config, profile) => {
       productNameEn: `${username.toUpperCase()} Safety Browser`,
       fileDescription: `${name}安全浏览器`,
       enabledFlash: true,
-      enabledProxy: true,
+      enabledProxy: false,
       clientId: uuidV4().toUpperCase(),
       proxyOptions: {
         localAddr: '127.0.0.1',
@@ -197,13 +197,13 @@ const createBrowser = async (config, profile) => {
     await builder.build(buildOpt)
     const link = `download/${setupFileName}`
     // update version if needed
-    await Version.updateBrowserInfo(id, 'windows', link, version)
+    await Version.updateBrowserInfo(id, 'Windows', link, version)
     fs.unlinkSync(`${projectPath}/dist/client/${setupFileName}.blockmap`)
     await utils.copy(`${projectPath}/dist/client/${setupFileName}`, `${rmpath}/${setupFileName}`)
     return link
   } catch (err) {
     console.error(err)
-    await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
+    await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
   }
 }
 
