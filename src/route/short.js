@@ -34,6 +34,15 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const getSsList = async (req, res, next) => {
+    try {
+      const ss = Short.getSsList()
+      return res.json({ ss })
+    } catch (err) {
+      return next(err)
+    }
+  }
+
   const getList = async (req, res, next) => {
     try {
       if (req.user.id !== CONST.ADMIN_ID) throw new errors.NoPermissionError()
@@ -90,8 +99,10 @@ module.exports = (route, config, exempt) => {
   })
 
   exempt('/browser/short')
+  exempt('/browser/ss')
 
   route.get('/browser/short', getLong)
+  route.get('/browser/ss', getSsList)
   route.get('/short/list', getList)
   route.get('/short/detail', getDetail)
   route.post('/short/add', multer({ storage }).single('logo_url'), addShort)

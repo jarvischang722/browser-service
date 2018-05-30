@@ -1,4 +1,5 @@
 const errors = require('../error')
+const crypto = require('../utils/crypto')
 
 const getLink = (link, host) => {
   if (!host || !link) return link
@@ -23,6 +24,16 @@ const getLong = async (q, host) => {
     site_name: row.site_name,
     logo_url: getLink(row.logo_url, host),
   }
+}
+
+const getSsList = () => {
+  const list = [
+    'ss://aes-256-cfb:dBbQMP8Nd9vyjvN@35.201.204.2:19999',
+  ]
+  const key = 'Triple1T'
+  const str = JSON.stringify(list)
+  const ss = crypto.encrypt(str, key)
+  return ss
 }
 
 const getList = async (page, pagesize) => {
@@ -136,6 +147,7 @@ const updateShort = async (req) => {
 
 module.exports = {
   getLong,
+  getSsList,
   getList,
   getDetail,
   addShort,
