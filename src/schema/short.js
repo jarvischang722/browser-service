@@ -1,6 +1,13 @@
 const errors = require('../error')
 
-const getLong = async (q) => {
+const getLink = (link, host) => {
+  if (!host || !link) return link
+  if (link.includes('http')) return link
+  if (!host.includes('http')) return link
+  return `${host}/${link}`
+}
+
+const getLong = async (q, host) => {
   const l = { long: '' }
   if (!q) return l
   const query = `
@@ -14,7 +21,7 @@ const getLong = async (q) => {
   return {
     long: row.long,
     site_name: row.site_name,
-    logo_url: row.logo_url,
+    logo_url: getLink(row.logo_url, host),
   }
 }
 

@@ -26,7 +26,8 @@ module.exports = (route, config, exempt) => {
   const getLong = async (req, res, next) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'q'))
-      const long = await Short.getLong(req.query.q)
+      const host = `${req.protocol}://${req.get('host')}`
+      const long = await Short.getLong(req.query.q, host)
       return res.json(long)
     } catch (err) {
       return next(err)
