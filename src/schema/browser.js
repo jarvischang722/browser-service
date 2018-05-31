@@ -187,6 +187,7 @@ const createBrowser = async (config, profile) => {
     if (!/^win/.test(process.platform)) {
       issFile = issFile.replace(/\//g, '\\')
     }
+    console.log(issFile)
     await utils.compiler(issFile, compilerOpt)
     const link = `/download/${setupFileName}.exe`
       // update version if needed
