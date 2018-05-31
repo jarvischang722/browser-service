@@ -111,6 +111,7 @@ return function(url, host) {
 });`
   return pac
 }
+
 const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
   try {
@@ -188,6 +189,7 @@ const createBrowser = async (config, profile) => {
     await Version.updateBrowserInfo(id, 'Windows', link, version)
     return link
   } catch (err) {
+    console.log(err)
     await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
   }
 }
