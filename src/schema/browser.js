@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
-const builder = require('electron-builder')
+const Version = require('./version')
 
 const STATUS = {
   VALID: 1,
@@ -113,7 +113,6 @@ return function(url, host) {
 }
 const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
-  
   try {
     const { projectPath, version, legalCopyright } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${username}`)
@@ -186,10 +185,10 @@ const createBrowser = async (config, profile) => {
     })
     const link = `/download/${setupFileName}.exe`
       // update version if needed
-    await updateBrowser(id, 'windows', link, version)
+    await Version.updateBrowserInfo(id, 'Windows', link, version)
     return link
   } catch (err) {
-    await updateCreatingBrowserStatus(id, 'windows', STATUS.FAILED)
+    await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
   }
 }
 
