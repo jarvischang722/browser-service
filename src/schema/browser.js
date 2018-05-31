@@ -162,7 +162,7 @@ const createBrowser = async (config, profile) => {
       icon: iconFile,
     }
     await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
-    await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe'), rceditOptions)
+    // await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe'), rceditOptions)
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
     await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
@@ -171,7 +171,7 @@ const createBrowser = async (config, profile) => {
     const compilerOpt = {
       gui: false,
       verbose: true,
-      signtool: 'tripleonesign=$p',
+      // signtool: 'tripleonesign=$p',
       O: path.join(__dirname, '../..', 'deploy'),
       F: setupFileName,
       DProjectHomeBase: projectPath,
