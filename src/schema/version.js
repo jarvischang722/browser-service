@@ -6,6 +6,7 @@ const getLink = (link, platform, host) => {
   if (platform !== 'Windows') return link
   if (link.includes('http')) return link
   if (!host.includes('http')) return link
+  if (link[0] === '/') link.slice(1)
   return `${host}/${link}`
 }
 
