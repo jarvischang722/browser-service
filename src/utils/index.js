@@ -23,7 +23,6 @@ const copy = (src, dest, options) => {
 const rceditSync = (exePath, options) => {
   const promise = (resolve, reject) => {
     rcedit(exePath, options, (err) => {
-      console.log(err)
       if (err) return reject(err)
       return resolve()
     })

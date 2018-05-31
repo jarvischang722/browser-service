@@ -183,7 +183,11 @@ const createBrowser = async (config, profile) => {
       DAPP_ICO: iconFile,
     }
     console.log(compilerOpt)
-    await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), compilerOpt)
+    let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
+    if (!/^win/.test(process.platform)) {
+      issFile = issFile.replace(/\//g, '\\')
+    }
+    await utils.compiler(issFile, compilerOpt)
     const link = `/download/${setupFileName}.exe`
       // update version if needed
     await Version.updateBrowserInfo(id, 'Windows', link, version)
