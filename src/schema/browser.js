@@ -149,7 +149,7 @@ const createBrowser = async (config, profile) => {
       // generate option file
     const optionFile = path.join(optionPath, 'client.json')
     fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
-    const iconFile = path.join(optionPath, 'icon.ico')
+    let iconFile = path.join(optionPath, 'icon.ico')
     const rceditOptions = {
       'version-string': {
         CompanyName: options.companyName,
@@ -168,6 +168,11 @@ const createBrowser = async (config, profile) => {
     await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
     const setupFileName = `safety-browser-${options.client}-setup`
+    let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
+    if (!/^win/.test(process.platform)) {
+      issFile = issFile.replace(/\//g, '\\')
+      iconFile = iconFile.replace(/\//g, '\\')
+    }
     const compilerOpt = {
       gui: false,
       verbose: true,
@@ -182,12 +187,6 @@ const createBrowser = async (config, profile) => {
       DAPP_TITLE_CH: options.productName,
       DAPP_ICO: iconFile,
     }
-    console.log(compilerOpt)
-    let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
-    if (!/^win/.test(process.platform)) {
-      issFile = issFile.replace(/\//g, '\\')
-    }
-    console.log(issFile)
     await utils.compiler(issFile, compilerOpt)
     const link = `/download/${setupFileName}.exe`
       // update version if needed
