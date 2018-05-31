@@ -170,7 +170,7 @@ const createBrowser = async (config, profile) => {
 
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
     const setupFileName = `safety-browser-${options.client}-setup`
-    await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), {
+    const compilerOpt = {
       gui: false,
       verbose: true,
       signtool: 'tripleonesign=$p',
@@ -183,7 +183,9 @@ const createBrowser = async (config, profile) => {
       DAPP_TITLE_EN: options.productNameEn,
       DAPP_TITLE_CH: options.productName,
       DAPP_ICO: iconFile,
-    })
+    }
+    console.log(compilerOpt)
+    await utils.compiler(path.join(projectPath, 'build/install-script/smartbrowser.iss'), compilerOpt)
     const link = `/download/${setupFileName}.exe`
       // update version if needed
     await Version.updateBrowserInfo(id, 'Windows', link, version)
