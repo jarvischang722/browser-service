@@ -169,17 +169,21 @@ const createBrowser = async (config, profile) => {
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
     const setupFileName = `safety-browser-${options.client}-setup`
     let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
+    let outputPath = path.join(__dirname, '../..', 'deploy')
+    let pPath = null
     if (!/^win/.test(process.platform)) {
       issFile = issFile.replace(/\//g, '\\')
       iconFile = iconFile.replace(/\//g, '\\')
+      outputPath = outputPath.replace(/\//g, '\\')
+      pPath = projectPath.replace(/\//g, '\\')
     }
     const compilerOpt = {
       gui: false,
       verbose: true,
       signtool: 'tripleonesign=$p',
-      O: path.join(__dirname, '../..', 'deploy'),
+      O: outputPath,
       F: setupFileName,
-      DProjectHomeBase: projectPath,
+      DProjectHomeBase: pPath || projectPath,
       DCLIENT: options.client,
       DCLIENT_GUID: `{${options.clientId}}`,
       DAPP_VERSION: version,
