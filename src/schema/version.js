@@ -1,4 +1,3 @@
-const Browser = require('./browser')
 const User = require('./user')
 const errors = require('../error')
 
@@ -41,6 +40,7 @@ const updateBrowserInfo = async (userId, platform, link, version) => {
       link = ?,
       status = ?
     ;`
+  const Browser = require('./browser')
   const status = Browser.STATUS.VALID
   await db.query(query, [userId, platform, version, link, status, version, link, status])
 }
