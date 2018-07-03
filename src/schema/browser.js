@@ -115,7 +115,7 @@ return function(url, host) {
 const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
   try {
-    const { projectPath, version, legalCopyright } = config.browser
+    const { projectPath, version, legalCopyright, pluginsDownloadUrl } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
       // copy icon to client folder
@@ -171,11 +171,13 @@ const createBrowser = async (config, profile) => {
     let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
     let outputPath = path.join(__dirname, '../..', 'deploy')
     let pPath = null
+    let pluginUrl = null
     if (!/^win/.test(process.platform)) {
       issFile = issFile.replace(/\//g, '\\')
       iconFile = iconFile.replace(/\//g, '\\')
       outputPath = outputPath.replace(/\//g, '\\')
       pPath = projectPath.replace(/\//g, '\\')
+      pluginUrl = pluginsDownloadUrl.replace(/\//g, '\\')
     }
     const compilerOpt = {
       gui: false,
@@ -184,6 +186,7 @@ const createBrowser = async (config, profile) => {
       O: outputPath,
       F: setupFileName,
       DProjectHomeBase: pPath || projectPath,
+      DPluginsDownloadUrl: pluginUrl || pluginsDownloadUrl,
       DCLIENT: options.client,
       DCLIENT_GUID: `{${options.clientId}}`,
       DAPP_VERSION: version,
