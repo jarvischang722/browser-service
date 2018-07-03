@@ -10,5 +10,6 @@ const bind = (route, config) => {
 }
 
 exempt('/')
+exempt('/pub_plugins')
 
 module.exports = { bind }

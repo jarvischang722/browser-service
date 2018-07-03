@@ -33,6 +33,8 @@ const server = async () => {
 
   app.use('/download', express.static('deploy'))
   app.use('/upload', express.static('upload'))
+  app.use('/pub_plugins', express.static('pub_plugins'))
+
 
   const apiRouter = new express.Router()
   apiRouter.use(cookieParser(config.secret.cookie))
