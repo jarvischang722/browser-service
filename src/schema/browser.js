@@ -165,7 +165,6 @@ const createBrowser = async (config, profile) => {
     await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe'), rceditOptions)
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
-    await utils.copy(path.join(projectPath, 'src/plugins'), path.join(projectPath, 'dist/unpacked/plugins'))
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
     const setupFileName = `safety-browser-${options.client}-setup`
     let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
