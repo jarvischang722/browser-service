@@ -118,7 +118,7 @@ const createBrowser = async (config, profile) => {
     const { projectPath, version, legalCopyright, pluginsDownloadUrl } = config.browser
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
-      // copy icon to client folder
+    // copy icon to client folder
     await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
     const localPort = await getLocalPort(id, username)
     // generate options
@@ -146,7 +146,7 @@ const createBrowser = async (config, profile) => {
     const pacFile = path.join(optionPath, 'default.pac')
     fs.writeFileSync(pacFile, pac)
     await utils.copy(pacFile, path.join(projectPath, 'src/app/config/default.pac'))
-      // generate option file
+    // generate option file
     const optionFile = path.join(optionPath, 'client.json')
     fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
     let iconFile = path.join(optionPath, 'icon.ico')
@@ -170,13 +170,11 @@ const createBrowser = async (config, profile) => {
     let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
     let outputPath = path.join(__dirname, '../..', 'deploy')
     let pPath = null
-    let pluginUrl = null
     if (!/^win/.test(process.platform)) {
       issFile = issFile.replace(/\//g, '\\')
       iconFile = iconFile.replace(/\//g, '\\')
       outputPath = outputPath.replace(/\//g, '\\')
       pPath = projectPath.replace(/\//g, '\\')
-      pluginUrl = pluginsDownloadUrl.replace(/\//g, '\\')
     }
     const compilerOpt = {
       gui: false,
@@ -185,7 +183,7 @@ const createBrowser = async (config, profile) => {
       O: outputPath,
       F: setupFileName,
       DProjectHomeBase: pPath || projectPath,
-      DPluginsDownloadUrl: pluginUrl || pluginsDownloadUrl,
+      DPluginsDownloadUrl: pluginsDownloadUrl,
       DCLIENT: options.client,
       DCLIENT_GUID: `{${options.clientId}}`,
       DAPP_VERSION: version,
@@ -195,7 +193,7 @@ const createBrowser = async (config, profile) => {
     }
     await utils.compiler(issFile, compilerOpt)
     const link = `/download/${setupFileName}.exe`
-      // update version if needed
+    // update version if needed
     await Version.updateBrowserInfo(id, 'Windows', link, version)
     return link
   } catch (err) {
