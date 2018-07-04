@@ -115,7 +115,9 @@ return function(url, host) {
 const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
   try {
-    const { projectPath, version, legalCopyright, pluginsDownloadUrl } = config.browser
+    const { projectPath, version: ver, legalCopyright, pluginsDownloadUrl } = config.browser
+    const buildNum = new Date().toFormat('MMDDHH24MI')
+    const version = `${ver}.${buildNum}`
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
       // copy icon to client folder
@@ -197,7 +199,6 @@ const createBrowser = async (config, profile) => {
     const link = `/download/${setupFileName}.exe`
       // update version if needed
     await Version.updateBrowserInfo(id, 'Windows', link, version)
-    await updateCreatingBrowserStatus(id, 'Windows', STATUS.VALID)
     return link
   } catch (err) {
     await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
