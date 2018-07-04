@@ -197,9 +197,9 @@ const createBrowser = async (config, profile) => {
     const link = `/download/${setupFileName}.exe`
       // update version if needed
     await Version.updateBrowserInfo(id, 'Windows', link, version)
+    await updateCreatingBrowserStatus(id, 'Windows', STATUS.VALID)
     return link
   } catch (err) {
-    console.log(err)
     await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
   }
 }
