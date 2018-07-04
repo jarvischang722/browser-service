@@ -200,6 +200,7 @@ const createBrowser = async (config, profile) => {
     await Version.updateBrowserInfo(id, 'Windows', link, version)
     return link
   } catch (err) {
+    console.log(err)
     await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
   }
 }
