@@ -261,7 +261,7 @@ describe('User', () => {
     .set('X-Auth-Key', env.user.token)
     .field('name', 'tripleonetech')
     .field('homeUrl', [
-      'http://www.demo.tripleonetech.com/',
+      'https://www.demo.tripleonetech.com/',
       'https://www.tripleonetech.com/',
     ])
     .attach('icon', 'test/files/icon.ico')
@@ -305,7 +305,7 @@ describe('User', () => {
     .field('id', env.user2.id)
     .field('name', '澳门新葡京')
     .field('homeUrl', [
-      'http://www.agtop.t1t.games/',
+      'https://www.agtop.t1t.games/',
     ])
     .attach('icon', 'test/files/icon.ico')
     .expect(200)

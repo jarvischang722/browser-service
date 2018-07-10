@@ -12,8 +12,12 @@ const SCHEMA = {
   username: T.string().required(),
   password: T.string().required(),
   homeUrl: T.alternatives().try(
-    T.array().items(T.string().uri()),
-    T.string().uri()
+    T.array().items(T.string().uri({
+      scheme: ['https']
+    })),
+    T.string().uri({
+      scheme: ['https']
+    })
   ).required(),
   icon: T.string(),
   page: T.number().integer().min(1).default(1),

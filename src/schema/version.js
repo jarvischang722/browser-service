@@ -1,4 +1,3 @@
-const User = require('./user')
 const errors = require('../error')
 
 const getLink = (link, platform, host) => {
@@ -72,6 +71,7 @@ const getBrowserList = async (userId, host) => {
 }
 
 const getBrowserDetail = async (userId, id, host) => {
+  const User = require('./user')
   const query = `
     SELECT *
     FROM browser
