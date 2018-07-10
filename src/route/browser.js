@@ -2,6 +2,7 @@ const User = require('../schema/user')
 const Browser = require('../schema/browser')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
+const url = require('url')
 
 const SCHEMA = {
   id: T.number().integer(),
@@ -12,6 +13,7 @@ const ERRORS = {
   NameRequired: 400,
   IconRequired: 400,
   HomeUrlRequired: 400,
+  HomeUrlHttpsRequired: 400,
   BrowserInfoNotFound: 404,
 }
 
@@ -28,6 +30,14 @@ module.exports = (route, config, exempt) => {
       if (!profile.name) throw new errors.NameRequiredError()
       if (!profile.icon) throw new errors.IconRequiredError()
       if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
+      if (!Array.isArray(profile.homeUrl)) {
+        profile.homeUrl = [profile.homeUrl]
+      }
+      profile.homeUrl.forEach((homeUrl) => {
+        const homeUrlParsed = url.parse(homeUrl, true)
+        if (!homeUrlParsed.protocol || homeUrlParsed.protocol.indexOf('https')) throw new errors.HomeUrlHttpsRequiredError()
+      })
+
       const { id } = profile
       await Browser.updateCreatingBrowserStatus(id, 'Windows')
       Browser.createBrowser(config, profile)
