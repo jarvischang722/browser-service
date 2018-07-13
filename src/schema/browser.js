@@ -143,6 +143,13 @@ const createBrowser = async (config, profile) => {
         method: 'aes-256-cfb',
         timeout: 180,
       },
+      ssServerList: [
+        {
+          serverAddr: '35.201.204.2',
+          serverPort: 19999,
+          password: 'dBbQMP8Nd9vyjvN',
+        }
+      ]
     }
     const pac = await getPacContent(homeUrl, localPort)
     const pacFile = path.join(optionPath, 'default.pac')
