@@ -3,6 +3,20 @@
   "server": {
     "port": 7001
   },
+  "ssServerList":[
+    {
+      "serverAddr": "106.75.166.72",
+      "serverPort": 19999,
+      "password": "nMvTdb7VXMPudFWH",
+      "method": "aes-256-cfb"
+    },
+    {
+      "serverAddr": "35.201.204.2",
+      "serverPort": 19999,
+      "password": "dBbQMP8Nd9vyjvN",
+      "method": "aes-256-cfb"
+    }
+  ],
   "database": {
     "mysql": {
       "host": "localhost",

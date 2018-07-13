@@ -5,6 +5,7 @@ const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const Version = require('./version')
+const serverOpt = require('../config')
 
 const STATUS = {
   VALID: 1,
@@ -123,6 +124,7 @@ const createBrowser = async (config, profile) => {
     // copy icon to client folder
     await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
     const localPort = await getLocalPort(id, username)
+    const ssServerList = serverOpt.ssServerList || []
     // generate options
     const options = {
       client: username,
@@ -134,22 +136,12 @@ const createBrowser = async (config, profile) => {
       enabledFlash: true,
       enabledProxy: true,
       clientId: uuidV4().toUpperCase(),
-      proxyOptions: {
+      proxyOptions: Object.assign({}, ssServerList.length > 0 ? ssServerList[0] : {}, {
         localAddr: '127.0.0.1',
         localPort,
-        serverAddr: '106.75.166.72',
-        serverPort: 19999,
-        password: 'nMvTdb7VXMPudFWH',
-        method: 'aes-256-cfb',
         timeout: 180,
-      },
-      ssServerList: [
-        {
-          serverAddr: '35.201.204.2',
-          serverPort: 19999,
-          password: 'dBbQMP8Nd9vyjvN',
-        }
-      ]
+      }),
+      ssServerList
     }
     const pac = await getPacContent(homeUrl, localPort)
     const pacFile = path.join(optionPath, 'default.pac')

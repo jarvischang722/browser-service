@@ -1,5 +1,6 @@
 const errors = require('../error')
 const crypto = require('../utils/crypto')
+const serverOpt = require('../config')
 
 const getLink = (link, host) => {
   if (!host || !link) return link
@@ -27,9 +28,8 @@ const getLong = async (q, host) => {
 }
 
 const getSsList = () => {
-  const list = [
-    'ss://aes-256-cfb:dBbQMP8Nd9vyjvN@35.201.204.2:19999',
-  ]
+  const ssServerList = serverOpt.ssServerList || []
+  const list = ssServerList.map((ss) => `ss://${ss.method}:${ss.password}@${ss.serverAddr}:${ss.serverPort}`)
   const key = 'Triple1T'
   const str = JSON.stringify(list)
   const ss = crypto.encrypt(str, key)
