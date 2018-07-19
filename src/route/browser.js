@@ -1,7 +1,9 @@
 const User = require('../schema/user')
 const Browser = require('../schema/browser')
+const SsUtil = require('../utils/shadowsocks')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
+const serverOpt = require('../config')
 const url = require('url')
 
 const SCHEMA = {
@@ -58,12 +60,19 @@ module.exports = (route, config, exempt) => {
     }
   }
 
-  const getHomeUrlList = async (req, res, next) => {
+  const getHomeUrlAndSsInfoList = async (req, res, next) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'clientName'))
       const { clientName } = req.query
       const homeUrlList = await User.getHomeUrlByClientName(clientName)
-      return res.json({ homeUrlList })
+      const ssList = []
+      const ssServerList = serverOpt.ssServerList || []
+      for (const ss of ssServerList) {
+        const isEnable = await SsUtil.checkSSIsAvail(ss, { timeout: 1000 })
+        if (isEnable) ssList.push(ss)
+      }
+      return res.json({ homeUrlList, ssList })
+
     } catch (err) {
       return next(err)
     }
@@ -74,5 +83,5 @@ module.exports = (route, config, exempt) => {
 
   route.post('/browser/create', createNewBrowser)
   route.get('/browser/info', getBrowserInfo)
-  route.get('/browser/homeUrl', getHomeUrlList)
+  route.get('/browser/homeUrlAndSsInfo', getHomeUrlAndSsInfoList)
 }
