@@ -70,6 +70,22 @@ const getHomeUrl = async (userId) => {
   return homeUrl
 }
 
+/**
+ * Take homurl with client.
+ * @param {String} clientName : client'username
+ */
+const getHomeUrlByClientName = async (clientName) => {
+  const queryUrl = `
+    SELECT url
+    FROM homeurl h
+    INNER JOIN user u on u.id = h.userid
+    WHERE u.username = ?
+    ;`
+  const resultsUrl = await db.query(queryUrl, [clientName])
+  const homeUrls = resultsUrl.map(r => r.url)
+  return homeUrls
+}
+
 const login = async (userName, password) => {
   const query = `
     SELECT *
@@ -227,6 +243,7 @@ const changeChildExpireTime = async (userId, tarId, expireIn) => {
 module.exports = {
   login,
   getUser,
+  getHomeUrlByClientName,
   getProfile,
   updateProfile,
   createUser,

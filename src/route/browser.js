@@ -6,6 +6,7 @@ const url = require('url')
 
 const SCHEMA = {
   id: T.number().integer(),
+  clientName: T.string().required().regex(/^\w+$/)
 }
 
 const ERRORS = {
@@ -57,6 +58,21 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const getHomeUrlList = async (req, res, next) => {
+    try {
+      validate(req.query, getSchema(SCHEMA, 'clientName'))
+      const { clientName } = req.query
+      const homeUrlList = await User.getHomeUrlByClientName(clientName)
+      return res.json({ homeUrlList })
+    } catch (err) {
+      return next(err)
+    }
+  }
+
+
+  exempt('/browser/homeUrl')
+
   route.post('/browser/create', createNewBrowser)
   route.get('/browser/info', getBrowserInfo)
+  route.get('/browser/homeUrl', getHomeUrlList)
 }
