@@ -9,7 +9,7 @@
   "description": "Tripleonetech discover service",
   "main": "index.js",
   "scripts": {
-    "build-apidoc": "apidoc -i src/route -o ./apidoc & apidoc-markdown -p  ./apidoc -o doc/API.md",
+    "build-apidoc": "apidoc -i src/route -o ./doc/apidoc & apidoc-markdown -p  ./doc/apidoc -o ./doc/API.md",
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha -u tdd",
     "start": "node ./src/index.js"
   },
@@ -20,7 +20,10 @@
   "author": "john.fu@tripleonetech.net",
   "license": "ISC",
   "apidoc": {
-    "title": "Tripleonetech discover service"
+    "title": "Tripleonetech discover service",
+    "template": {
+      "forceLanguage": "en"
+    }
   },
   "dependencies": {
     "asar": "^0.13.0",

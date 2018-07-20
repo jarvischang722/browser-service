@@ -24,4 +24,4 @@ src/config/*.json
 
 package-lock.json
 
-apidoc
+/doc/apidoc

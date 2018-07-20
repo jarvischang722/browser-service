@@ -79,9 +79,105 @@ module.exports = (route, config, exempt) => {
   }
 
 
-  exempt('/browser/homeUrl')
+  exempt('/browser/homeUrlAndSsInfo')
 
+  /**
+   * @api {post} /browser/create  生成浏览器
+   * @apiVersion 1.0.0
+   * @apiGroup browser
+   * @apiDescription 为目标用户生成浏览器
+   *
+   * @apiHeader {String} Content-Type
+   * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
+   *
+   *  @apiHeaderExample {json} Header-Example:
+   * {
+   *    "Content-Type": "application/json",
+   *    "X-Auth-Key": "eyJhbGci..."
+   * }
+   *
+   * @apiParam {Number{>=1}} [id]  用户id 
+   *
+   * 說明
+   *   1. 如果没有传id, 则获取自己的profile
+   *   2. 如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError
+
+   *
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 204 OK
+   *     {
+   *     }
+   *
+   * @apiError UserNotFoundError  不是目标用户的上级
+   *
+   */
   route.post('/browser/create', createNewBrowser)
+  /**
+ * @api {get} /browser/info 获得浏览器信息
+ * @apiVersion 1.0.0
+ * @apiGroup browser
+ * @apiDescription 获得自己的浏览器信息
+ *
+ * @apiHeader {String} Content-Type
+ * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
+ *
+ *  @apiHeaderExample {json} Header-Example:
+ * {
+ *    "Content-Type": "application/json",
+ *    "X-Auth-Key": "eyJhbGci..."
+ * }
+ *
+ * @apiParam {Number{>=1}} [id]  用户id
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *      "platform": "Windows",
+ *      "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+ *      "version": {
+ *        "local": "2.9.0",
+ *        "server": "2.9.2"
+ *       }
+ *      }
+ *
+ *
+ */
   route.get('/browser/info', getBrowserInfo)
+  /**
+ * @api {get} /browser/homeUrlAndSsInfo 获得用户主页以及SS
+ * @apiVersion 1.0.0
+ * @apiGroup browser
+ * @apiDescription 获得用户的主页以及返回可用的shadow socks资讯
+ *
+ * @apiParam {String} clientName  用户username
+ *
+ * @apiSuccess (Success 200) {Array} homeUrlList 该用户所有主页
+ * @apiSuccess (Success 200) {Array} ssList  可用的shadow socks资讯
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "homeUrlList": [
+ *             "https://t1t.games.org/",
+ *             "https://t2t.games.org/"
+ *         ],
+ *         "ssList": [
+ *             {
+ *                 "serverAddr": "35.201.204.2",
+ *                 "serverPort": 19999,
+ *                 "password": "dBbQMP8Nd9vyjvN",
+ *                 "method": "aes-256-cfb"
+ *             },
+ *             {
+ *                 "serverAddr": "35.201.204.2",
+ *                 "serverPort": 19999,
+ *                 "password": "dBbQMP8Nd9vyjvN",
+ *                 "method": "aes-256-cfb"
+ *             }
+ *         ]
+ *       }
+ *
+ *
+ */
   route.get('/browser/homeUrlAndSsInfo', getHomeUrlAndSsInfoList)
 }
