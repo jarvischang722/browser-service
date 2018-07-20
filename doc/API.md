@@ -166,7 +166,7 @@ HTTP Status: 200
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| String			|  <p>id</p>							|
+| id			| Number			|  <p>id</p>							|
 
 ### Success Response
 

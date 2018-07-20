@@ -155,7 +155,7 @@ module.exports = (route, config, exempt) => {
 * @apiVersion 1.0.0
 * @apiGroup Short
 *
-* @apiParam {String{>=1}} id  id
+* @apiParam {Number{>=1}} id  id
 *
 * @apiSuccess (Success 201) {Number} id
 * @apiSuccess (Success 201) {String} short
