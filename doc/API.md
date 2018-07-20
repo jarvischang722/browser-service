@@ -2,23 +2,35 @@
 
 Tripleonetech discover service
 
-- [browser](#browser)
+- [Browser](#browser)
 	- [获得用户主页以及SS](#获得用户主页以及ss)
 	- [获得浏览器信息](#获得浏览器信息)
 	- [生成浏览器](#生成浏览器)
 	
-- [user](#user)
-	- [修改下级代理过期时间](#修改下级代理过期时间)
+- [Short](#short)
+	- [获取可用shadowsocks server 列表](#获取可用shadowsocks-server-列表)
+	- [编辑短地址](#编辑短地址)
+	- [获取短地址列表](#获取短地址列表)
+	- [新增一条短地址](#新增一条短地址)
+	- [编辑短地址](#编辑短地址)
+	
+- [User](#user)
 	- [获取下级用户列表](#获取下级用户列表)
 	- [获取用户信息](#获取用户信息)
 	- [recurrent](#recurrent)
 	- [创建下级代理/客户](#创建下级代理/客户)
+	- [修改下级代理过期时间](#修改下级代理过期时间)
 	- [登陆](#登陆)
 	- [更新用户信息](#更新用户信息)
 	
+- [Version](#version)
+	- [获取版本号详情](#获取版本号详情)
+	- [获取某客户下版本号列表](#获取某客户下版本号列表)
+	- [新增或更新版本号](#新增或更新版本号)
+	
 
 
-# browser
+# Browser
 
 ## 获得用户主页以及SS
 
@@ -38,27 +50,27 @@ Tripleonetech discover service
 Success-Response:
 
 ```
-HTTP/1.1 200 OK
-{
-  "homeUrlList": [
-        "https://t1t.games.org/",
-        "https://t2t.games.org/"
-    ],
-    "ssList": [
-        {
-            "serverAddr": "35.201.204.2",
-            "serverPort": 19999,
-            "password": "dBbQMP8Nd9vyjvN",
-            "method": "aes-256-cfb"
-        },
-        {
-            "serverAddr": "35.201.204.2",
-            "serverPort": 19999,
-            "password": "dBbQMP8Nd9vyjvN",
-            "method": "aes-256-cfb"
-        }
-    ]
-  }
+HTTP Status: 200
+    {
+      "homeUrlList": [
+            "https://t1t.games.org/",
+            "https://t2t.games.org/"
+        ],
+        "ssList": [
+            {
+                "serverAddr": "35.201.204.2",
+                "serverPort": 19999,
+                "password": "dBbQMP8Nd9vyjvN",
+                "method": "aes-256-cfb"
+            },
+            {
+                "serverAddr": "35.201.204.2",
+                "serverPort": 19999,
+                "password": "dBbQMP8Nd9vyjvN",
+                "method": "aes-256-cfb"
+            }
+        ]
+      }
 ```
 ## 获得浏览器信息
 
@@ -84,15 +96,15 @@ HTTP/1.1 200 OK
 Success-Response:
 
 ```
-HTTP/1.1 200 OK
-{
- "platform": "Windows",
- "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
- "version": {
-   "local": "2.9.0",
-   "server": "2.9.2"
-  }
- }
+HTTP Status: 200
+    {
+     "platform": "Windows",
+     "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+     "version": {
+       "local": "2.9.0",
+       "server": "2.9.2"
+      }
+     }
 ```
 ## 生成浏览器
 
@@ -118,25 +130,43 @@ HTTP/1.1 200 OK
 Success-Response:
 
 ```
-HTTP/1.1 204 OK
+HTTP Status: 204
+    {
+    }
+```
+# Short
+
+## 获取可用shadowsocks server 列表
+
+
+
+	GET /browser/ss
+
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
 {
+
+"ss":"ydWUdlhwHrKZjC0Hg67tzF5GdkvMBB4odoPpXIUsmzpbRc1iYfpskjVHgY5b/u0TePWFQMsoi1Oy3eMiE
+     3l+6JmMLQeDru3MbQMmJEpaYBD3k0DmjHr1sXEQtmy9PuI6x2v5hQrAqcIGlgRZHdXTLQ=="
 }
 ```
-# user
-
-## 修改下级代理过期时间
+## 编辑短地址
 
 
 
-	GET /user/expire
+	GET /short/detail
 
 
 ### Parameters
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| String			|  <p>用户id</p>							|
-| expireIn			| Date			|  <p>过期时间, 不能超过自己的</p>							|
+| id			| String			|  <p>id</p>							|
 
 ### Success Response
 
@@ -145,10 +175,109 @@ Success-Response:
 ```
 HTTP Status: 201
 {
-  "id": 10,
-  "expireIn": "1510641466"
+"id": 1,
+"short": "apple",
+"long": "apple.com",
+"site_name": "苹果",
+"logo_url": "xxxx"
 }
 ```
+## 获取短地址列表
+
+
+
+	GET /short/list
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| page			| Number			| **optional** <p>页码</p>							|
+| pagesize			| Number			| **optional** <p>每页数量</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+"total": 10,
+"items": [
+  {
+    "id": 1,
+    "short": "apple",
+    "long": "apple.com",
+    "site_name": "苹果",
+    "logo_url": "xxxx"
+  }
+]
+}
+```
+## 新增一条短地址
+
+
+
+	POST /short/add
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| short			| String			|  <p>短地址</p>							|
+| long			| String			|  <p>长地址</p>							|
+| site_name			| String			| **optional** <p>网站名称</p>							|
+| logo_url			| String			| **optional** <p>网站图片</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 201
+{
+   "id": 10,
+   "short": "apple",
+   "long": "apple.com",
+   "site_name": "苹果",
+   "logo_url": "xxxx"
+}
+```
+## 编辑短地址
+
+
+
+	POST /short/update
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| id			| String			|  <p>id</p>							|
+| short			| String			|  <p>短地址</p>							|
+| long			| String			|  <p>长地址</p>							|
+| site_name			| String			| **optional** <p>网站名称</p>							|
+| logo_url			| String			| **optional** <p>网站图片</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 201
+{
+ "id": 10,
+ "short": "apple",
+ "long": "apple.com",
+ "site_name": "苹果",
+ "logo_url": "xxxx"
+}
+```
+# User
+
 ## 获取下级用户列表
 
 
@@ -268,6 +397,31 @@ HTTP Status: 201
   "password": "pass1234"
 }
 ```
+## 修改下级代理过期时间
+
+
+
+	POST /user/expire
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| id			| String			|  <p>用户id</p>							|
+| expireIn			| Date			|  <p>过期时间, 不能超过自己的</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 201
+{
+  "id": 10,
+  "expireIn": "1510641466"
+}
+```
 ## 登陆
 
 <p>登陆</p>
@@ -307,7 +461,7 @@ HTTP Status: 200
 |---------|-----------|--------------------------------------|
 | id			| Number			| **optional** <p>用户id</p>							|
 | name			| String			|  <p>名称</p>							|
-| homeUrl			| Array[String]			|  <p>主页列表</p>							|
+| homeUrl			| String[]			|  <p>主页列表</p>							|
 | icon			| String			|  <p>用户图标</p>							|
 
 ### Success Response
@@ -325,5 +479,87 @@ HTTP Status: 200
       "https://www.tripleonetech.net"
   ]
 }
+```
+# Version
+
+## 获取版本号详情
+
+
+
+	GET /browser/detail
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| user			| Number			|  <p>用户id</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+ "id": 1,
+ "platform": "ios",
+ "link": "apple.com",
+ "version": "xxx"
+}
+```
+## 获取某客户下版本号列表
+
+
+
+	GET /browser/list
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| user			| Number			|  <p>用户id</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+ "total": 10,
+ "items": [
+   {
+     "id": 1,
+     "platform": "ios",
+     "link": "apple.com",
+     "version": "xxx"
+   }
+ ]
+}
+```
+## 新增或更新版本号
+
+
+
+	POST /browser/info
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| user			| Number			|  <p>短地址 用户id</p>							|
+| platform			| String			|  <p>平台</p>							|
+| link			| String			|  <p>长地址</p>							|
+| version			| String			|  <p>网站名称</p>							|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 204
 ```
 

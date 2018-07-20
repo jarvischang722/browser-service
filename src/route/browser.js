@@ -84,7 +84,7 @@ module.exports = (route, config, exempt) => {
   /**
    * @api {post} /browser/create  生成浏览器
    * @apiVersion 1.0.0
-   * @apiGroup browser
+   * @apiGroup Browser
    * @apiDescription 为目标用户生成浏览器
    *
    * @apiHeader {String} Content-Type
@@ -104,7 +104,7 @@ module.exports = (route, config, exempt) => {
 
    *
    * @apiSuccessExample Success-Response:
-   *     HTTP/1.1 204 OK
+   * HTTP Status: 204
    *     {
    *     }
    *
@@ -115,7 +115,7 @@ module.exports = (route, config, exempt) => {
   /**
  * @api {get} /browser/info 获得浏览器信息
  * @apiVersion 1.0.0
- * @apiGroup browser
+ * @apiGroup Browser
  * @apiDescription 获得自己的浏览器信息
  *
  * @apiHeader {String} Content-Type
@@ -130,7 +130,7 @@ module.exports = (route, config, exempt) => {
  * @apiParam {Number{>=1}} [id]  用户id
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
+ * HTTP Status: 200
  *     {
  *      "platform": "Windows",
  *      "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
@@ -146,7 +146,7 @@ module.exports = (route, config, exempt) => {
   /**
  * @api {get} /browser/homeUrlAndSsInfo 获得用户主页以及SS
  * @apiVersion 1.0.0
- * @apiGroup browser
+ * @apiGroup Browser
  * @apiDescription 获得用户的主页以及返回可用的shadow socks资讯
  *
  * @apiParam {String} clientName  用户username
@@ -155,7 +155,7 @@ module.exports = (route, config, exempt) => {
  * @apiSuccess (Success 200) {Array} ssList  可用的shadow socks资讯
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
+ * HTTP Status: 200
  *     {
  *       "homeUrlList": [
  *             "https://t1t.games.org/",

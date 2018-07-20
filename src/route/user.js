@@ -133,7 +133,7 @@ module.exports = (route, config, exempt) => {
   /**
 * @api {post} /user/login 登陆
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 * @apiDescription 登陆
 *
 * @apiParam {String} username  用户名
@@ -156,7 +156,7 @@ module.exports = (route, config, exempt) => {
   /**
 * @api {get} /user/recurrent recurrent
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 * @apiDescription recurrent
 *
 * @apiSuccess (Success 200) {Number} id
@@ -176,7 +176,7 @@ module.exports = (route, config, exempt) => {
   /**
 * @api {get} /user/profile 获取用户信息
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 * @apiDescription 获得目标用户的信息
 *
 * @apiParam {Number} id  用户id
@@ -222,12 +222,12 @@ module.exports = (route, config, exempt) => {
   /**
 * @api {post} /user/profile 更新用户信息
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 * @apiDescription 更新目标用户的信息
 *
 * @apiParam {Number{>=1}} [id]  用户id
 * @apiParam {String} name  名称
-* @apiParam {Array[String]} homeUrl  主页列表
+* @apiParam {String[]} homeUrl  主页列表
 * @apiParam {String} icon  用户图标
 *
 * @apiSuccess (Success 200) {Number} id
@@ -252,16 +252,16 @@ module.exports = (route, config, exempt) => {
   /**
 * @api {post} /user/create  创建下级代理/客户
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 *
 * @apiParam {String} username  用户名(唯一)
 * @apiParam {String} name  名称
 * @apiParam {Number=1,2} role  权限 1: 代理 2: 客户
 * @apiParam {Date} expireIn  过期时间, 不能超过自己的
 *
-* @apiSuccess (Success 200) {Number} id
-* @apiSuccess (Success 200) {String} username
-* @apiSuccess (Success 200) {String} password
+* @apiSuccess (Success 201) {Number} id
+* @apiSuccess (Success 201) {String} username
+* @apiSuccess (Success 201) {String} password
 *
 * @apiSuccessExample Success-Response:
 * HTTP Status: 201
@@ -275,7 +275,7 @@ module.exports = (route, config, exempt) => {
   /**
 * @api {get} /user/list  获取下级用户列表
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 *
 * @apiParam {Number{>=1}} [page=1]  页码
 * @apiParam {Number{>=1}} [pagesize=10]  每页数量
@@ -301,15 +301,15 @@ module.exports = (route, config, exempt) => {
 */
   route.get('/user/list', getChildren)
   /**
-* @api {get} /user/expire  修改下级代理过期时间
+* @api {post} /user/expire  修改下级代理过期时间
 * @apiVersion 1.0.0
-* @apiGroup user
+* @apiGroup User
 *
 * @apiParam {String} id  用户id
 * @apiParam {Date} expireIn  过期时间, 不能超过自己的
 *
-* @apiSuccess (Success 200) {Number} id
-* @apiSuccess (Success 200) {String} expireIn
+* @apiSuccess (Success 201) {Number} id
+* @apiSuccess (Success 201) {String} expireIn
 *
 * @apiSuccessExample Success-Response:
 * HTTP Status: 201
