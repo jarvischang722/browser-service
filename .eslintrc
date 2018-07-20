@@ -21,38 +21,92 @@
     "ecmascript": 6
   },
   "rules": {
-    "arrow-parens": [0, "as-needed"],
-    "comma-dangle": ["error", {
+    "arrow-parens": [
+      0,
+      "as-needed"
+    ],
+    "comma-dangle": [
+      "error",
+      {
         "arrays": "only-multiline",
         "objects": "only-multiline",
         "imports": "only-multiline",
         "exports": "only-multiline",
         "functions": "never"
-    }],
+      }
+    ],
     "no-confusing-arrow": 0,
     "no-plusplus": 0,
-    "camelcase": [0, { "properties": "always" }],
-    "semi": [2, "never"],
+    "camelcase": [
+      0,
+      {
+        "properties": "always"
+      }
+    ],
+    "semi": [
+      2,
+      "never"
+    ],
     "global-require": 0,
-    "no-param-reassign": ["error", { "props": false }],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ],
     "object-property-newline": 0,
     "object-curly-newline": 0,
     "function-paren-newline": 0,
     "prefer-destructuring": 0,
     "no-mixed-operators": [
-        "error",
-        {
-            "groups": [
-                ["*", "/", "%", "**"],
-                ["&", "|", "^", "~", "<<", ">>", ">>>"],
-                ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
-                ["&&", "||"],
-                ["in", "instanceof"]
-            ],
-            "allowSamePrecedence": true
-        }
+      "error",
+      {
+        "groups": [
+          [
+            "*",
+            "/",
+            "%",
+            "**"
+          ],
+          [
+            "&",
+            "|",
+            "^",
+            "~",
+            "<<",
+            ">>",
+            ">>>"
+          ],
+          [
+            "==",
+            "!=",
+            "===",
+            "!==",
+            ">",
+            ">=",
+            "<",
+            "<="
+          ],
+          [
+            "&&",
+            "||"
+          ],
+          [
+            "in",
+            "instanceof"
+          ]
+        ],
+        "allowSamePrecedence": true
+      }
     ],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js"]}],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/*.test.js"
+        ]
+      }
+    ],
     "no-unused-vars": [
       "error",
       {
@@ -60,9 +114,15 @@
         "caughtErrorsIgnorePattern": "^ignore"
       }
     ],
-    "no-bitwise": ["error", { "int32Hint": true }],
+    "no-bitwise": [
+      "error",
+      {
+        "int32Hint": true
+      }
+    ],
     "no-prototype-builtins": 0,
     "no-restricted-syntax": 0,
-    "no-nested-ternary": 0
+    "no-nested-ternary": 0,
+    "linebreak-style": 0
   }
 }
