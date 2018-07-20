@@ -65,14 +65,14 @@ module.exports = (route, config, exempt) => {
       validate(req.query, getSchema(SCHEMA, 'clientName'))
       const { clientName } = req.query
       const homeUrlList = await User.getHomeUrlByClientName(clientName)
-      const ssList = []
+      let ssList = []
       const ssServerList = serverOpt.ssServerList || []
+      const results = []
       for (const ss of ssServerList) {
-        const isEnable = await SsUtil.checkSSIsAvail(ss, { timeout: 1000 })
-        if (isEnable) ssList.push(ss)
+        results.push(SsUtil.checkSSIsAvail(ss, { timeout: 1000 }))
       }
+      ssList = (await Promise.all(results)).filter((ss) => typeof (ss) === 'object')
       return res.json({ homeUrlList, ssList })
-
     } catch (err) {
       return next(err)
     }
@@ -96,7 +96,7 @@ module.exports = (route, config, exempt) => {
    *    "X-Auth-Key": "eyJhbGci..."
    * }
    *
-   * @apiParam {Number{>=1}} [id]  用户id 
+   * @apiParam {Number{>=1}} [id]  用户id
    *
    * 說明
    *   1. 如果没有传id, 则获取自己的profile

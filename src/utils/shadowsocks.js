@@ -12,7 +12,7 @@ const checkSSIsAvail = async (ssConf, config) => new Promise((resolve, reject) =
 
         socket.connect(ssConf.serverPort, ssConf.serverAddr, () => {
             socket.destroy()
-            resolve(true)
+            resolve(ssConf)
         })
         socket.on('timeout', () => {
             socket.destroy()
