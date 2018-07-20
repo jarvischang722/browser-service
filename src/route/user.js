@@ -130,11 +130,193 @@ module.exports = (route, config, exempt) => {
 
   exempt('/user/login')
 
+  /**
+* @api {post} /user/login 登陆
+* @apiVersion 1.0.0
+* @apiGroup user
+* @apiDescription 登陆
+*
+* @apiParam {String} username  用户名
+* @apiParam {String} password  密码
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {Number} role
+* @apiSuccess (Success 200) {String} token
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+* {
+*    "id": 1,
+*    "role": 1,
+*    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
+* }
+*
+*/
   route.post('/user/login', login)
+  /**
+* @api {get} /user/recurrent recurrent
+* @apiVersion 1.0.0
+* @apiGroup user
+* @apiDescription recurrent
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {Number} role
+* @apiSuccess (Success 200) {String} token
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+* {
+*    "id": 1,
+*    "role": 1,
+*    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
+* }
+*
+*/
   route.get('/user/recurrent', recurrent)
+  /**
+* @api {get} /user/profile 获取用户信息
+* @apiVersion 1.0.0
+* @apiGroup user
+* @apiDescription 获得目标用户的信息
+*
+* @apiParam {Number} id  用户id
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {Number} role
+* @apiSuccess (Success 200) {String} username
+* @apiSuccess (Success 200) {String} name
+* @apiSuccess (Success 200) {String} name
+* @apiSuccess (Success 200) {String} expireIn
+* @apiSuccess (Success 200) {Object} browser
+* @apiSuccess (Success 200) {String} browser.link
+* @apiSuccess (Success 200) {Object} browser.version
+* @apiSuccess (Success 200) {String} browser.version.local
+* @apiSuccess (Success 200) {String} browser.version.server
+* @apiSuccess (Success 200) {String} icon
+* @apiSuccess (Success 200) {Array} homeUrl
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+   "id": 1,
+   "role": 1,
+   "username": "tripleone",
+   "name": "合众科技",
+   "expireIn": "1510641466",
+   "browser": {
+       "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+       "version": {
+           "local": "2.9.0",
+           "server": "2.9.2"
+       }
+   },
+   "icon": "/icon/tripleone.ico",
+   "homeUrl": [
+       "https://www.tripleonetech.com",
+       "https://www.tripleonetech.net"
+   ]
+}
+*
+*/
   route.get('/user/profile', getProfile)
+  /**
+* @api {post} /user/profile 更新用户信息
+* @apiVersion 1.0.0
+* @apiGroup user
+* @apiDescription 更新目标用户的信息
+*
+* @apiParam {Number{>=1}} [id]  用户id
+* @apiParam {String} name  名称
+* @apiParam {Array[String]} homeUrl  主页列表
+* @apiParam {String} icon  用户图标
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {String} name
+* @apiSuccess (Success 200) {String} icon
+* @apiSuccess (Success 200) {Array} homeUrl
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+  "id": 1,
+  "name": "合众科技",
+  "icon": "/icon/tripleone.ico",
+  "homeUrl": [
+      "https://www.tripleonetech.com",
+      "https://www.tripleonetech.net"
+  ]
+}
+*
+*/
   route.post('/user/profile', multer({ storage }).single('icon'), updateProfile)
+  /**
+* @api {post} /user/create  创建下级代理/客户
+* @apiVersion 1.0.0
+* @apiGroup user
+*
+* @apiParam {String} username  用户名(唯一)
+* @apiParam {String} name  名称
+* @apiParam {Number=1,2} role  权限 1: 代理 2: 客户
+* @apiParam {Date} expireIn  过期时间, 不能超过自己的
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {String} username
+* @apiSuccess (Success 200) {String} password
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 201
+{
+  "id": 10,
+  "username": "tripleone",
+  "password": "pass1234"
+}
+*/
   route.post('/user/create', createUser)
+  /**
+* @api {get} /user/list  获取下级用户列表
+* @apiVersion 1.0.0
+* @apiGroup user
+*
+* @apiParam {Number{>=1}} [page=1]  页码
+* @apiParam {Number{>=1}} [pagesize=10]  每页数量
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {String} username
+* @apiSuccess (Success 200) {String} password
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+  "total": 10,
+  "items": [
+      {
+          "id": 1,
+          "role": 1,
+          "username": "tripleone",
+          "name": "合众科技",
+          "expireIn": "1510641466"
+      }
+  ]
+}
+*/
   route.get('/user/list', getChildren)
+  /**
+* @api {get} /user/expire  修改下级代理过期时间
+* @apiVersion 1.0.0
+* @apiGroup user
+*
+* @apiParam {String} id  用户id
+* @apiParam {Date} expireIn  过期时间, 不能超过自己的
+*
+* @apiSuccess (Success 200) {Number} id
+* @apiSuccess (Success 200) {String} expireIn
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 201
+{
+  "id": 10,
+  "expireIn": "1510641466"
+}
+*/
   route.post('/user/expire', changeChildExpireTime)
 }
