@@ -41,9 +41,16 @@ Tripleonetech discover service
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| clientName			| String			|  <p>用户username</p>							|
+| clientName			| String	| Required|  <p>用户username</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| homeUrlList| Array| <p>该用户所有主页</p>|
+| ssList| Array| <p>可用的shadow socks资讯</p>|
 
 ### Success Response
 
@@ -72,6 +79,7 @@ HTTP Status: 200
         ]
       }
 ```
+
 ## 获得浏览器信息
 
 <p>获得自己的浏览器信息</p>
@@ -87,9 +95,10 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| Number			| **optional** <p>用户id</p>							|
+| id			| Number	| Optional|  <p>用户id</p>							|
+
 
 ### Success Response
 
@@ -106,6 +115,7 @@ HTTP Status: 200
       }
      }
 ```
+
 ## 生成浏览器
 
 <p>为目标用户生成浏览器</p>
@@ -121,9 +131,10 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| Number			| **optional** <p>用户id</p> <p>說明</p> <ol> <li>如果没有传id, 则获取自己的profile</li> <li>如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError</li> </ol>							|
+| id			| Number	| Optional|  <p>用户id</p> <p>說明</p> <ol> <li>如果没有传id, 则获取自己的profile</li> <li>如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError</li> </ol>							|
+
 
 ### Success Response
 
@@ -134,6 +145,7 @@ HTTP Status: 204
     {
     }
 ```
+
 # Short
 
 ## 获取可用shadowsocks server 列表
@@ -142,6 +154,12 @@ HTTP Status: 204
 
 	GET /browser/ss
 
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| ss| String| <p>shadowsockts 列表经由DES加密后再base64编码</p>|
 
 ### Success Response
 
@@ -155,6 +173,7 @@ HTTP Status: 200
      3l+6JmMLQeDru3MbQMmJEpaYBD3k0DmjHr1sXEQtmy9PuI6x2v5hQrAqcIGlgRZHdXTLQ=="
 }
 ```
+
 ## 编辑短地址
 
 
@@ -164,9 +183,19 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| Number			|  <p>id</p>							|
+| id			| Number	| Required|  <p>id</p>							|
+
+
+### Success 201
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| short| String| |
+| long| String| |
+| site_name| String| |
+| logo_url| String| |
 
 ### Success Response
 
@@ -182,6 +211,7 @@ HTTP Status: 201
 "logo_url": "xxxx"
 }
 ```
+
 ## 获取短地址列表
 
 
@@ -191,10 +221,22 @@ HTTP Status: 201
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| page			| Number			| **optional** <p>页码</p>							|
-| pagesize			| Number			| **optional** <p>每页数量</p>							|
+| page			| Number	| Optional|  <p>页码</p>							|
+| pagesize			| Number	| Optional|  <p>每页数量</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| total| Number| |
+| items| Object[]| |
+| items.id| String| |
+| items.short| String| |
+| items.long| String| |
+| items.site_name| String| |
+| items.logo_url| String| |
 
 ### Success Response
 
@@ -215,6 +257,7 @@ HTTP Status: 200
 ]
 }
 ```
+
 ## 新增一条短地址
 
 
@@ -224,12 +267,22 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| short			| String			|  <p>短地址</p>							|
-| long			| String			|  <p>长地址</p>							|
-| site_name			| String			| **optional** <p>网站名称</p>							|
-| logo_url			| String			| **optional** <p>网站图片</p>							|
+| short			| String	| Required|  <p>短地址</p>							|
+| long			| String	| Required|  <p>长地址</p>							|
+| site_name			| String	| Optional|  <p>网站名称</p>							|
+| logo_url			| String	| Optional|  <p>网站图片</p>							|
+
+
+### Success 201
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| short| String| |
+| long| String| |
+| site_name| String| |
+| logo_url| String| |
 
 ### Success Response
 
@@ -245,6 +298,7 @@ HTTP Status: 201
    "logo_url": "xxxx"
 }
 ```
+
 ## 编辑短地址
 
 
@@ -254,13 +308,23 @@ HTTP Status: 201
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| String			|  <p>id</p>							|
-| short			| String			|  <p>短地址</p>							|
-| long			| String			|  <p>长地址</p>							|
-| site_name			| String			| **optional** <p>网站名称</p>							|
-| logo_url			| String			| **optional** <p>网站图片</p>							|
+| id			| String	| Required|  <p>id</p>							|
+| short			| String	| Required|  <p>短地址</p>							|
+| long			| String	| Required|  <p>长地址</p>							|
+| site_name			| String	| Optional|  <p>网站名称</p>							|
+| logo_url			| String	| Optional|  <p>网站图片</p>							|
+
+
+### Success 201
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| short| String| |
+| long| String| |
+| site_name| String| |
+| logo_url| String| |
 
 ### Success Response
 
@@ -276,6 +340,7 @@ HTTP Status: 201
  "logo_url": "xxxx"
 }
 ```
+
 # User
 
 ## 获取下级用户列表
@@ -287,10 +352,18 @@ HTTP Status: 201
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| page			| Number			| **optional** <p>页码</p>							|
-| pagesize			| Number			| **optional** <p>每页数量</p>							|
+| page			| Number	| Optional|  <p>页码</p>							|
+| pagesize			| Number	| Optional|  <p>每页数量</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| username| String| |
+| password| String| |
 
 ### Success Response
 
@@ -311,6 +384,7 @@ HTTP Status: 200
   ]
 }
 ```
+
 ## 获取用户信息
 
 <p>获得目标用户的信息</p>
@@ -320,9 +394,26 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| Number			|  <p>用户id</p>							|
+| id			| Number	| Required|  <p>用户id</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| role| Number| |
+| username| String| |
+| name| String| |
+| expireIn| String| |
+| browser| Object| |
+| browser.link| String| |
+| browser.version| Object| |
+| browser.version.local| String| |
+| browser.version.server| String| |
+| icon| String| |
+| homeUrl| Array| |
 
 ### Success Response
 
@@ -350,12 +441,21 @@ HTTP Status: 200
    ]
 }
 ```
+
 ## recurrent
 
 <p>recurrent</p>
 
 	GET /user/recurrent
 
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| role| Number| |
+| token| String| |
 
 ### Success Response
 
@@ -369,6 +469,7 @@ HTTP Status: 200
    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
 }
 ```
+
 ## 创建下级代理/客户
 
 
@@ -378,12 +479,20 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| username			| String			|  <p>用户名(唯一)</p>							|
-| name			| String			|  <p>名称</p>							|
-| role			| Number			|  <p>权限 1: 代理 2: 客户</p>							|
-| expireIn			| Date			|  <p>过期时间, 不能超过自己的</p>							|
+| username			| String	| Required|  <p>用户名(唯一)</p>							|
+| name			| String	| Required|  <p>名称</p>							|
+| role			| Number	| Required|  <p>权限 1: 代理 2: 客户</p>							|
+| expireIn			| Date	| Required|  <p>过期时间, 不能超过自己的</p>							|
+
+
+### Success 201
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| username| String| |
+| password| String| |
 
 ### Success Response
 
@@ -397,6 +506,7 @@ HTTP Status: 201
   "password": "pass1234"
 }
 ```
+
 ## 修改下级代理过期时间
 
 
@@ -406,10 +516,17 @@ HTTP Status: 201
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| String			|  <p>用户id</p>							|
-| expireIn			| Date			|  <p>过期时间, 不能超过自己的</p>							|
+| id			| String	| Required|  <p>用户id</p>							|
+| expireIn			| Date	| Required|  <p>过期时间, 不能超过自己的</p>							|
+
+
+### Success 201
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| expireIn| String| |
 
 ### Success Response
 
@@ -422,6 +539,7 @@ HTTP Status: 201
   "expireIn": "1510641466"
 }
 ```
+
 ## 登陆
 
 <p>登陆</p>
@@ -431,10 +549,18 @@ HTTP Status: 201
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| username			| String			|  <p>用户名</p>							|
-| password			| String			|  <p>密码</p>							|
+| username			| String	| Required|  <p>用户名</p>							|
+| password			| String	| Required|  <p>密码</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| role| Number| |
+| token| String| |
 
 ### Success Response
 
@@ -448,6 +574,7 @@ HTTP Status: 200
    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
 }
 ```
+
 ## 更新用户信息
 
 <p>更新目标用户的信息</p>
@@ -457,12 +584,21 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| Number			| **optional** <p>用户id</p>							|
-| name			| String			|  <p>名称</p>							|
-| homeUrl			| String[]			|  <p>主页列表</p>							|
-| icon			| String			|  <p>用户图标</p>							|
+| id			| Number	| Optional|  <p>用户id</p>							|
+| name			| String	| Required|  <p>名称</p>							|
+| homeUrl			| String[]	| Required|  <p>主页列表</p>							|
+| icon			| String	| Required|  <p>用户图标</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| name| String| |
+| icon| String| |
+| homeUrl| Array| |
 
 ### Success Response
 
@@ -480,6 +616,7 @@ HTTP Status: 200
   ]
 }
 ```
+
 # Version
 
 ## 获取版本号详情
@@ -491,9 +628,18 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| user			| Number			|  <p>用户id</p>							|
+| user			| Number	| Required|  <p>用户id</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| id| Number| |
+| platform| String| |
+| link| String| |
+| version| String| |
 
 ### Success Response
 
@@ -508,6 +654,7 @@ HTTP Status: 200
  "version": "xxx"
 }
 ```
+
 ## 获取某客户下版本号列表
 
 
@@ -517,9 +664,20 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| user			| Number			|  <p>用户id</p>							|
+| user			| Number	| Required|  <p>用户id</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| total| Number| |
+| items| Object[]| |
+| items.id| Number| |
+| items.platform| String| |
+| items.link| String| |
+| items.version| String| |
 
 ### Success Response
 
@@ -539,6 +697,7 @@ HTTP Status: 200
  ]
 }
 ```
+
 ## 新增或更新版本号
 
 
@@ -548,12 +707,13 @@ HTTP Status: 200
 
 ### Parameters
 
-| Name    | Type      | Description                          |
+| Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| user			| Number			|  <p>短地址 用户id</p>							|
-| platform			| String			|  <p>平台</p>							|
-| link			| String			|  <p>长地址</p>							|
-| version			| String			|  <p>网站名称</p>							|
+| user			| Number	| Required|  <p>短地址 用户id</p>							|
+| platform			| String	| Required|  <p>平台</p>							|
+| link			| String	| Required|  <p>长地址</p>							|
+| version			| String	| Required|  <p>网站名称</p>							|
+
 
 ### Success Response
 
@@ -562,4 +722,5 @@ Success-Response:
 ```
 HTTP Status: 204
 ```
+
 
