@@ -1,7 +1,7 @@
 const { ncp } = require('ncp')
 const rcedit = require('rcedit')
 const asar = require('asar')
-const innoSetup = require('innosetup-compiler')
+const path = require('path')
 
 const copy = (src, dest, options) => {
   const promise = (resolve, reject) => {
@@ -40,9 +40,11 @@ const asarSync = (src, dest) => {
   return new Promise(promise)
 }
 
-const compiler = (iss, options) => {
+const compiler = (clientOpt, projectPath) => {
+  const builderPath = path.join(projectPath, 'build/install-script/builder.js')
+  const builder = require(builderPath)
   const promise = (resolve, reject) => {
-    innoSetup(iss, options, (err) => {
+    builder(clientOpt, (err) => {
       if (err) return reject(err)
       return resolve()
     })

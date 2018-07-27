@@ -5,6 +5,7 @@ Tripleonetech discover service
 - [Browser](#browser)
 	- [获得用户主页以及SS](#获得用户主页以及ss)
 	- [获得浏览器信息](#获得浏览器信息)
+	- [上传安装档](#上传安装档)
 	- [生成浏览器](#生成浏览器)
 	
 - [Short](#short)
@@ -114,6 +115,37 @@ HTTP Status: 200
        "server": "2.9.2"
       }
      }
+```
+
+## 上传安装档
+
+<p>上传Build 完的安装档到server deploy</p>
+
+	GET /browser/uploadSetup
+
+
+### Parameters
+
+| Name    | Type      | Attribute      | Description                          |
+|---------|-----------|--------------------------------------|
+| filename			| File	| Required|  							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| success| Boolean| |
+| errorMsg| Boolean| |
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+ {
+   success: true
+ }
 ```
 
 ## 生成浏览器

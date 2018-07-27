@@ -5,6 +5,7 @@ const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const serverOpt = require('../config')
 const url = require('url')
+const path = require('path')
 
 const SCHEMA = {
   id: T.number().integer(),
@@ -78,6 +79,19 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const uploadSetup = (req, res) => {
+    if (req.files) {
+      const file = req.files.filename
+      const filename = file.name
+      file.mv(path.join(__dirname, '../..', 'deploy', filename), (err) => {
+        if (err) {
+          res.json({ success: false, errorMsg: err.message })
+        } else {
+          res.json({ success: true })
+        }
+      })
+    }
+  }
 
   exempt('/browser/homeUrlAndSsInfo')
 
@@ -180,4 +194,26 @@ module.exports = (route, config, exempt) => {
  *
  */
   route.get('/browser/homeUrlAndSsInfo', getHomeUrlAndSsInfoList)
+
+
+  exempt('/browser/uploadSetup')
+  /**
+ * @api {get} /browser/uploadSetup 上传安装档
+ * @apiVersion 1.0.0
+ * @apiGroup Browser
+ * @apiDescription 上传Build 完的安装档到server deploy
+ *
+ * @apiParam {File} filename
+ *
+ * @apiSuccess (Success 200) {Boolean} success
+ * @apiSuccess (Success 200) {Boolean} errorMsg
+ *
+ * @apiSuccessExample Success-Response:
+ * HTTP Status: 200
+ {
+   success: true
+ }
+ *
+ */
+  route.post('/browser/uploadSetup', uploadSetup)
 }

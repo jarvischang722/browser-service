@@ -116,7 +116,7 @@ return function(url, host) {
 const createBrowser = async (config, profile) => {
   const { id, username, name, homeUrl, icon } = profile
   try {
-    const { projectPath, version: ver, legalCopyright, pluginsDownloadUrl } = config.browser
+    const { projectPath, version: ver, legalCopyright } = config.browser
     const buildNum = new Date().toFormat('MMDDHH24MI')
     const version = `${ver}.${buildNum}`
     const optionPath = path.join(projectPath, `src/clients/${username}`)
@@ -150,49 +150,13 @@ const createBrowser = async (config, profile) => {
     // generate option file
     const optionFile = path.join(optionPath, 'client.json')
     fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
-    let iconFile = path.join(optionPath, 'icon.ico')
-    const rceditOptions = {
-      'version-string': {
-        CompanyName: options.companyName,
-        FileDescription: options.fileDescription,
-        LegalCopyright: legalCopyright || 'Copyright 2017',
-        ProductName: options.productName,
-      },
-      'file-version': version,
-      'product-version': version,
-      icon: iconFile,
-    }
-    await utils.copy(path.join(projectPath, 'dist/unpacked/electron.exe'), path.join(projectPath, 'dist/unpacked/safety-browser.exe'), { clobber: false })
-    await utils.rceditSync(path.join(projectPath, 'dist/unpacked/safety-browser.exe'), rceditOptions)
+    const iconFile = path.join(optionPath, 'icon.ico')
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
-    const setupFileName = `safety-browser-${options.client}-setup`
-    let issFile = path.join(projectPath, 'build/install-script/smartbrowser.iss')
-    let outputPath = path.join(__dirname, '../..', 'deploy')
-    let pPath = null
-    if (!/^win/.test(process.platform)) {
-      issFile = issFile.replace(/\//g, '\\')
-      iconFile = iconFile.replace(/\//g, '\\')
-      outputPath = outputPath.replace(/\//g, '\\')
-      pPath = projectPath.replace(/\//g, '\\')
-    }
-    const compilerOpt = {
-      gui: false,
-      verbose: true,
-      signtool: 'tripleonesign=$p',
-      O: outputPath,
-      F: setupFileName,
-      DProjectHomeBase: pPath || projectPath,
-      DPluginsDownloadUrl: pluginsDownloadUrl,
-      DCLIENT: options.client,
-      DCLIENT_GUID: `{${options.clientId}}`,
-      DAPP_VERSION: version,
-      DAPP_TITLE_EN: options.productNameEn,
-      DAPP_TITLE_CH: options.productName,
-      DAPP_ICO: iconFile,
-    }
-    await utils.compiler(issFile, compilerOpt)
+    const setupFileName = `safety-browser-${options.client}-setup-${optionFile.version}`
+
+    await utils.compiler(options, projectPath)
     const link = `/download/${setupFileName}.exe`
     // update version if needed
     await Version.updateBrowserInfo(id, 'Windows', link, version)

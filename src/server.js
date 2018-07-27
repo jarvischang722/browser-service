@@ -1,4 +1,5 @@
 const express = require('express')
+const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
@@ -21,6 +22,7 @@ const server = async () => {
 
   const app = express()
 
+  app.use(fileUpload())
   app.use(helmet())
 
   app.use(cors({
