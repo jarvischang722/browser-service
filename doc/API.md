@@ -99,6 +99,7 @@ HTTP Status: 200
 | Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
 | id			| Number	| Optional|  <p>用户id</p>							|
+| platform			| String	| Optional|  							|
 
 
 ### Success Response
@@ -165,7 +166,8 @@ HTTP Status: 200
 
 | Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| Number	| Optional|  <p>用户id</p> <p>說明</p> <ol> <li>如果没有传id, 则获取自己的profile</li> <li>如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError</li> </ol>							|
+| id			| Number	| Optional|  <p>用户id</p>							|
+| platform			| String	| Optional|  <p>說明</p> <ol> <li>如果没有传id, 则获取自己的profile</li> <li>如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError</li> </ol>							|
 
 
 ### Success Response

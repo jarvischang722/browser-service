@@ -126,7 +126,7 @@ module.exports = (route, config, exempt) => {
    * }
    *
    * @apiParam {Number{>=1}} [id]  用户id
-   * @apiParam {String=Windows,Mac} [platform='Windows']
+   * @apiParam {String=Windows,macOS} [platform='Windows']
    *
    * 說明
    *   1. 如果没有传id, 则获取自己的profile
@@ -158,7 +158,7 @@ module.exports = (route, config, exempt) => {
  * }
  *
  * @apiParam {Number{>=1}} [id]  用户id
- * @apiParam {String=Windows,Mac} [platform='Windows']
+ * @apiParam {String=Windows,macOS} [platform='Windows']
  *
  * @apiSuccessExample Success-Response:
  * HTTP Status: 200
