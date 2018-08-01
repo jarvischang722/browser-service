@@ -119,10 +119,11 @@ const getUser = async (userId) => {
   return user
 }
 
-const getProfile = async (userId, tarId, config) => {
+const getProfile = async (userId, tarId, config, platform) => {
+  const clientPlatform = platform || 'Windows'
   const targetId = tarId || userId
   const row = await checkPermission(userId, targetId)
-  const browser = await Browser.getUserBrowser(targetId, config)
+  const browser = await Browser.getUserBrowser(targetId, config, clientPlatform)
   // get homeurls
   const homeUrl = await getHomeUrl(targetId)
   const user = {
@@ -138,23 +139,22 @@ const getProfile = async (userId, tarId, config) => {
   return user
 }
 
-const updateProfile = async (userId, req) => {
-  return db.transaction(async (client) => {
-    const { id, name, icon } = req.body
-    let { homeUrl } = req.body
-    if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
-    const tarId = id || userId
-    await checkPermission(userId, tarId)
-    let iconPath = null
-    if (req.file && req.file.path) {
+const updateProfile = async (userId, req) => db.transaction(async (client) => {
+  const { id, name, icon } = req.body
+  let { homeUrl } = req.body
+  if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
+  const tarId = id || userId
+  await checkPermission(userId, tarId)
+  let iconPath = null
+  if (req.file && req.file.path) {
       // 优先判断req.file里是否有值, 有的话说明正在上传或更新图标
-      iconPath = `${req.file.path}`
-    } else if (icon) {
+    iconPath = `${req.file.path}`
+  } else if (icon) {
       // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
-      iconPath = icon
-    }
+    iconPath = icon
+  }
     // upload icon
-    const query = `
+  const query = `
       UPDATE user
       SET
         name = ?,
@@ -162,30 +162,29 @@ const updateProfile = async (userId, req) => {
       WHERE
         id = ?
       ;`
-    const results = await client.query(query, [name, iconPath, tarId])
-    if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
+  const results = await client.query(query, [name, iconPath, tarId])
+  if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
     // update homeurl
-    const queryClean = `
+  const queryClean = `
       DELETE FROM homeurl
       WHERE userid = ?;
     ;`
-    await client.query(queryClean, [tarId])
-    const queryAddUrl = `
+  await client.query(queryClean, [tarId])
+  const queryAddUrl = `
       INSERT INTO homeurl (userid, url)
       VALUES (?, ?)
       ;`
-    for (const url of homeUrl) {
-      await client.query(queryAddUrl, [tarId, url])
-    }
-    const user = {
-      id: tarId,
-      name,
-      homeUrl,
-      icon: iconPath,
-    }
-    return user
-  })
-}
+  for (const url of homeUrl) {
+    await client.query(queryAddUrl, [tarId, url])
+  }
+  const user = {
+    id: tarId,
+    name,
+    homeUrl,
+    icon: iconPath,
+  }
+  return user
+})
 
 const getChildren = async (userId, page, pagesize) => {
   const queryCount = `

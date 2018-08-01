@@ -25,8 +25,8 @@ const updateCreatingBrowserStatus = async (userId, platform, status) => {
   await db.query(query, [userId, platform, st, st])
 }
 
-// 先只支持Windows版本
-const getUserBrowser = async (userId, config) => {
+// Only support Windows and Mac
+const getUserBrowser = async (userId, config, platform) => {
   const query = `
     SELECT *
     FROM browser
@@ -34,7 +34,7 @@ const getUserBrowser = async (userId, config) => {
       userid = ?
       AND platform = ?
     ;`
-  const results = await db.query(query, [userId, 'Windows'])
+  const results = await db.query(query, [userId, platform || 'Windows'])
   let browser = null
   if (results.length > 0) {
     const row = results[0]
@@ -113,7 +113,7 @@ return function(url, host) {
   return pac
 }
 
-const createBrowser = async (config, profile) => {
+const createBrowser = async (config, profile, platform) => {
   const { id, username, name, homeUrl, icon } = profile
   try {
     const { projectPath, version: ver, legalCopyright } = config.browser
@@ -159,18 +159,18 @@ const createBrowser = async (config, profile) => {
     await utils.compiler(options, projectPath)
     const link = `/download/${setupFileName}.exe`
     // update version if needed
-    await Version.updateBrowserInfo(id, 'Windows', link, version)
+    await Version.updateBrowserInfo(id, platform, link, version)
     return link
   } catch (err) {
-    await updateCreatingBrowserStatus(id, 'Windows', STATUS.FAILED)
+    await updateCreatingBrowserStatus(id, platform, STATUS.FAILED)
   }
 }
 
-const getBrowserInfo = async (userId, tarId, config) => {
+const getBrowserInfo = async (userId, tarId, config, platform) => {
   const User = require('./user')
   const targeId = tarId || userId
   await User.checkPermission(userId, targeId)
-  const browser = await getUserBrowser(targeId, config)
+  const browser = await getUserBrowser(targeId, config, platform)
   return browser
 }
 

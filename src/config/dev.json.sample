@@ -1,7 +1,9 @@
 {
   "name": "Tripleonetech browser service",
   "server": {
-    "port": 7002
+    "port": 7002,
+    "macAddr": "http://35.10.10.11:7002",  
+    "windowsAddr": "http://35.10.10.12:7002"  
   },
   "ssServerList":[
     {

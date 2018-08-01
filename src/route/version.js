@@ -15,7 +15,8 @@ const SCHEMA = {
 module.exports = (route, config, exempt) => {
   const getUserId = async (req) => {
     const tarId = (req.body && req.body.user) || (req.query && req.query.user) || null
-    const profile = await User.getProfile(req.user.id, tarId, config)
+    const platform = req.body.platform
+    const profile = await User.getProfile(req.user.id, tarId, config, platform)
     const { id } = profile
     return id
   }

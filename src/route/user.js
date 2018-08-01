@@ -63,8 +63,9 @@ module.exports = (route, config, exempt) => {
 
   const getProfile = async (req, res, next) => {
     try {
-      validate(req.query, getSchema(SCHEMA, 'id'))
-      const user = await User.getProfile(req.user.id, req.query.id, config)
+      const validatedData = validate(req.query, getSchema(SCHEMA, 'id', 'platform'))
+      const platform = validatedData.platform
+      const user = await User.getProfile(req.user.id, req.query.id, config, platform)
       if (!user) return next(new errors.UserNotFoundError())
       return res.json(user)
     } catch (err) {

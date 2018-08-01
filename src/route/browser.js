@@ -6,10 +6,12 @@ const { validate, getSchema, T } = require('../validator')
 const serverOpt = require('../config')
 const url = require('url')
 const path = require('path')
+const request = require('request')
 
 const SCHEMA = {
   id: T.number().integer(),
-  clientName: T.string().required().regex(/^\w+$/)
+  clientName: T.string().required().regex(/^\w+$/),
+  platform: T.string().default('Windows').valid(['Windows', 'macOS']),
 }
 
 const ERRORS = {
@@ -26,9 +28,11 @@ errors.register(ERRORS)
 module.exports = (route, config, exempt) => {
   const createNewBrowser = async (req, res, next) => {
     try {
-      validate(req.body, getSchema(SCHEMA, 'id'))
+      const validatedData = validate(req.body, getSchema(SCHEMA, 'id', 'platform'))
+      const buildOfPlatform = validatedData.platform
+      const serverOfPlatform = process.platform === 'darwin' ? 'macOS' : 'Windows' // win32 | linux | darwin(mac os)
       const tarId = req.body ? req.body.id : null
-      const profile = await User.getProfile(req.user.id, tarId, config)
+      const profile = await User.getProfile(req.user.id, tarId, config, buildOfPlatform)
       // 信息不全的不允许生成浏览器
       if (!profile || !profile.username) throw new errors.UserNotFoundError()
       if (!profile.name) throw new errors.NameRequiredError()
@@ -42,9 +46,19 @@ module.exports = (route, config, exempt) => {
         if (!homeUrlParsed.protocol || homeUrlParsed.protocol.indexOf('https')) throw new errors.HomeUrlHttpsRequiredError()
       })
 
+
       const { id } = profile
-      await Browser.updateCreatingBrowserStatus(id, 'Windows')
-      Browser.createBrowser(config, profile)
+      if (buildOfPlatform !== serverOfPlatform) {
+        const options = {
+          url: buildOfPlatform === 'Windows' ? config.service.windowsAddr : config.service.macAddr,
+          method: 'post',
+          headers: req.headers
+        }
+        request(options)
+      } else {
+        Browser.createBrowser(config, profile, buildOfPlatform)
+      }
+      await Browser.updateCreatingBrowserStatus(id, buildOfPlatform)
       return res.status(204).send()
     } catch (err) {
       return next(err)
@@ -53,8 +67,9 @@ module.exports = (route, config, exempt) => {
 
   const getBrowserInfo = async (req, res, next) => {
     try {
-      validate(req.query, getSchema(SCHEMA, 'id'))
-      const browser = await Browser.getBrowserInfo(req.user.id, req.query.id, config)
+      const validatedData = validate(req.query, getSchema(SCHEMA, 'id', 'platform'))
+      const platform = validatedData.platform
+      const browser = await Browser.getBrowserInfo(req.user.id, req.query.id, config, platform)
       return res.json(browser)
     } catch (err) {
       return next(err)
@@ -111,6 +126,7 @@ module.exports = (route, config, exempt) => {
    * }
    *
    * @apiParam {Number{>=1}} [id]  用户id
+   * @apiParam {String=Windows,Mac} [platform='Windows']
    *
    * 說明
    *   1. 如果没有传id, 则获取自己的profile
@@ -142,6 +158,7 @@ module.exports = (route, config, exempt) => {
  * }
  *
  * @apiParam {Number{>=1}} [id]  用户id
+ * @apiParam {String=Windows,Mac} [platform='Windows']
  *
  * @apiSuccessExample Success-Response:
  * HTTP Status: 200
