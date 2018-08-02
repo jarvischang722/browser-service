@@ -122,14 +122,14 @@ HTTP Status: 200
 
 <p>上传Build 完的安装档到server deploy</p>
 
-	GET /browser/uploadSetup
+	GET /browser/uploadBrowserSetup
 
 
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
 |---------|-----------|--------------------------------------|
-| filename			| File	| Required|  							|
+| browserSetup			| File	| Required|  <p>:  生成後瀏覽器的檔案</p>							|
 
 
 ### Success 200

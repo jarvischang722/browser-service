@@ -7,6 +7,7 @@ const serverOpt = require('../config')
 const url = require('url')
 const path = require('path')
 const request = require('request')
+const multer = require('multer')
 
 const SCHEMA = {
   id: T.number().integer(),
@@ -97,21 +98,24 @@ module.exports = (route, config, exempt) => {
     }
   }
 
-  const uploadSetup = (req, res) => {
-    if (req.files) {
-      const file = req.files.filename
-      const filename = file.name
-      file.mv(path.join(__dirname, '../..', 'deploy', filename), (err) => {
-        if (err) {
-          res.json({ success: false, errorMsg: err.message })
-        } else {
-          res.json({ success: true })
-        }
-      })
+  const uploadBrowserSetup = (req, res) => {
+    if (req.file) {
+      res.json({ success: true })
+    } else {
+      res.json({ success: false })
     }
   }
 
+  const storage = multer.diskStorage({
+    destination: 'deploy/',
+    filename: (req, file, cb) => {
+      cb(null, file.originalname)
+    }
+  })
+
   exempt('/browser/homeUrlAndSsInfo')
+  exempt('/browser/uploadBrowserSetup')
+
 
   /**
    * @api {post} /browser/create  生成浏览器
@@ -215,15 +219,13 @@ module.exports = (route, config, exempt) => {
  */
   route.get('/browser/homeUrlAndSsInfo', getHomeUrlAndSsInfoList)
 
-
-  exempt('/browser/uploadSetup')
   /**
- * @api {get} /browser/uploadSetup 上传安装档
+ * @api {get} /browser/uploadBrowserSetup 上传安装档
  * @apiVersion 1.0.0
  * @apiGroup Browser
  * @apiDescription 上传Build 完的安装档到server deploy
  *
- * @apiParam {File} filename
+ * @apiParam {File} browserSetup :  生成後瀏覽器的檔案
  *
  * @apiSuccess (Success 200) {Boolean} success
  * @apiSuccess (Success 200) {Boolean} errorMsg
@@ -235,5 +237,5 @@ module.exports = (route, config, exempt) => {
  }
  *
  */
-  route.post('/browser/uploadSetup', uploadSetup)
+  route.post('/browser/uploadBrowserSetup', multer({ storage }).single('browserSetup'), uploadBrowserSetup)
 }
