@@ -22,6 +22,7 @@ const SCHEMA = {
   icon: T.string(),
   page: T.number().integer().min(1).default(1),
   pagesize: T.number().integer().min(1).default(10),
+  platform: T.string().default('Windows').valid(['Windows', 'macOS']),
 }
 
 const ERRORS = {
