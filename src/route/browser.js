@@ -49,12 +49,15 @@ module.exports = (route, config, exempt) => {
 
       const { id } = profile
       if (buildOfPlatform !== serverOfPlatform) {
+        const serviceAddr = buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
         const options = {
-          url: buildOfPlatform === 'Windows' ? config.service.windowsAddr : config.service.macAddr,
+          url: `${serviceAddr}/browser/create`,
           method: 'post',
-          headers: req.headers
+          headers: req.headers,
+          form: req.body
         }
         request(options)
+          .on('error', (err) => next(err))
       } else {
         Browser.createBrowser(config, profile, buildOfPlatform)
       }
