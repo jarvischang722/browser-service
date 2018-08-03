@@ -123,7 +123,7 @@ const createBrowser = async (config, profile, platform) => {
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     // copy icon to client folder
     const iconPath = path.join(__dirname, '../..', icon)
-    if (!fs.existsSync(iconPath)) {
+    if (fs.existsSync(iconPath)) {
       await utils.copy(iconPath, path.join(optionPath, 'icon.ico'))
     } else {
       utils.download(`${config.server.url}/${icon}`, path.join(optionPath, 'icon.ico'))

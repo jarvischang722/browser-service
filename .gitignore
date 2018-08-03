@@ -25,3 +25,6 @@ src/config/*.json
 package-lock.json
 
 /doc/apidoc/output
+.DS_Store
+pub_plugins/flashplayer/.DS_Store
+pub_plugins/.DS_Store
