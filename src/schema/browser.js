@@ -122,7 +122,13 @@ const createBrowser = async (config, profile, platform) => {
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     // copy icon to client folder
-    await utils.copy(path.join(__dirname, '../..', icon), path.join(optionPath, 'icon.ico'))
+    const iconPath = path.join(__dirname, '../..', icon)
+    if (!fs.existsSync(iconPath)) {
+      await utils.copy(iconPath, path.join(optionPath, 'icon.ico'))
+    } else {
+      utils.download(`${config.server.url}/${icon}`, path.join(optionPath, 'icon.ico'))
+    }
+
     const localPort = await getLocalPort(id, username)
     const ssServerList = serverOpt.ssServerList || []
     // generate options
@@ -151,6 +157,7 @@ const createBrowser = async (config, profile, platform) => {
     const optionFile = path.join(optionPath, 'client.json')
     fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
     const iconFile = path.join(optionPath, 'icon.ico')
+    options.iconPath = icon
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))

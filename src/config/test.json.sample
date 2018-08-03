@@ -1,6 +1,7 @@
 {
   "name": "Tripleonetech browser service",
   "server": {
+    "url": "http://127.0.0.1:7003",
     "port": 7003,
     "macAddr": "http://35.10.10.11:7002",  
     "windowsAddr": "http://35.10.10.12:7002" 
@@ -44,7 +45,6 @@
   "browser": {
     "projectPath": "C:\\projects\\safetybrowser",
     "version": "2.9.0",
-    "legalCopyright": "Copyright 2017",
-    "pluginsDownloadUrl": "http://plugin.example.com/pub_plugins"
+    "legalCopyright": "Copyright 2017"
   }
 }

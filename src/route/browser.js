@@ -47,7 +47,6 @@ module.exports = (route, config, exempt) => {
         if (!homeUrlParsed.protocol || homeUrlParsed.protocol.indexOf('https')) throw new errors.HomeUrlHttpsRequiredError()
       })
 
-
       const { id } = profile
       if (buildOfPlatform !== serverOfPlatform) {
         const serviceAddr = buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr

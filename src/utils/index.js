@@ -2,6 +2,8 @@ const { ncp } = require('ncp')
 const rcedit = require('rcedit')
 const asar = require('asar')
 const path = require('path')
+const fs = require('fs')
+const request = require('request')
 
 const copy = (src, dest, options) => {
   const promise = (resolve, reject) => {
@@ -52,9 +54,27 @@ const compiler = (clientOpt, projectPath) => {
   return new Promise(promise)
 }
 
+const download = (link, dest) => new Promise((resolve, reject) => {
+  const file = fs.createWriteStream(dest)
+  request.get(link)
+    .on('error', err => reject(err))
+    .pipe(file)
+  file.on('finish', () => {
+    file.close()
+    resolve()
+  })
+
+  file.on('error', (err) => {
+    fs.unlink(dest)
+    reject(err)
+  })
+})
+
+
 module.exports = {
   copy,
   rceditSync,
   asarSync,
   compiler,
+  download
 }
