@@ -35,7 +35,6 @@
     "electron-builder": "^19.49.2",
     "express": "^4.15.2",
     "helmet": "^3.6.0",
-    "innosetup-compiler": "git+https://github.com/tripleonetech-john/node-innosetup-compiler.git#ab55ecc",
     "joi": "^10.5.2",
     "jsonwebtoken": "^7.4.1",
     "log4js": "^1.1.1",
