@@ -5,7 +5,6 @@ const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const serverOpt = require('../config')
 const url = require('url')
-const path = require('path')
 const request = require('request')
 const multer = require('multer')
 

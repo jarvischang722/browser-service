@@ -126,7 +126,7 @@ const createBrowser = async (config, profile, platform) => {
     if (fs.existsSync(iconPath)) {
       await utils.copy(iconPath, path.join(optionPath, 'icon.ico'))
     } else {
-      utils.download(`${config.server.url}/${icon}`, path.join(optionPath, 'icon.ico'))
+      utils.download(`${config.server.mainAddr}/${icon}`, path.join(optionPath, 'icon.ico'))
     }
 
     const localPort = await getLocalPort(id, username)

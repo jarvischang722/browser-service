@@ -1,8 +1,8 @@
 {
   "name": "Tripleonetech browser service",
   "server": {
-    "url": "http://127.0.0.1:7002",
     "port": 7002,
+    "mainAddr": "http://192.168.50.128:7001",
     "macAddr": "http://35.10.10.11:7002",  
     "windowsAddr": "http://35.10.10.12:7002"  
   },
