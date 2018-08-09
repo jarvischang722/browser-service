@@ -30,7 +30,13 @@ module.exports = (route, config, exempt) => {
     try {
       const validatedData = validate(req.body, getSchema(SCHEMA, 'id', 'platform'))
       const buildOfPlatform = validatedData.platform
-      const serverOfPlatform = process.platform === 'darwin' ? 'macOS' : 'Windows' // win32 | linux | darwin(mac os)
+      let serverOfPlatform = process.platform  // win32 | linux | darwin(mac os)
+      if (serverOfPlatform === 'darwin') {
+        serverOfPlatform = 'macOS'
+      } else if (serverOfPlatform === 'win32') {
+        serverOfPlatform = 'Windows'
+      }
+
       const tarId = req.body ? req.body.id : null
       const profile = await User.getProfile(req.user.id, tarId, config, buildOfPlatform)
       // 信息不全的不允许生成浏览器
