@@ -125,6 +125,7 @@ module.exports = (route, config, exempt) => {
 *
 * @apiSuccess (Success 200) {Number} id
 * @apiSuccess (Success 200) {String} platform
+* @apiSuccess (Success 200) {Number} status 1: success |  2: generating | 3:generation failed
 * @apiSuccess (Success 200) {String} link
 * @apiSuccess (Success 200) {String} version
 *
@@ -133,6 +134,7 @@ module.exports = (route, config, exempt) => {
 {
  "id": 1,
  "platform": "ios",
+ "status": 1
  "link": "apple.com",
  "version": "xxx"
 }
