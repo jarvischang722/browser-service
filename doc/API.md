@@ -672,7 +672,7 @@ HTTP Status: 200
 |---------|-----------|--------------------------------------|
 | id| Number| |
 | platform| String| |
-| status| Number| <p>1: success |  2: generating | 3:generation failed</p>|
+| status| Number| <p>1: success ;  2: generating ; 3:generation failed</p>|
 | link| String| |
 | version| String| |
 
@@ -712,6 +712,7 @@ HTTP Status: 200
 | items| Object[]| |
 | items.id| Number| |
 | items.platform| String| |
+| items.status| Number| <p>1: success ; 2: generating ; 3:generation failed</p>|
 | items.link| String| |
 | items.version| String| |
 
@@ -727,6 +728,7 @@ HTTP Status: 200
    {
      "id": 1,
      "platform": "ios",
+     "status": 1,
      "link": "apple.com",
      "version": "xxx"
    }

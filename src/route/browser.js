@@ -10,8 +10,12 @@ const multer = require('multer')
 
 const SCHEMA = {
   id: T.number().integer(),
-  clientName: T.string().required().regex(/^\w+$/),
-  platform: T.string().default('Windows').valid(['Windows', 'macOS']),
+  clientName: T.string()
+    .required()
+    .regex(/^\w+$/),
+  platform: T.string()
+    .default('Windows')
+    .valid(['Windows', 'macOS'])
 }
 
 const ERRORS = {
@@ -20,7 +24,7 @@ const ERRORS = {
   IconRequired: 400,
   HomeUrlRequired: 400,
   HomeUrlHttpsRequired: 400,
-  BrowserInfoNotFound: 404,
+  BrowserInfoNotFound: 404
 }
 
 errors.register(ERRORS)
@@ -30,7 +34,7 @@ module.exports = (route, config, exempt) => {
     try {
       const validatedData = validate(req.body, getSchema(SCHEMA, 'id', 'platform'))
       const buildOfPlatform = validatedData.platform
-      let serverOfPlatform = process.platform  // win32 | linux | darwin(mac os)
+      let serverOfPlatform = process.platform // win32 | linux | darwin(mac os)
       if (serverOfPlatform === 'darwin') {
         serverOfPlatform = 'macOS'
       } else if (serverOfPlatform === 'win32') {
@@ -47,22 +51,24 @@ module.exports = (route, config, exempt) => {
       if (!Array.isArray(profile.homeUrl)) {
         profile.homeUrl = [profile.homeUrl]
       }
-      profile.homeUrl.forEach((homeUrl) => {
+      profile.homeUrl.forEach(homeUrl => {
         const homeUrlParsed = url.parse(homeUrl, true)
-        if (!homeUrlParsed.protocol || homeUrlParsed.protocol.indexOf('https')) throw new errors.HomeUrlHttpsRequiredError()
+        if (!homeUrlParsed.protocol || homeUrlParsed.protocol.indexOf('https')) {
+          throw new errors.HomeUrlHttpsRequiredError()
+        }
       })
 
       const { id } = profile
       if (buildOfPlatform !== serverOfPlatform) {
-        const serviceAddr = buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
+        const serviceAddr =
+          buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
         const options = {
           url: `${serviceAddr}/browser/create`,
           method: 'post',
           headers: req.headers,
           form: req.body
         }
-        request(options)
-          .on('error', (err) => next(err))
+        request(options).on('error', err => next(err))
       } else {
         Browser.createBrowser(config, profile, buildOfPlatform)
       }
@@ -95,7 +101,7 @@ module.exports = (route, config, exempt) => {
       for (const ss of ssServerList) {
         results.push(SsUtil.checkSSIsAvail(ss, { timeout: 1000 }))
       }
-      ssList = (await Promise.all(results)).filter((ss) => typeof (ss) === 'object')
+      ssList = (await Promise.all(results)).filter(ss => typeof ss === 'object')
       return res.json({ homeUrlList, ssList })
     } catch (err) {
       return next(err)
@@ -119,7 +125,6 @@ module.exports = (route, config, exempt) => {
 
   exempt('/browser/homeUrlAndSsInfo')
   exempt('/browser/uploadBrowserSetup')
-
 
   /**
    * @api {post} /browser/create  生成浏览器
@@ -154,73 +159,73 @@ module.exports = (route, config, exempt) => {
    */
   route.post('/browser/create', createNewBrowser)
   /**
- * @api {get} /browser/info 获得浏览器信息
- * @apiVersion 1.0.0
- * @apiGroup Browser
- * @apiDescription 获得自己的浏览器信息
- *
- * @apiHeader {String} Content-Type
- * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
- *
- *  @apiHeaderExample {json} Header-Example:
- * {
- *    "Content-Type": "application/json",
- *    "X-Auth-Key": "eyJhbGci..."
- * }
- *
- * @apiParam {Number{>=1}} [id]  用户id
- * @apiParam {String=Windows,macOS} [platform='Windows']
- *
- * @apiSuccessExample Success-Response:
- * HTTP Status: 200
- *     {
- *      "platform": "Windows",
- *      "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
- *      "version": {
- *        "local": "2.9.0",
- *        "server": "2.9.2"
- *       }
- *      }
- *
- *
- */
+   * @api {get} /browser/info 获得浏览器信息
+   * @apiVersion 1.0.0
+   * @apiGroup Browser
+   * @apiDescription 获得自己的浏览器信息
+   *
+   * @apiHeader {String} Content-Type
+   * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
+   *
+   *  @apiHeaderExample {json} Header-Example:
+   * {
+   *    "Content-Type": "application/json",
+   *    "X-Auth-Key": "eyJhbGci..."
+   * }
+   *
+   * @apiParam {Number{>=1}} [id]  用户id
+   * @apiParam {String=Windows,macOS} [platform='Windows']
+   *
+   * @apiSuccessExample Success-Response:
+   * HTTP Status: 200
+   *     {
+   *      "platform": "Windows",
+   *      "link": "/download/safety-browser-tripleone-setup-2.9.0.exe",
+   *      "version": {
+   *        "local": "2.9.0",
+   *        "server": "2.9.2"
+   *       }
+   *      }
+   *
+   *
+   */
   route.get('/browser/info', getBrowserInfo)
   /**
- * @api {get} /browser/homeUrlAndSsInfo 获得用户主页以及SS
- * @apiVersion 1.0.0
- * @apiGroup Browser
- * @apiDescription 获得用户的主页以及返回可用的shadow socks资讯
- *
- * @apiParam {String} clientName  用户username
- *
- * @apiSuccess (Success 200) {Array} homeUrlList 该用户所有主页
- * @apiSuccess (Success 200) {Array} ssList  可用的shadow socks资讯
- *
- * @apiSuccessExample Success-Response:
- * HTTP Status: 200
- *     {
- *       "homeUrlList": [
- *             "https://t1t.games.org/",
- *             "https://t2t.games.org/"
- *         ],
- *         "ssList": [
- *             {
- *                 "serverAddr": "35.201.204.2",
- *                 "serverPort": 19999,
- *                 "password": "dBbQMP8Nd9vyjvN",
- *                 "method": "aes-256-cfb"
- *             },
- *             {
- *                 "serverAddr": "35.201.204.2",
- *                 "serverPort": 19999,
- *                 "password": "dBbQMP8Nd9vyjvN",
- *                 "method": "aes-256-cfb"
- *             }
- *         ]
- *       }
- *
- *
- */
+   * @api {get} /browser/homeUrlAndSsInfo 获得用户主页以及SS
+   * @apiVersion 1.0.0
+   * @apiGroup Browser
+   * @apiDescription 获得用户的主页以及返回可用的shadow socks资讯
+   *
+   * @apiParam {String} clientName  用户username
+   *
+   * @apiSuccess (Success 200) {Array} homeUrlList 该用户所有主页
+   * @apiSuccess (Success 200) {Array} ssList  可用的shadow socks资讯
+   *
+   * @apiSuccessExample Success-Response:
+   * HTTP Status: 200
+   *     {
+   *       "homeUrlList": [
+   *             "https://t1t.games.org/",
+   *             "https://t2t.games.org/"
+   *         ],
+   *         "ssList": [
+   *             {
+   *                 "serverAddr": "35.201.204.2",
+   *                 "serverPort": 19999,
+   *                 "password": "dBbQMP8Nd9vyjvN",
+   *                 "method": "aes-256-cfb"
+   *             },
+   *             {
+   *                 "serverAddr": "35.201.204.2",
+   *                 "serverPort": 19999,
+   *                 "password": "dBbQMP8Nd9vyjvN",
+   *                 "method": "aes-256-cfb"
+   *             }
+   *         ]
+   *       }
+   *
+   *
+   */
   route.get('/browser/homeUrlAndSsInfo', getHomeUrlAndSsInfoList)
 
   /**
@@ -241,5 +246,9 @@ module.exports = (route, config, exempt) => {
  }
  *
  */
-  route.post('/browser/uploadBrowserSetup', multer({ storage }).single('browserSetup'), uploadBrowserSetup)
+  route.post(
+    '/browser/uploadBrowserSetup',
+    multer({ storage }).single('browserSetup'),
+    uploadBrowserSetup
+  )
 }

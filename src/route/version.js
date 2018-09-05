@@ -97,17 +97,26 @@ module.exports = (route, config, exempt) => {
 * @apiSuccess (Success 200) {Object[]} items
 * @apiSuccess (Success 200) {Number} items.id
 * @apiSuccess (Success 200) {String} items.platform
+* @apiSuccess (Success 200) {Number} items.status 1: success ; 2: generating ; 3:generation failed
 * @apiSuccess (Success 200) {String} items.link
 * @apiSuccess (Success 200) {String} items.version
 *
 * @apiSuccessExample Success-Response:
 * HTTP Status: 200
 {
- "total": 10,
+ "total": 2,
  "items": [
    {
      "id": 1,
-     "platform": "ios",
+     "platform": "macOS",
+     "status": 1,
+     "link": "apple.com",
+     "version": "xxx"
+   },
+   {
+     "id": 1,
+     "platform": "Windows",
+     "status": 1,
      "link": "apple.com",
      "version": "xxx"
    }
@@ -125,7 +134,7 @@ module.exports = (route, config, exempt) => {
 *
 * @apiSuccess (Success 200) {Number} id
 * @apiSuccess (Success 200) {String} platform
-* @apiSuccess (Success 200) {Number} status 1: success |  2: generating | 3:generation failed
+* @apiSuccess (Success 200) {Number} status 1: success ;  2: generating ; 3:generation failed
 * @apiSuccess (Success 200) {String} link
 * @apiSuccess (Success 200) {String} version
 *

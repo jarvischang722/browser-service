@@ -23,7 +23,7 @@
   "database": {
     "mysql": {
       "host": "localhost",
-      "db": "browser-test",
+      "db": "browser-production",
       "port": 3306,
       "credentials": {
         "username": "user",
