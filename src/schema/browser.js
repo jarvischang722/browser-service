@@ -162,7 +162,7 @@ const createBrowser = async (config, profile, platform) => {
     const setupFileName = `safety-browser-${options.client}-setup-${optionFile.version}`
     options.uploadToSrv = true // For safetybrowser judgment
     await utils.compiler(options, projectPath)
-    const link = `${config.mainAddr}/download/${setupFileName}.exe`
+    const link = `${config.server.mainAddr}/download/${setupFileName}.exe`
     // update version if needed
     await Version.updateBrowserInfo(id, platform, link, version)
     return link

@@ -4,7 +4,6 @@ const SsUtil = require('../utils/shadowsocks')
 const ObjUtil = require('../utils/obj')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
-const serverOpt = require('../config')
 const url = require('url')
 const request = require('request')
 const multer = require('multer')
@@ -104,7 +103,7 @@ module.exports = (route, config, exempt) => {
       const { clientName } = req.query
       const homeUrlList = await User.getHomeUrlByClientName(clientName)
       let ssList = []
-      const ssServerList = serverOpt.ssServerList || []
+      const ssServerList = config.ssServerList || []
       const results = []
       for (const ss of ssServerList) {
         results.push(SsUtil.checkSSIsAvail(ss, { timeout: 1000 }))
