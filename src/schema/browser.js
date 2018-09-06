@@ -159,10 +159,9 @@ const createBrowser = async (config, profile, platform) => {
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
     await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
-    const setupFileName = `safety-browser-${options.client}-setup-${optionFile.version}`
     options.uploadToSrv = true // For safetybrowser judgment
-    await utils.compiler(options, projectPath)
-    const link = `${config.server.mainAddr}/download/${setupFileName}.exe`
+    const setupFileName = await utils.compiler(options, projectPath)
+    const link = `${config.server.mainAddr}/download/${setupFileName}`
     // update version if needed
     await Version.updateBrowserInfo(id, platform, link, version)
     return link

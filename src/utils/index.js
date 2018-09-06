@@ -46,10 +46,10 @@ const compiler = (clientOpt, projectPath) => {
   const builderPath = path.join(projectPath, 'build/install-script/builder.js')
   const builder = require(builderPath)
   const promise = (resolve, reject) => {
-    builder(clientOpt, err => {
-        if (err) return reject(err)
-        return resolve()
-      })
+    builder(clientOpt, (err, filename) => {
+      if (err) return reject(err)
+      return resolve(filename)
+    })
   }
   return new Promise(promise)
 }
