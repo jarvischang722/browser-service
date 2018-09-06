@@ -1,6 +1,7 @@
 const User = require('../schema/user')
 const Browser = require('../schema/browser')
 const SsUtil = require('../utils/shadowsocks')
+const ObjUtil = require('../utils/obj')
 const errors = require('../error')
 const { validate, getSchema, T } = require('../validator')
 const serverOpt = require('../config')
@@ -34,7 +35,8 @@ module.exports = (route, config, exempt) => {
     try {
       const validatedData = validate(req.body, getSchema(SCHEMA, 'id', 'platform'))
       const buildOfPlatform = validatedData.platform
-      let serverOfPlatform = process.platform // win32 | linux | darwin(mac os)
+      // process.platform :  win32 | linux | darwin(mac os)
+      let serverOfPlatform = process.platform
       if (serverOfPlatform === 'darwin') {
         serverOfPlatform = 'macOS'
       } else if (serverOfPlatform === 'win32') {
@@ -64,16 +66,22 @@ module.exports = (route, config, exempt) => {
           buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
         const options = {
           url: `${serviceAddr}/browser/create`,
-          method: 'post',
-          headers: req.headers,
+          method: 'POST',
+          headers: ObjUtil.pick(req.headers, 'content-type', 'accept', 'x-auth-key'),
           form: req.body
         }
-        request(options).on('error', err => next(err))
+        const buildCB = (error, response, body) => {
+          if (error) {
+            Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3)
+            return next(error)
+          }
+        }
+        request(options, buildCB)
       } else {
         Browser.createBrowser(config, profile, buildOfPlatform)
       }
       await Browser.updateCreatingBrowserStatus(id, buildOfPlatform)
-      return res.status(204).send()
+      res.status(204).send()
     } catch (err) {
       return next(err)
     }

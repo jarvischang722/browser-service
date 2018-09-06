@@ -5,7 +5,6 @@ const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const Version = require('./version')
-const serverOpt = require('../config')
 
 const STATUS = {
   VALID: 1,
@@ -116,7 +115,7 @@ return function(url, host) {
 const createBrowser = async (config, profile, platform) => {
   const { id, username, name, homeUrl, icon } = profile
   try {
-    const { projectPath, version: ver, legalCopyright } = config.browser
+    const { projectPath, version: ver } = config.browser
     const buildNum = new Date().toFormat('MMDDHH24MI')
     const version = `${ver}.${buildNum}`
     const optionPath = path.join(projectPath, `src/clients/${username}`)
@@ -130,7 +129,7 @@ const createBrowser = async (config, profile, platform) => {
     }
 
     const localPort = await getLocalPort(id, username)
-    const ssServerList = serverOpt.ssServerList || []
+    const ssServerList = config.ssServerList || []
     // generate options
     const options = {
       client: username,
@@ -163,7 +162,7 @@ const createBrowser = async (config, profile, platform) => {
     const setupFileName = `safety-browser-${options.client}-setup-${optionFile.version}`
     options.uploadToSrv = true // For safetybrowser judgment
     await utils.compiler(options, projectPath)
-    const link = `/download/${setupFileName}.exe`
+    const link = `${config.mainAddr}/download/${setupFileName}.exe`
     // update version if needed
     await Version.updateBrowserInfo(id, platform, link, version)
     return link
