@@ -1,0 +1,2 @@
+ALTER TABLE `user` 
+ADD COLUMN `icon_macos` VARCHAR(255) NULL DEFAULT NULL AFTER `icon`;

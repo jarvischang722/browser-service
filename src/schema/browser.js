@@ -9,7 +9,7 @@ const Version = require('./version')
 const STATUS = {
   VALID: 1,
   CREATING: 2,
-  FAILED: 3,
+  FAILED: 3
 }
 
 const updateCreatingBrowserStatus = async (userId, platform, status) => {
@@ -42,14 +42,14 @@ const getUserBrowser = async (userId, config, platform) => {
       link: row.link,
       version: {
         local: row.version,
-        server: config.browser.version,
-      },
+        server: config.browser.version
+      }
     }
   }
   return browser
 }
 
-const getLocalPort = async (userId) => {
+const getLocalPort = async userId => {
   const query = `
     SELECT port
     FROM port
@@ -113,19 +113,24 @@ return function(url, host) {
 }
 
 const createBrowser = async (config, profile, platform) => {
-  const { id, username, name, homeUrl, icon } = profile
+  const { id, username, name, homeUrl, icon, icon_macos } = profile
   try {
+    const iconTailPath = platform === 'Windows' ? icon : icon_macos
+    const iconFileName = platform === 'Windows' ? 'icon.ico' : 'icon.png'
     const { projectPath, version: ver } = config.browser
     const buildNum = new Date().toFormat('MMDDHH24MI')
     const version = `${ver}.${buildNum}`
     const optionPath = path.join(projectPath, `src/clients/${username}`)
     if (!fs.existsSync(optionPath)) fs.mkdirSync(optionPath)
     // copy icon to client folder
-    const iconPath = path.join(__dirname, '../..', icon)
+    const iconPath = path.join(__dirname, '../..', iconTailPath)
     if (fs.existsSync(iconPath)) {
-      await utils.copy(iconPath, path.join(optionPath, 'icon.ico'))
+      await utils.copy(iconPath, path.join(optionPath, iconFileName))
     } else {
-      utils.download(`${config.server.mainAddr}/${icon}`, path.join(optionPath, 'icon.ico'))
+      utils.download(
+        `${config.server.mainAddr}/${iconTailPath}`,
+        path.join(optionPath, iconFileName)
+      )
     }
 
     const localPort = await getLocalPort(id, username)
@@ -144,7 +149,7 @@ const createBrowser = async (config, profile, platform) => {
       proxyOptions: Object.assign({}, ssServerList.length > 0 ? ssServerList[0] : {}, {
         localAddr: '127.0.0.1',
         localPort,
-        timeout: 180,
+        timeout: 180
       }),
       ssServerList
     }
@@ -158,7 +163,10 @@ const createBrowser = async (config, profile, platform) => {
     const iconFile = path.join(optionPath, 'icon.ico')
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
     await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
-    await utils.asarSync(path.join(projectPath, 'src/app'), path.join(projectPath, 'dist/unpacked/resources/app.asar'))
+    await utils.asarSync(
+      path.join(projectPath, 'src/app'),
+      path.join(projectPath, 'dist/unpacked/resources/app.asar')
+    )
     options.uploadToSrv = true // For safetybrowser judgment
     const setupFileName = await utils.compiler(options, projectPath)
     const link = `${config.server.mainAddr}/download/${setupFileName}`
@@ -183,5 +191,5 @@ module.exports = {
   createBrowser,
   getUserBrowser,
   getBrowserInfo,
-  updateCreatingBrowserStatus,
+  updateCreatingBrowserStatus
 }

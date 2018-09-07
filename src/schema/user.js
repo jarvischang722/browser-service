@@ -37,7 +37,7 @@ const createUser = async (userId, body) => {
   return {
     id: newUserId,
     username,
-    password,
+    password
   }
 }
 
@@ -59,7 +59,7 @@ const checkPermission = async (userId, tarId) => {
   return row
 }
 
-const getHomeUrl = async (userId) => {
+const getHomeUrl = async userId => {
   const queryUrl = `
     SELECT url
     FROM homeurl
@@ -74,7 +74,7 @@ const getHomeUrl = async (userId) => {
  * Take homurl with client.
  * @param {String} clientName : client'username
  */
-const getHomeUrlByClientName = async (clientName) => {
+const getHomeUrlByClientName = async clientName => {
   const queryUrl = `
     SELECT url
     FROM homeurl h
@@ -96,14 +96,17 @@ const login = async (userName, password) => {
   if (results.length <= 0) return null
   const row = results[0]
   const hashedPwd = row.salt ? crypto.encrypt(password, row.salt) : password
-  const user = hashedPwd !== row.password ? null : {
-    id: row.id,
-    role: row.role,
-  }
+  const user =
+    hashedPwd !== row.password
+      ? null
+      : {
+        id: row.id,
+        role: row.role
+      }
   return user
 }
 
-const getUser = async (userId) => {
+const getUser = async userId => {
   const query = `
     SELECT *
     FROM user
@@ -114,7 +117,7 @@ const getUser = async (userId) => {
   const row = results[0]
   const user = {
     id: row.id,
-    role: row.role,
+    role: row.role
   }
   return user
 }
@@ -133,58 +136,65 @@ const getProfile = async (userId, tarId, config, platform) => {
     name: row.name,
     expireIn: row.expire_in,
     icon: row.icon,
+    icon_macos: row.icon_macos,
     browser,
-    homeUrl,
+    homeUrl
   }
   return user
 }
 
-const updateProfile = async (userId, req) => db.transaction(async (client) => {
-  const { id, name, icon } = req.body
-  let { homeUrl } = req.body
-  if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
-  const tarId = id || userId
-  await checkPermission(userId, tarId)
-  let iconPath = null
-  if (req.file && req.file.path) {
-      // 优先判断req.file里是否有值, 有的话说明正在上传或更新图标
-    iconPath = `${req.file.path}`
-  } else if (icon) {
+const updateProfile = async (userId, req) =>
+  db.transaction(async client => {
+    const { id, name, icon, icon_macos } = req.body
+    let { homeUrl } = req.body
+    if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
+    const tarId = id || userId
+    await checkPermission(userId, tarId)
+    let iconPath = null
+    let iconMacOSPath = null
+    if (req.files && Object.keys(req.files).length > 0) {
+      // 优先判断req.files里是否有值, 有的话说明正在上传或更新图标
+      iconPath = req.files.icon ? `${req.files.icon[0].path}` : icon
+      iconMacOSPath = req.files.icon_macos ? `${req.files.icon_macos[0].path}` : icon_macos
+    } else if (icon) {
       // 如果没有上传新的图标, 但之前上傳過icon, 把icon路徑作爲body内容傳入
-    iconPath = icon
-  }
+      iconPath = icon
+      iconMacOSPath = icon_macos
+    }
     // upload icon
-  const query = `
+    const query = `
       UPDATE user
       SET
         name = ?,
-        icon = ?
+        icon = ?,
+        icon_macos = ?
       WHERE
         id = ?
       ;`
-  const results = await client.query(query, [name, iconPath, tarId])
-  if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
+    const results = await client.query(query, [name, iconPath, iconMacOSPath, tarId])
+    if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
     // update homeurl
-  const queryClean = `
+    const queryClean = `
       DELETE FROM homeurl
       WHERE userid = ?;
     ;`
-  await client.query(queryClean, [tarId])
-  const queryAddUrl = `
+    await client.query(queryClean, [tarId])
+    const queryAddUrl = `
       INSERT INTO homeurl (userid, url)
       VALUES (?, ?)
       ;`
-  for (const url of homeUrl) {
-    await client.query(queryAddUrl, [tarId, url])
-  }
-  const user = {
-    id: tarId,
-    name,
-    homeUrl,
-    icon: iconPath,
-  }
-  return user
-})
+    for (const url of homeUrl) {
+      await client.query(queryAddUrl, [tarId, url])
+    }
+    const user = {
+      id: tarId,
+      name,
+      homeUrl,
+      icon: iconPath,
+      icon_macos: iconMacOSPath
+    }
+    return user
+  })
 
 const getChildren = async (userId, page, pagesize) => {
   const queryCount = `
@@ -195,7 +205,7 @@ const getChildren = async (userId, page, pagesize) => {
   const resultsCount = await db.query(queryCount, [userId])
   if (resultsCount.length <= 0 || resultsCount[0].cnt <= 0) {
     return {
-      total: 0,
+      total: 0
     }
   }
   const query = `
@@ -212,11 +222,11 @@ const getChildren = async (userId, page, pagesize) => {
     username: r.username,
     name: r.name,
     role: r.role,
-    expireIn: r.expire_in,
+    expireIn: r.expire_in
   }))
   return {
     total: resultsCount[0].cnt,
-    items: users,
+    items: users
   }
 }
 
@@ -235,7 +245,7 @@ const changeChildExpireTime = async (userId, tarId, expireIn) => {
   if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
   return {
     id: tarId,
-    expireIn,
+    expireIn
   }
 }
 
@@ -248,5 +258,5 @@ module.exports = {
   createUser,
   getChildren,
   changeChildExpireTime,
-  checkPermission,
+  checkPermission
 }

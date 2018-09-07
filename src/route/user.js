@@ -6,23 +6,42 @@ const { generateToken } = require('../authorization')
 
 const SCHEMA = {
   id: T.number().integer(),
-  role: T.number().integer().valid(1, 2).default(1),
+  role: T.number()
+    .integer()
+    .valid(1, 2)
+    .default(1),
   name: T.string(),
-  expireIn: T.date().timestamp('unix').raw().allow(null, ''),
+  expireIn: T.date()
+    .timestamp('unix')
+    .raw()
+    .allow(null, ''),
   username: T.string().required(),
   password: T.string().required(),
-  homeUrl: T.alternatives().try(
-    T.array().items(T.string().uri({
-      scheme: ['https']
-    })),
-    T.string().uri({
-      scheme: ['https']
-    })
-  ).required(),
+  homeUrl: T.alternatives()
+    .try(
+      T.array().items(
+        T.string().uri({
+          scheme: ['https']
+        })
+      ),
+      T.string().uri({
+        scheme: ['https']
+      })
+    )
+    .required(),
   icon: T.string(),
-  page: T.number().integer().min(1).default(1),
-  pagesize: T.number().integer().min(1).default(10),
-  platform: T.string().default('Windows').valid(['Windows', 'macOS']),
+  icon_macos: T.string(),
+  page: T.number()
+    .integer()
+    .min(1)
+    .default(1),
+  pagesize: T.number()
+    .integer()
+    .min(1)
+    .default(10),
+  platform: T.string()
+    .default('Windows')
+    .valid(['Windows', 'macOS'])
 }
 
 const ERRORS = {
@@ -32,7 +51,7 @@ const ERRORS = {
   UserDuplicated: 400,
   ExpireInRequired: 400,
   InvalidExpireIn: 400,
-  UserExpired: 400,
+  UserExpired: 400
 }
 
 errors.register(ERRORS)
@@ -76,7 +95,7 @@ module.exports = (route, config, exempt) => {
 
   const updateProfile = async (req, res, next) => {
     try {
-      validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon'), ['name'])
+      validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon', 'icon_macos'), ['name'])
       const user = await User.updateProfile(req.user.id, req)
       return res.json(user)
     } catch (err) {
@@ -126,54 +145,58 @@ module.exports = (route, config, exempt) => {
     destination: 'upload/icon',
     filename: (req, file, cb) => {
       const tarId = req.body.id || req.user.id
-      cb(null, `${tarId}.ico`)
+      if (file.originalname.indexOf('.ico') > -1) {
+        cb(null, `${tarId}.ico`)
+      } else {
+        cb(null, `${tarId}.png`)
+      }
     }
   })
 
   exempt('/user/login')
 
   /**
-* @api {post} /user/login 登陆
-* @apiVersion 1.0.0
-* @apiGroup User
-* @apiDescription 登陆
-*
-* @apiParam {String} username  用户名
-* @apiParam {String} password  密码
-*
-* @apiSuccess (Success 200) {Number} id
-* @apiSuccess (Success 200) {Number} role
-* @apiSuccess (Success 200) {String} token
-*
-* @apiSuccessExample Success-Response:
-* HTTP Status: 200
-* {
-*    "id": 1,
-*    "role": 1,
-*    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
-* }
-*
-*/
+   * @api {post} /user/login 登陆
+   * @apiVersion 1.0.0
+   * @apiGroup User
+   * @apiDescription 登陆
+   *
+   * @apiParam {String} username  用户名
+   * @apiParam {String} password  密码
+   *
+   * @apiSuccess (Success 200) {Number} id
+   * @apiSuccess (Success 200) {Number} role
+   * @apiSuccess (Success 200) {String} token
+   *
+   * @apiSuccessExample Success-Response:
+   * HTTP Status: 200
+   * {
+   *    "id": 1,
+   *    "role": 1,
+   *    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
+   * }
+   *
+   */
   route.post('/user/login', login)
   /**
-* @api {get} /user/recurrent recurrent
-* @apiVersion 1.0.0
-* @apiGroup User
-* @apiDescription recurrent
-*
-* @apiSuccess (Success 200) {Number} id
-* @apiSuccess (Success 200) {Number} role
-* @apiSuccess (Success 200) {String} token
-*
-* @apiSuccessExample Success-Response:
-* HTTP Status: 200
-* {
-*    "id": 1,
-*    "role": 1,
-*    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
-* }
-*
-*/
+   * @api {get} /user/recurrent recurrent
+   * @apiVersion 1.0.0
+   * @apiGroup User
+   * @apiDescription recurrent
+   *
+   * @apiSuccess (Success 200) {Number} id
+   * @apiSuccess (Success 200) {Number} role
+   * @apiSuccess (Success 200) {String} token
+   *
+   * @apiSuccessExample Success-Response:
+   * HTTP Status: 200
+   * {
+   *    "id": 1,
+   *    "role": 1,
+   *    "token": "eyXhwIjoxNTE0MzQ2NzQwfQ.FXJyQ3MFNmyTIvbXodpvJWycV4Io2iAevdKzts......gvTLQ"
+   * }
+   *
+   */
   route.get('/user/recurrent', recurrent)
   /**
 * @api {get} /user/profile 获取用户信息
@@ -250,7 +273,12 @@ module.exports = (route, config, exempt) => {
 }
 *
 */
-  route.post('/user/profile', multer({ storage }).single('icon'), updateProfile)
+  route.post(
+    '/user/profile',
+    multer({ storage }).fields([{ name: 'icon' }, { name: 'icon_macos' }]),
+    updateProfile
+  )
+
   /**
 * @api {post} /user/create  创建下级代理/客户
 * @apiVersion 1.0.0
