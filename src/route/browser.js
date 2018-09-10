@@ -22,6 +22,7 @@ const ERRORS = {
   CreateBrowserFailed: 400,
   NameRequired: 400,
   IconRequired: 400,
+  IconMacOSRequiredError: 400,
   HomeUrlRequired: 400,
   HomeUrlHttpsRequired: 400,
   BrowserInfoNotFound: 404
@@ -48,6 +49,7 @@ module.exports = (route, config, exempt) => {
       if (!profile || !profile.username) throw new errors.UserNotFoundError()
       if (!profile.name) throw new errors.NameRequiredError()
       if (!profile.icon) throw new errors.IconRequiredError()
+      if (!profile.icon_macos) throw new errors.IconMacOSRequiredError()
       if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
       if (!Array.isArray(profile.homeUrl)) {
         profile.homeUrl = [profile.homeUrl]

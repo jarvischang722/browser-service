@@ -143,8 +143,9 @@ const getProfile = async (userId, tarId, config, platform) => {
   return user
 }
 
-const updateProfile = async (userId, req) =>
+const updateProfile = async req =>
   db.transaction(async client => {
+    const userId = req.user.id
     const { id, name, icon, icon_macos } = req.body
     let { homeUrl } = req.body
     if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
