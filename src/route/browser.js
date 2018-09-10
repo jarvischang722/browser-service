@@ -32,9 +32,11 @@ errors.register(ERRORS)
 
 module.exports = (route, config, exempt) => {
   const createNewBrowser = async (req, res, next) => {
+    let profile = {}
+    let buildOfPlatform = 'Windows'
     try {
       const validatedData = validate(req.body, getSchema(SCHEMA, 'id', 'platform'))
-      const buildOfPlatform = validatedData.platform
+      buildOfPlatform = validatedData.platform
       // process.platform :  win32 | linux | darwin(mac os)
       let serverOfPlatform = process.platform
       if (serverOfPlatform === 'darwin') {
@@ -44,7 +46,7 @@ module.exports = (route, config, exempt) => {
       }
 
       const tarId = req.body ? req.body.id : null
-      const profile = await User.getProfile(req.user.id, tarId, config, buildOfPlatform)
+      profile = await User.getProfile(req.user.id, tarId, config, buildOfPlatform)
       // 信息不全的不允许生成浏览器
       if (!profile || !profile.username) throw new errors.UserNotFoundError()
       if (!profile.name) throw new errors.NameRequiredError()
@@ -73,8 +75,7 @@ module.exports = (route, config, exempt) => {
         }
         const buildCB = (error, response, body) => {
           if (error) {
-            Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3)
-            return next(error)
+            throw error
           }
         }
         request(options, buildCB)
@@ -84,6 +85,7 @@ module.exports = (route, config, exempt) => {
       await Browser.updateCreatingBrowserStatus(id, buildOfPlatform)
       res.status(204).send()
     } catch (err) {
+      if (profile && buildOfPlatform !== '') Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3)
       return next(err)
     }
   }
