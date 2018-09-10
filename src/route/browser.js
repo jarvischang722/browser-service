@@ -1,3 +1,4 @@
+const log4js = require('log4js')
 const User = require('../schema/user')
 const Browser = require('../schema/browser')
 const SsUtil = require('../utils/shadowsocks')
@@ -7,6 +8,8 @@ const { validate, getSchema, T } = require('../validator')
 const url = require('url')
 const request = require('request')
 const multer = require('multer')
+
+const log = log4js.getLogger()
 
 const SCHEMA = {
   id: T.number().integer(),
@@ -85,6 +88,7 @@ module.exports = (route, config, exempt) => {
       await Browser.updateCreatingBrowserStatus(id, buildOfPlatform)
       res.status(204).send()
     } catch (err) {
+      log.error(err)
       if (profile && buildOfPlatform !== '') Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3)
       return next(err)
     }
