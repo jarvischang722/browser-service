@@ -7,20 +7,12 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Service",
             "console":"integratedTerminal",
-            "program": "${workspaceFolder}/src/index.js"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Run Npm Start",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "start"
-            ],
-            "port": 7002
+            "program": "${workspaceFolder}/src/index.js",
+            "env": {
+                "NODE_ENV": "dev"
+            },
         },
         {
             "type": "node",
