@@ -67,6 +67,8 @@ module.exports = (route, config, exempt) => {
       })
 
       const { id } = profile
+      console.log(`build platform : ${buildOfPlatform}`)
+      console.log(`This server platform: ${serverOfPlatform}`)
       if (buildOfPlatform !== serverOfPlatform) {
         const serviceAddr =
           buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
@@ -76,6 +78,8 @@ module.exports = (route, config, exempt) => {
           headers: ObjUtil.pick(req.headers, 'content-type', 'accept', 'x-auth-key'),
           form: req.body
         }
+        console.log('postOptions:')
+        console.log(options)
         const buildCB = (error, response, body) => {
           if (error) {
             throw error
@@ -83,6 +87,7 @@ module.exports = (route, config, exempt) => {
         }
         request(options, buildCB)
       } else {
+        console.log('Build on this machine.')
         Browser.createBrowser(config, profile, buildOfPlatform)
       }
       await Browser.updateCreatingBrowserStatus(id, buildOfPlatform)
