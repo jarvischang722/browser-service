@@ -167,9 +167,8 @@ const createBrowser = async (config, profile, platform) => {
       path.join(projectPath, 'src/app'),
       path.join(projectPath, 'dist/unpacked/resources/app.asar')
     )
-    options.uploadToSrv = true // For safetybrowser judgment
     const setupFileName = await utils.compiler(options, projectPath)
-    const link = `${config.server.mainAddr}/download/${setupFileName}`
+    const link = `${config.server.hostname}/download/${setupFileName}`
     // update version if needed
     await Version.updateBrowserInfo(id, platform, link, version)
     return link

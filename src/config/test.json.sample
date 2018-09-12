@@ -4,7 +4,8 @@
     "port": 7003,
     "mainAddr": "http://192.168.50.128:7001",
     "macAddr": "http://35.10.10.11:7003",  
-    "windowsAddr": "http://35.10.10.12:7003" 
+    "windowsAddr": "http://35.10.10.12:7003",
+    "hostname": "http://127.0.0.1:7003"  
   },
   "ssServerList":[
     {

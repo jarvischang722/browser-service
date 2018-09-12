@@ -83,7 +83,6 @@ module.exports = (route, config, exempt) => {
         }
         request(options, buildCB)
       } else {
-        console.log('Build on this machine.')
         Browser.createBrowser(config, profile, buildOfPlatform)
       }
       await Browser.updateCreatingBrowserStatus(id, buildOfPlatform)
