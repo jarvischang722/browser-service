@@ -67,19 +67,15 @@ module.exports = (route, config, exempt) => {
       })
 
       const { id } = profile
-      console.log(`build platform : ${buildOfPlatform}`)
-      console.log(`This server platform: ${serverOfPlatform}`)
       if (buildOfPlatform !== serverOfPlatform) {
         const serviceAddr =
           buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
         const options = {
           url: `${serviceAddr}/browser/create`,
           method: 'POST',
-          headers: ObjUtil.pick(req.headers, 'content-type', 'accept', 'x-auth-key'),
+          headers: ObjUtil.pick(req.headers, 'content-type', 'content-length', 'accept', 'x-auth-key'),
           form: req.body
         }
-        console.log('postOptions:')
-        console.log(options)
         const buildCB = (error, response, body) => {
           if (error) {
             throw error
