@@ -12,6 +12,8 @@ CREATE TABLE player_user (
   birthdate DATE NULL COMMENT 'format (yyyy-mm-dd)',
   citizenship VARCHAR(50) NULL COMMENT 'Country of Citizenship',
   referral_code VARCHAR(50) NULL COMMENT 'Player recommendation code',
+  status VARCHAR(1) NULL DEFAULT '1' COMMENT '0: Prohibited use ; 1: Allow use', 
+  disable_expire DATE NULL COMMENT 'Expiration date of suspension', 
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE INDEX username_UNIQUE (username ASC));

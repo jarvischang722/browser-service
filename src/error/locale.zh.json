@@ -11,6 +11,7 @@
   "IconRequired": "请上传图标",
   "IconMacOSRequired": "请上传创建MacOS所需的图标",
   "HomeUrlRequired": "请填写主页",
-  "HomeUrlHttpsRequired": "网址协议必须要使用'https'"
+  "HomeUrlHttpsRequired": "网址协议必须要使用'https'",
+  "PlayerNotFound": "未找到指定玩家"
 
 }
