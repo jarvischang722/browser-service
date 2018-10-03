@@ -1,0 +1,7 @@
+CREATE TABLE black_white_list (
+  id BIGINT(20) PRIMARY KEY AUTO_INCREMENT  NOT NULL,
+  userid VARCHAR(100) NOT NULL,
+  black_list VARCHAR(255),
+  white_list VARCHAR(255),
+  created timestamp DEFAULT CURRENT_TIMESTAMP,
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
