@@ -4,4 +4,5 @@ CREATE TABLE black_white_list (
   black_list VARCHAR(255),
   white_list VARCHAR(255),
   created timestamp DEFAULT CURRENT_TIMESTAMP,
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE INDEX userid_UNIQUE (userid ASC));

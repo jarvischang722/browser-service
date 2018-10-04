@@ -1,5 +1,5 @@
 const errors = require('../error')
-const Player = require('../schema/player')
+const BlackWhite = require('../schema/blackWhite')
 const { validate, getSchema, T } = require('../validator')
 
 const SCHEMA = {
@@ -11,14 +11,13 @@ const SCHEMA = {
     .integer()
     .min(1)
     .default(10),
-  playerId: T.number().integer(),
-  status: T.string().required().valid('0', '1'),
-  disableExpire: T.date()
+  userid: T.number().integer().required(),
+  blackList: T.string(),
+  whiteList: T.string()
 }
 
 
 const ERRORS = {
-  PlayerNotFound: 404,
 }
 
 errors.register(ERRORS)
@@ -27,28 +26,27 @@ module.exports = (route, config, exempt) => {
   const getList = async (req, res, next) => {
     try {
       const { page, pagesize } = validate(req.query, getSchema(SCHEMA, 'page', 'pagesize'))
-      const list = await Player.getList(page, pagesize)
+      const list = await BlackWhite.getList(page, pagesize)
       return res.json(list)
     } catch (err) {
       return next(err)
     }
   }
+
   const getDetail = async (req, res, next) => {
     try {
-      const { playerId } = validate(req.query, getSchema(SCHEMA, 'playerId'))
-      const player = await Player.getDetail(playerId)
-      return res.json(player)
+      const { userid } = validate(req.query, getSchema(SCHEMA, 'userid'))
+      const results = await BlackWhite.getDetail(userid)
+      return res.json(results)
     } catch (err) {
       return next(err)
     }
   }
 
-  const updateSta = async (req, res, next) => {
+  const update = async (req, res, next) => {
     try {
-      validate(req.body, getSchema(
-        SCHEMA, 'playerId', 'status', 'disableExpire')
-      )
-      const result = await Player.updatePlayerSta(req)
+      validate(req.body, getSchema(SCHEMA, 'userid', 'blackList', 'whiteList'))
+      const result = await BlackWhite.update(req)
       return res.json(result)
     } catch (err) {
       return next(err)
@@ -56,7 +54,7 @@ module.exports = (route, config, exempt) => {
   }
 
 
-  route.get('/player/list', getList)
-  route.get('/player/detail', getDetail)
-  route.post('/player/updateSta', updateSta)
+  route.get('/blackWhite/list', getList)
+  route.get('/blackWhite/detail', getDetail)
+  route.post('/blackWhite/update', update)
 }

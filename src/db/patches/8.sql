@@ -1,7 +1,8 @@
 CREATE TABLE keyword (
   id BIGINT(20) PRIMARY KEY AUTO_INCREMENT  NOT NULL,
   userid bigint,
-  keywords VARCHAR(255) NOT NULL ,
+  keyword VARCHAR(100) NOT NULL ,
   created timestamp DEFAULT CURRENT_TIMESTAMP,
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT unique_userid_keyword UNIQUE (userid, keyword),
   FOREIGN KEY (userid) REFERENCES user(id) ON UPDATE CASCADE ON DELETE RESTRICT);

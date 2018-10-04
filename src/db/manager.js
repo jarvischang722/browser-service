@@ -48,9 +48,7 @@ class DbManager {
         })
       }
     }
-    patches.sort((a, b) => {
-      return a.version - b.version
-    })
+    patches.sort((a, b) => a.version - b.version)
     return patches
   }
 
