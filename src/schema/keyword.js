@@ -5,7 +5,7 @@ const getList = async (userid, page, pagesize) => {
   const userList = await User.getChildren(userid, page, pagesize)
   const userIds = userList.items.map(u => u.id).sort((a, b) => a - b)
   const query = `
-      SELECT k.userid, k.keyword
+      SELECT k.id, k.userid, k.keyword
       FROM  keyword k 
       WHERE k.userid in (?)
   ;`

@@ -1,8 +1,21 @@
 const errors = require('../error')
-const crypto = require('../utils/crypto')
-const serverOpt = require('../config')
+
 
 const getList = async (page, pagesize) => {
+  const queryCnt = `
+  SELECT COUNT(id) AS cnt
+  FROM user
+  ;`
+  const resultsCnt = await db.query(queryCnt)
+  if (resultsCnt.length <= 0 || resultsCnt[0].cnt <= 0) {
+    return {
+      total: 0
+    }
+  }
+  const list = {
+    total: resultsCnt[0].cnt,
+    items: []
+  }
   const query = `
       SELECT u.id as userid , u.name, bwl.black_list, bwl.white_list 
       FROM user u 
@@ -11,8 +24,8 @@ const getList = async (page, pagesize) => {
       LIMIT ?
       OFFSET ?
       ;`
-  const results = await db.query(query, [pagesize, (page - 1) * pagesize])
-  return results
+  list.items = await db.query(query, [pagesize, (page - 1) * pagesize])
+  return list
 }
 
 const getDetail = async userid => {
