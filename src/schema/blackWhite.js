@@ -48,7 +48,7 @@ const update = async req => {
     INSERT INTO black_white_list(userid, black_list, white_list)
     VALUES (?, ?, ?)
     ON DUPLICATE KEY 
-    UPDATE  white_list = ? , white_list = ?
+    UPDATE  black_list = ? , white_list = ?
   ;`
   const results = await db.query(query, [userid, blackList, whiteList, blackList, whiteList])
 

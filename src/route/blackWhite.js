@@ -12,8 +12,8 @@ const SCHEMA = {
     .min(1)
     .default(10),
   userid: T.number().integer().required(),
-  blackList: T.string(),
-  whiteList: T.string()
+  blackList: T.string().allow('', null),
+  whiteList: T.string().allow('', null),
 }
 
 
