@@ -13,7 +13,7 @@ const SCHEMA = {
     .default(10),
   playerId: T.number().integer(),
   status: T.string().required().valid('0', '1'),
-  disableExpire: T.date()
+  disableExpire: T.date().allow('', null)
 }
 
 
