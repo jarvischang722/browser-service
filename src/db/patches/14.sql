@@ -1,0 +1,2 @@
+ALTER TABLE `browser` 
+ADD COLUMN `error_msg` VARCHAR(255) NULL DEFAULT NULL AFTER `link`;

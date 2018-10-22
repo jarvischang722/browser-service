@@ -12,16 +12,20 @@ const STATUS = {
   FAILED: 3
 }
 
-const updateCreatingBrowserStatus = async (userId, platform, status) => {
+const updateCreatingBrowserStatus = async (userId, platform, status, errorMsg) => {
   const st = status || STATUS.CREATING
+  let error_msg = status === 3 && errorMsg ? errorMsg : null
+  if (typeof (error_msg) === 'string') {
+    error_msg = error_msg.substring(0, 255)
+  }
   const query = `
     INSERT INTO browser (userid, platform, status) 
     VALUES (?, ?, ?)
     ON DUPLICATE KEY 
     UPDATE
-      status = ?
+      status = ?, error_msg = ?
     ;`
-  await db.query(query, [userId, platform, st, st])
+  await db.query(query, [userId, platform, st, st, error_msg])
 }
 
 // Only support Windows and Mac
@@ -173,7 +177,7 @@ const createBrowser = async (config, profile, platform) => {
     await Version.updateBrowserInfo(id, platform, link, version)
     return link
   } catch (err) {
-    await updateCreatingBrowserStatus(id, platform, STATUS.FAILED)
+    await updateCreatingBrowserStatus(id, platform, STATUS.FAILED, err.message)
   }
 }
 

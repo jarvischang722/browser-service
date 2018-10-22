@@ -63,6 +63,7 @@ const getBrowserList = async (userId, host) => {
     status: r.status,
     link: getLink(r.link, r.platform, host),
     version: r.version,
+    error_msg: r.error_msg
   }))
   return {
     total: items.length,

@@ -89,7 +89,7 @@ module.exports = (route, config, exempt) => {
       res.status(204).send()
     } catch (err) {
       log.error(err)
-      if (profile && buildOfPlatform !== '') Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3)
+      if (profile && buildOfPlatform !== '') Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3, err.message)
       return next(err)
     }
   }
