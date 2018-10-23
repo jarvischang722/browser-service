@@ -30,21 +30,25 @@ const getList = async (page, pagesize) => {
 }
 
 const getDetail = async playerId => {
-  let player = {}
-  if (typeof playerId === 'number') {
-    const query = `
+  const query = `
         SELECT id, username, name, contact_number, email, gender, birthdate, status, disable_expire
         FROM player_user
         where id = ?
         ;`
-    const results = await db.query(query, [playerId])
-    if (results.length > 0) player = results[0]
+  const results = await db.query(query, [playerId])
+  if (results.length === 0) {
+    throw new errors.PlayerNotFoundError()
   }
-  return player
+
+  return results[0]
 }
 
 const updatePlayerSta = async req => {
-  const { playerId, status, disableExpire } = req.body
+  const { playerId, status } = req.body
+  let disableExpire = req.body.disableExpire
+  if (Number(status) === 1) {
+    disableExpire = null
+  }
   const query = `
   UPDATE player_user
   SET

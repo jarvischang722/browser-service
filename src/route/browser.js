@@ -147,14 +147,7 @@ module.exports = (route, config, exempt) => {
    * @apiGroup Browser
    * @apiDescription 为目标用户生成浏览器
    *
-   * @apiHeader {String} Content-Type
-   * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
-   *
-   *  @apiHeaderExample {json} Header-Example:
-   * {
-   *    "Content-Type": "application/json",
-   *    "X-Auth-Key": "eyJhbGci..."
-   * }
+   * @apiUse HeaderInfo
    *
    * @apiParam {Number{>=1}} [id]  用户id
    * @apiParam {String=Windows,macOS} [platform='Windows']
@@ -179,14 +172,7 @@ module.exports = (route, config, exempt) => {
    * @apiGroup Browser
    * @apiDescription 获得自己的浏览器信息
    *
-   * @apiHeader {String} Content-Type
-   * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
-   *
-   *  @apiHeaderExample {json} Header-Example:
-   * {
-   *    "Content-Type": "application/json",
-   *    "X-Auth-Key": "eyJhbGci..."
-   * }
+   * @apiUse HeaderInfo
    *
    * @apiParam {Number{>=1}} [id]  用户id
    * @apiParam {String=Windows,macOS} [platform='Windows']
@@ -205,11 +191,13 @@ module.exports = (route, config, exempt) => {
    *
    */
   route.get('/browser/info', getBrowserInfo)
+
   /**
    * @api {get} /browser/homeUrlAndSsInfo 获得用户主页以及SS
    * @apiVersion 1.0.0
    * @apiGroup Browser
    * @apiDescription 获得用户的主页以及返回可用的shadow socks资讯
+   *
    *
    * @apiParam {String} clientName  用户username
    *

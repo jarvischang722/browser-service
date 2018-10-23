@@ -150,6 +150,7 @@ module.exports = (route, config, exempt) => {
 }
 */
   route.get('/short/list', getList)
+
   /**
 * @api {get} /short/detail 编辑短地址
 * @apiVersion 1.0.0
@@ -175,6 +176,7 @@ module.exports = (route, config, exempt) => {
 *
 */
   route.get('/short/detail', getDetail)
+
   /**
 * @api {post} /short/add 新增一条短地址
 * @apiVersion 1.0.0
@@ -203,6 +205,7 @@ module.exports = (route, config, exempt) => {
 *
 */
   route.post('/short/add', multer({ storage }).single('logo_url'), addShort)
+
   /**
 * @api {post} /short/update 编辑短地址
 * @apiVersion 1.0.0

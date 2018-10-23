@@ -125,6 +125,7 @@ module.exports = (route, config, exempt) => {
 *
 */
   route.get('/browser/list', getBrowserList)
+
   /**
 * @api {get} /browser/detail 获取版本号详情
 * @apiVersion 1.0.0
@@ -147,6 +148,8 @@ module.exports = (route, config, exempt) => {
  "link": "apple.com",
  "version": "xxx"
 }
+*
+
 *
 */
   route.get('/browser/detail', getBrowserDetail)
