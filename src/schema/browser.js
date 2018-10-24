@@ -13,7 +13,7 @@ const updateCreatingBrowserStatus = async (userId, platform, status, errorMsg) =
   if (userId === undefined || platform === undefined) {
     return
   }
-  if (typeof (error_msg) === 'string') {
+  if (typeof error_msg === 'string') {
     error_msg = error_msg.substring(0, 255)
   }
   const query = `
@@ -162,9 +162,8 @@ const createBrowser = async (config, profile, platform) => {
     // generate option file
     const optionFile = path.join(optionPath, 'client.json')
     fs.writeFileSync(optionFile, JSON.stringify(options, null, 4))
-    const iconFile = path.join(optionPath, 'icon.ico')
     await utils.copy(optionFile, path.join(projectPath, 'src/app/config/client.json'))
-    await utils.copy(iconFile, path.join(projectPath, 'src/app/config/icon.ico'))
+    await utils.copy(path.join(optionPath, iconFileName), path.join(projectPath, 'src/app/config/'))
     await utils.asarSync(
       path.join(projectPath, 'src/app'),
       path.join(projectPath, 'dist/unpacked/resources/app.asar')
@@ -175,7 +174,8 @@ const createBrowser = async (config, profile, platform) => {
     await Version.updateBrowserInfo(id, platform, link, version)
     return link
   } catch (err) {
-    await updateCreatingBrowserStatus(id, platform, STATUS.FAILED, err.message)
+    const errorMsg = err.message || JSON.stringify('err')
+    await updateCreatingBrowserStatus(id, platform, STATUS.FAILED, errorMsg)
   }
 }
 
