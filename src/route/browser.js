@@ -78,9 +78,17 @@ module.exports = (route, config, exempt) => {
         }
         const buildCB = (error, response, body) => {
           if (error) {
+            console.error(error)
             throw error
           }
+          console.log('============= response ===============')
+          console.log(response)
+          console.log('============== body ==============')
+          console.log(body)
         }
+        console.log('buildOfPlatform:', buildOfPlatform)
+        console.log('serverOfPlatform:', serverOfPlatform)
+        console.log(options)
         request(options, buildCB)
       } else {
         Browser.createBrowser(config, profile, buildOfPlatform)
