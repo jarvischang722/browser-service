@@ -5,16 +5,14 @@ const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const Version = require('./version')
-
-const STATUS = {
-  VALID: 1,
-  CREATING: 2,
-  FAILED: 3
-}
+const STATUS = require('./const').BUILD_STATUS
 
 const updateCreatingBrowserStatus = async (userId, platform, status, errorMsg) => {
   const st = status || STATUS.CREATING
   let error_msg = status === 3 && errorMsg ? errorMsg : null
+  if (userId === undefined || platform === undefined) {
+    return
+  }
   if (typeof (error_msg) === 'string') {
     error_msg = error_msg.substring(0, 255)
   }

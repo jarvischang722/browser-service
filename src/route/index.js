@@ -13,25 +13,25 @@ const bind = (route, config) => {
 }
 /**
  * @apiDefine UnauthorizedError
- * @apiError (Error 400) UnauthorizedError Not login
+ * @apiError UnauthorizedError Not login
  *
- * @apiErrorExample {json} UnauthorizedError-Response:
- * HTTP/1.1 400
- * {
+ * @apiErrorExample {json} Error-Response:
+ * HTTP/1.1 404 Not Found
+   * {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
- * }
+      }
+   * }
  *
  */
 
 /**
- * @apiDefine HeaderInfo
+ * @apiDefine Header
  * @apiHeader {String} Content-Type
  * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
  *
- * @apiHeaderExample {json} Header-Example:
+ *  @apiHeaderExample {json} Header-Example:
  * {
  *    "Content-Type": "application/json",
  *    "X-Auth-Key": "eyJhbGci..."

@@ -8,6 +8,7 @@ const { validate, getSchema, T } = require('../validator')
 const url = require('url')
 const request = require('request')
 const multer = require('multer')
+const STATUS = require('../schema/const').BUILD_STATUS
 
 const log = log4js.getLogger()
 
@@ -70,25 +71,29 @@ module.exports = (route, config, exempt) => {
       if (buildOfPlatform !== serverOfPlatform) {
         const serviceAddr =
           buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
+        const headers = ObjUtil.pick(
+          req.headers,
+          'content-type',
+          'accept',
+          'x-auth-key'
+        )
         const options = {
           url: `${serviceAddr}/browser/create`,
           method: 'POST',
-          headers: ObjUtil.pick(req.headers, 'content-type', 'content-length', 'accept', 'x-auth-key'),
+          headers,
           form: req.body
         }
         const buildCB = (error, response, body) => {
           if (error) {
-            console.error(error)
-            throw error
+            log.error(error)
+            Browser.updateCreatingBrowserStatus(
+              profile.id,
+              buildOfPlatform,
+              STATUS.FAILED,
+              error.message
+            )
           }
-          console.log('============= response ===============')
-          console.log(response)
-          console.log('============== body ==============')
-          console.log(body)
         }
-        console.log('buildOfPlatform:', buildOfPlatform)
-        console.log('serverOfPlatform:', serverOfPlatform)
-        console.log(options)
         request(options, buildCB)
       } else {
         Browser.createBrowser(config, profile, buildOfPlatform)
@@ -97,7 +102,7 @@ module.exports = (route, config, exempt) => {
       res.status(204).send()
     } catch (err) {
       log.error(err)
-      if (profile && buildOfPlatform !== '') Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, 3, err.message)
+      Browser.updateCreatingBrowserStatus(profile.id, buildOfPlatform, STATUS.FAILED, err.message)
       return next(err)
     }
   }
