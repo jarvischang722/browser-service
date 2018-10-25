@@ -16,10 +16,11 @@ const getList = async (userid, page, pagesize) => {
     acc[key].push(item)
     return acc
   }, {})
-  for (let i = 0; i < Object.keys(groupKw).length; i++) {
-    const theUserId = Number(Object.keys(groupKw)[i])
-    const idx = userList.items.findIndex(element => element.id === theUserId)
-    userList.items[idx].keywords = groupKw[theUserId]
+
+  const agents = userList.items
+  for (let idx = 0; idx < agents.length; idx++) {
+    const theUserId = Number(agents[idx].id)
+    userList.items[idx].keywords = groupKw[theUserId] || []
   }
   return userList
 }
