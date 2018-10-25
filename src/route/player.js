@@ -17,16 +17,34 @@ const SCHEMA = {
   status: T.string()
     .required()
     .valid('0', '1'),
-  disableExpire: T.date().allow('', null)
+  disableExpire: T.date().allow('', null),
+  username: T.string().required(),
+  password: T.string().required(),
+  playerName: T.string().required(),
+  contactNum: T.string().required(),
+  email: T.string().email()
 }
 
 const ERRORS = {
   PlayerNotFound: 404
 }
 
-errors.register(ERRORS)
-
 module.exports = (route, config, exempt) => {
+  const register = async (req, res, next) => {
+    try {
+      validate(req.body, getSchema(SCHEMA, 'username', 'password', 'playerName', 'contactNum', 'email'))
+      const regData = req.body
+      const user = await Player.register(regData)
+      if (user) {
+        res.json({ success: true, user })
+      } else {
+        res.json({ success: false, message: 'Register failed', user })
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
+
   const getList = async (req, res, next) => {
     try {
       const { page, pagesize } = validate(req.body, getSchema(SCHEMA, 'page', 'pagesize'))
@@ -70,6 +88,8 @@ module.exports = (route, config, exempt) => {
       }
    * }
    */
+  exempt('/player/register')
+  route.post('/player/register', register)
 
   /**
    * @api {post} /player/list  玩家列表
@@ -82,12 +102,17 @@ module.exports = (route, config, exempt) => {
    * @apiParam {Number{>=1}} [page=1]  页码
    * @apiParam {Number{>=1}} [pagesize=10]  每页数量
    *
-   * @apiSuccess (Success 200) {Object[]} data
-   * @apiSuccess (Success 200) {String} name_en  Agent English name
-   * @apiSuccess (Success 200) {String} name_zh  Agent name
-   * @apiSuccess (Success 200) {Array} games Agent games
-   * @apiSuccess (Success 200) {String} icon
-   * @apiSuccess (Success 200) {String} url
+   * @apiSuccess (Success 200) {Number} total 筆數
+   * @apiSuccess (Success 200) {Object[]} items
+   * @apiSuccess (Success 200) {Number} items.id 玩家編號
+   * @apiSuccess (Success 200) {String} items.username
+   * @apiSuccess (Success 200) {String}  items.name
+   * @apiSuccess (Success 200) {String} items.contact_number
+   * @apiSuccess (Success 200) {String} items.email
+   * @apiSuccess (Success 200) {String} items.gender 性別
+   * @apiSuccess (Success 200) {String} items.birthdate 生日
+   * @apiSuccess (Success 200) {String} items.status 玩家停用狀態
+   * @apiSuccess (Success 200) {String} items.disable_expire 停用到期時間
    *
    * @apiSuccessExample Success-Response:
    * HTTP Status: 200
@@ -133,7 +158,6 @@ module.exports = (route, config, exempt) => {
    * @apiUse HeaderInfo
    *
    * @apiParam {Number} playerId 玩家編號
-   *
    *
    * @apiSuccess (Success 200) {Number} id
    * @apiSuccess (Success 200) {String} username

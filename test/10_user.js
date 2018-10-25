@@ -9,7 +9,7 @@ const newAgent = {
 }
 
 describe('User', () => {
-  it('Sign in', done => {
+  it('Test-Sign in', done => {
     const { username, password } = tripleone
     client()
       .post('/user/login')

@@ -1,6 +1,31 @@
-const errors = require('../error')
-const crypto = require('../utils/crypto')
-const serverOpt = require('../config')
+const Errors = require('../error')
+const Crypto = require('../utils/crypto')
+const StrUtil = require('../utils/str')
+
+const register = async regData => {
+  try {
+    const { username, password, playerName, contactNum } = regData
+    const salt = StrUtil.random(8)
+    const passwd = Crypto.encrypt(password, salt)
+    const query = `
+    INSERT INTO player_user (
+      username, salt, password, name, contact_number
+    )
+    VALUES (?, ?, ?, ?, ?)
+    ;`
+    const results = await db.query(query, [username, salt, passwd, playerName, contactNum])
+    const newUserId = results.insertId
+    if (!newUserId) throw new Errors.CreateUserFailedError()
+    const user = {
+      id: newUserId,
+      username
+    }
+    return user
+  } catch (err) {
+    throw err
+  }
+}
+
 
 const getList = async (page, pagesize) => {
   const queryCnt = `
@@ -10,7 +35,8 @@ const getList = async (page, pagesize) => {
   const resultsCnt = await db.query(queryCnt)
   if (resultsCnt.length <= 0 || resultsCnt[0].cnt <= 0) {
     return {
-      total: 0
+      total: 0,
+      items: []
     }
   }
   const list = {
@@ -37,7 +63,7 @@ const getDetail = async playerId => {
         ;`
   const results = await db.query(query, [playerId])
   if (results.length === 0) {
-    throw new errors.PlayerNotFoundError()
+    throw new Errors.PlayerNotFoundError()
   }
 
   return results[0]
@@ -59,7 +85,7 @@ const updatePlayerSta = async req => {
   ;`
   const results = await db.query(query, [status, disableExpire, playerId])
 
-  if (results.affectedRows <= 0) throw new errors.PlayerNotFoundError()
+  if (results.affectedRows <= 0) throw new Errors.PlayerNotFoundError()
   const row = await getDetail(playerId)
   return {
     id: row.id,
@@ -70,6 +96,7 @@ const updatePlayerSta = async req => {
 }
 
 module.exports = {
+  register,
   getList,
   getDetail,
   updatePlayerSta

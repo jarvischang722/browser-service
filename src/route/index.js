@@ -27,7 +27,7 @@ const bind = (route, config) => {
  */
 
 /**
- * @apiDefine Header
+ * @apiDefine HeaderInfo
  * @apiHeader {String} Content-Type
  * @apiHeader {String} X-Auth-Key   登陆之后返回的auth token
  *

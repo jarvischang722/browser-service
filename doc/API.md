@@ -92,15 +92,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 ## 黑白名單列表
@@ -155,15 +155,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 PlayerNotFoundError-Response:
@@ -223,15 +223,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 # Browser
@@ -468,15 +468,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 ## 刪除關鍵字
@@ -517,15 +517,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 ## 更新關鍵字
@@ -567,15 +567,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 # Player
@@ -669,12 +669,17 @@ HTTP/1.1 400
 ### Success 200
 | Field    | Type        | Description                          |
 |---------|-----------|--------------------------------------|
-| data| Object[]| |
-| name_en| String| <p>Agent English name</p>|
-| name_zh| String| <p>Agent name</p>|
-| games| Array| <p>Agent games</p>|
-| icon| String| |
-| url| String| |
+| total| Number| <p>筆數</p>|
+| items| Object[]| |
+| items.id| Number| <p>玩家編號</p>|
+| items.username| String| |
+| items.name| String| |
+| items.contact_number| String| |
+| items.email| String| |
+| items.gender| String| <p>性別</p>|
+| items.birthdate| String| <p>生日</p>|
+| items.status| String| <p>玩家停用狀態</p>|
+| items.disable_expire| String| <p>停用到期時間</p>|
 
 ### Success Response
 
@@ -714,15 +719,15 @@ HTTP Status: 200
 
 ### Error Response
 
-UnauthorizedError-Response:
+Error-Response:
 
 ```
-HTTP/1.1 400
+HTTP/1.1 404 Not Found
 {
       "error": {
           "code": "UnauthorizedError",
           "message": "身份验证失败，请重新登录"
-   }
+      }
 }
 ```
 ## 更新玩家狀態
