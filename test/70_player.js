@@ -7,7 +7,7 @@ const playerName = 'tripleone_test'
 const contactNum = '0912345678'
 let PLAYER_ID = ''
 
-describe('Test-Player', () => {
+describe('Player', () => {
   it('register', done => {
     client()
       .post('/player/register')
@@ -69,5 +69,35 @@ describe('Test-Player', () => {
           .and.to.be.oneOf(['0', '1'])
         done()
       })
+  })
+
+  it('update player status', done => {
+    client()
+    .post('/player/updateSta')
+    .set('Content-Type', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .send({ playerId: PLAYER_ID, status: '0', disableExpire: '2018/12/31' })
+    .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('id').and.be.a('number')
+      res.body.should.have.property('name').and.be.a('string')
+      res.body.should.have.property('status').and.be.a('string').to.equal('0')
+      res.body.should.have.property('disable_expire')
+      done()
+    })
+  })
+
+  it('update player status no player id', done => {
+    client()
+    .post('/player/updateSta')
+    .set('Content-Type', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .send({ status: '0', disableExpire: '2018/12/31' })
+    .expect(400)
+    .end((err, res) => {
+      should.not.exist(err)
+      done()
+    })
   })
 })

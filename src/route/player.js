@@ -197,7 +197,7 @@ module.exports = (route, config, exempt) => {
    *
    * @apiParam {Number} playerId 玩家編號
    * @apiParam {Number} status 玩家狀態
-   * @apiParam {Number} [disableExpire] 玩家
+   * @apiParam {String} [disableExpire] 玩家
    *
    * @apiSuccess (Success 200) {Number} id
    * @apiSuccess (Success 200) {String} name
