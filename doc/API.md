@@ -116,6 +116,13 @@ HTTP/1.1 404 Not Found
 | Content-Type			| String			|  							|
 | X-Auth-Key			| String			|  <p>登陆之后返回的auth token</p>							|
 
+### Parameters
+
+| Name    | Type      | Attribute      | Description                          |
+|---------|-----------|--------------------------------------|
+| page			| Number	| Optional|  <p>页码</p>							|
+| pagesize			| Number	| Optional|  <p>每页数量</p>							|
+
 
 ### Success 200
 | Field    | Type        | Description                          |
@@ -397,6 +404,13 @@ HTTP Status: 204
 |---------|-----------|--------------------------------------|
 | Content-Type			| String			|  							|
 | X-Auth-Key			| String			|  <p>登陆之后返回的auth token</p>							|
+
+### Parameters
+
+| Name    | Type      | Attribute      | Description                          |
+|---------|-----------|--------------------------------------|
+| page			| Number	| Optional|  <p>页码</p>							|
+| pagesize			| Number	| Optional|  <p>每页数量</p>							|
 
 
 ### Success 200
@@ -749,7 +763,7 @@ HTTP/1.1 404 Not Found
 |---------|-----------|--------------------------------------|
 | playerId			| Number	| Required|  <p>玩家編號</p>							|
 | status			| Number	| Required|  <p>玩家狀態</p>							|
-| disableExpire			| Number	| Optional|  <p>玩家</p>							|
+| disableExpire			| String	| Optional|  <p>玩家</p>							|
 
 
 ### Success 200

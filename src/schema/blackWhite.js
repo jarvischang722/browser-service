@@ -44,6 +44,17 @@ const getDetail = async userid => {
 
 const update = async req => {
   const { userid, blackList, whiteList } = req.body
+  const queryCnt = `
+      SELECT count(*) as cnt  
+      FROM user 
+      WHERE id = ?
+  ;`
+
+  const result = await db.query(queryCnt, [userid])
+  if (result[0].cnt === 0) {
+    throw new errors.UserNotFoundError()
+  }
+
   const query = `
     INSERT INTO black_white_list(userid, black_list, white_list)
     VALUES (?, ?, ?)

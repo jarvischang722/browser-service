@@ -2,7 +2,7 @@ const client = require('./lib/client')
 
 let INSERT_ID = ''
 describe('Test - Keyword', () => {
-  it('register', done => {
+  it('update', done => {
     client()
       .post('/keyword/update')
       .set('Content-Type', 'application/json')
@@ -20,9 +20,38 @@ describe('Test - Keyword', () => {
       })
   })
 
+  it('update no userid', done => {
+    client()
+      .post('/keyword/update')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set('X-Auth-Key', env.user.token)
+      .send({ keyword: '彩票' })
+      .expect(400)
+      .end((err, res) => {
+        should.not.exist(err)
+        done()
+      })
+  })
+
+  it('update not found userid', done => {
+    client()
+      .post('/keyword/update')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set('X-Auth-Key', env.user.token)
+      .send({ userid: 500, keyword: '彩票' })
+      .expect(500)
+      .end((err, res) => {
+        should.not.exist(err)
+        done()
+      })
+  })
+
+
   it('list', done => {
     client()
-      .get('/keyword/list?pagesize=20')
+      .get('/keyword/list')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Key', env.user.token)
       .expect(200)

@@ -60,6 +60,9 @@ module.exports = (route, config, exempt) => {
    *
    * @apiUse HeaderInfo
    *
+   * @apiParam {Number{>=1}} [page=1]  页码
+   * @apiParam {Number{>=1}} [pagesize=10]  每页数量
+   *
    * @apiSuccess (Success 200) {Number} total
    * @apiSuccess (Success 200) {Object[]} items
    * @apiSuccess (Success 200) {Number} items.id
