@@ -2,7 +2,7 @@ const client = require('./lib/client')
 
 const USER_ID = 1
 
-describe('Test - BlackWhite', () => {
+describe('BlackWhite', () => {
   it('update', done => {
     client()
       .post('/blackWhite/update')

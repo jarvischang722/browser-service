@@ -1,7 +1,7 @@
 const client = require('./lib/client')
 
 let INSERT_ID = ''
-describe('Test - Keyword', () => {
+describe('Keyword', () => {
   it('update', done => {
     client()
       .post('/keyword/update')

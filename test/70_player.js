@@ -7,7 +7,7 @@ const playerName = 'tripleone_test'
 const contactNum = '0912345678'
 let PLAYER_ID = ''
 
-describe('Test - Player', () => {
+describe('Player', () => {
   it('register', done => {
     client()
       .post('/player/register')
