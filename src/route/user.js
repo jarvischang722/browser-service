@@ -41,7 +41,8 @@ const SCHEMA = {
     .default(10),
   platform: T.string()
     .default('Windows')
-    .valid(['Windows', 'macOS'])
+    .valid(['Windows', 'macOS']),
+  clientName: T.string().required()
 }
 
 const ERRORS = {
@@ -141,6 +142,17 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const getHomeurl = async (req, res, next) => {
+    try {
+      validate(req.query, getSchema(SCHEMA, 'clientName'))
+      const { clientName } = req.body
+      const homeUrlList = await User.getHomeUrlByClientName(clientName)
+      return res.json({ homeUrlList })
+    } catch (err) {
+      return next(err)
+    }
+  }
+
   const storage = multer.diskStorage({
     destination: 'upload/icon',
     filename: (req, file, cb) => {
@@ -154,6 +166,7 @@ module.exports = (route, config, exempt) => {
   })
 
   exempt('/user/login')
+  exempt('/user/getHomeurl')
 
   /**
    * @api {post} /user/login 登陆
@@ -349,4 +362,21 @@ module.exports = (route, config, exempt) => {
 }
 */
   route.post('/user/expire', changeChildExpireTime)
+
+ /**
+* @api {get} /user/getHomeurl  取得首頁列表
+* @apiVersion 1.0.0
+* @apiGroup User
+*
+* @apiParam {String} clientName  用户名稱
+*
+* @apiSuccess (Success 200) {Array} homeUrlList
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+  "homeUrlList": ["https://www.9896b.xyz", "https://www.9896b.xyz"]
+}
+*/
+  route.get('/user/getHomeurl', getHomeurl)
 }
