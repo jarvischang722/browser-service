@@ -145,7 +145,7 @@ module.exports = (route, config, exempt) => {
   const getHomeurl = async (req, res, next) => {
     try {
       validate(req.query, getSchema(SCHEMA, 'clientName'))
-      const { clientName } = req.body
+      const { clientName } = req.query
       const homeUrlList = await User.getHomeUrlByClientName(clientName)
       return res.json({ homeUrlList })
     } catch (err) {
