@@ -31,6 +31,7 @@ Tripleonetech discover service
 	- [编辑短地址](#编辑短地址)
 	
 - [User](#user)
+	- [取得首頁列表](#取得首頁列表)
 	- [获取下级用户列表](#获取下级用户列表)
 	- [获取用户信息](#获取用户信息)
 	- [recurrent](#recurrent)
@@ -64,7 +65,7 @@ Tripleonetech discover service
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | userid			| Number	| Required|  <p>agent id</p>							|
 
 
@@ -119,7 +120,7 @@ HTTP/1.1 404 Not Found
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | page			| Number	| Optional|  <p>页码</p>							|
 | pagesize			| Number	| Optional|  <p>每页数量</p>							|
 
@@ -200,7 +201,7 @@ HTTP/1.1 400
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | userid			| Number	| Required|  <p>Agent ID</p>							|
 | blackList			| String	| Optional|  <p>黑名單</p>							|
 | whiteList			| String	| Optional|  <p>白名單</p>							|
@@ -253,7 +254,7 @@ HTTP/1.1 404 Not Found
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | clientName			| String	| Required|  <p>用户username</p>							|
 
 
@@ -307,7 +308,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| Number	| Optional|  <p>用户id</p>							|
 | platform			| String	| Optional|  							|
 
@@ -338,7 +339,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | browserSetup			| File	| Required|  <p>:  生成後瀏覽器的檔案</p>							|
 
 
@@ -375,7 +376,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| Number	| Optional|  <p>用户id</p>							|
 | platform			| String	| Optional|  <p>說明</p> <ol> <li>如果没有传id, 则获取自己的profile</li> <li>如果传了id, 会判断自己是否是目标用户的上级, 如果不是, 则抛UserNotFoundError</li> </ol>							|
 
@@ -408,7 +409,7 @@ HTTP Status: 204
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | page			| Number	| Optional|  <p>页码</p>							|
 | pagesize			| Number	| Optional|  <p>每页数量</p>							|
 
@@ -509,7 +510,7 @@ HTTP/1.1 404 Not Found
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | keywordList			| Array	| Required|  <p>關鍵字索引列表</p>							|
 
 
@@ -558,7 +559,7 @@ HTTP/1.1 404 Not Found
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | userid			| Number	| Required|  <p>Agent id</p>							|
 | keyword			| String	| Required|  <p>關鍵字</p>							|
 
@@ -610,7 +611,7 @@ HTTP/1.1 404 Not Found
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | playerId			| Number	| Required|  <p>玩家編號</p>							|
 
 
@@ -675,7 +676,7 @@ HTTP/1.1 400
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | page			| Number	| Optional|  <p>页码</p>							|
 | pagesize			| Number	| Optional|  <p>每页数量</p>							|
 
@@ -760,7 +761,7 @@ HTTP/1.1 404 Not Found
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | playerId			| Number	| Required|  <p>玩家編號</p>							|
 | status			| Number	| Required|  <p>玩家狀態</p>							|
 | disableExpire			| String	| Optional|  <p>玩家</p>							|
@@ -839,7 +840,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| Number	| Required|  <p>id</p>							|
 
 
@@ -877,7 +878,7 @@ HTTP Status: 201
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | page			| Number	| Optional|  <p>页码</p>							|
 | pagesize			| Number	| Optional|  <p>每页数量</p>							|
 
@@ -923,7 +924,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | short			| String	| Required|  <p>短地址</p>							|
 | long			| String	| Required|  <p>长地址</p>							|
 | site_name			| String	| Optional|  <p>网站名称</p>							|
@@ -964,7 +965,7 @@ HTTP Status: 201
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| String	| Required|  <p>id</p>							|
 | short			| String	| Required|  <p>短地址</p>							|
 | long			| String	| Required|  <p>长地址</p>							|
@@ -998,6 +999,36 @@ HTTP Status: 201
 
 # User
 
+## 取得首頁列表
+
+
+
+	GET /user/getHomeurl
+
+
+### Parameters
+
+| Name    | Type      | Attribute      | Description                          |
+|---------|-----------|----------------| -------------------|
+| clientName			| String	| Required|  <p>用户名稱</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| homeUrlList| Array| |
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+  "homeUrlList": ["https://www.9896b.xyz", "https://www.9896b.xyz"]
+}
+```
+
 ## 获取下级用户列表
 
 
@@ -1008,7 +1039,7 @@ HTTP Status: 201
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | page			| Number	| Optional|  <p>页码</p>							|
 | pagesize			| Number	| Optional|  <p>每页数量</p>							|
 
@@ -1050,7 +1081,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| Number	| Required|  <p>用户id</p>							|
 
 
@@ -1135,7 +1166,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | username			| String	| Required|  <p>用户名(唯一)</p>							|
 | name			| String	| Required|  <p>名称</p>							|
 | role			| Number	| Required|  <p>权限 1: 代理 2: 客户</p>							|
@@ -1172,7 +1203,7 @@ HTTP Status: 201
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| String	| Required|  <p>用户id</p>							|
 | expireIn			| Date	| Required|  <p>过期时间, 不能超过自己的</p>							|
 
@@ -1205,7 +1236,7 @@ HTTP Status: 201
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | username			| String	| Required|  <p>用户名</p>							|
 | password			| String	| Required|  <p>密码</p>							|
 
@@ -1240,7 +1271,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | id			| Number	| Optional|  <p>用户id</p>							|
 | name			| String	| Required|  <p>名称</p>							|
 | homeUrl			| String[]	| Required|  <p>主页列表</p>							|
@@ -1284,7 +1315,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | user			| Number	| Required|  <p>用户id</p>							|
 
 
@@ -1322,7 +1353,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | user			| Number	| Required|  <p>用户id</p>							|
 
 
@@ -1374,7 +1405,7 @@ HTTP Status: 200
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 | user			| Number	| Required|  <p>短地址 用户id</p>							|
 | platform			| String	| Required|  <p>平台</p>							|
 | link			| String	| Required|  <p>长地址</p>							|

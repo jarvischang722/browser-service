@@ -37,7 +37,7 @@
 ### Parameters
 
 | Name    | Type      | Attribute      | Description                          |
-|---------|-----------|--------------------------------------|
+|---------|-----------|----------------| -------------------|
 <% data[group][sub][0].parameter.fields.Parameter.forEach(function (param) { -%>
 | <%- param.field %>			| <%- param.type %>	| <%- param.optional ? 'Optional' : 'Required' %>|  <%- param.description %>							|
 <% }); //forech parameter -%>
