@@ -29,4 +29,21 @@ describe('Generate browser', () => {
       done()
     })
   })
+
+  it('get config', (done) => {
+    client()
+    .get('/browser/config')
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Auth-Key', env.user.token)
+    .send({
+      id: env.user2.id,
+    })
+    .expect(200)
+    .end((err, res) => {
+      should.not.exist(err)
+      res.body.should.have.property('isVPNEnable').and.be.a('boolean')
+      done()
+    })
+  })
 })

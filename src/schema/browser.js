@@ -187,10 +187,20 @@ const getBrowserInfo = async (userId, tarId, config, platform) => {
   return browser
 }
 
+const getConfig = () => {
+  // TODO 之后需要将设定档改为动态捞取， 2019/01/28
+  const configs = {
+    isVPNEnable: false
+  }
+  return configs
+}
+
+
 module.exports = {
   STATUS,
   createBrowser,
   getUserBrowser,
   getBrowserInfo,
-  updateCreatingBrowserStatus
+  updateCreatingBrowserStatus,
+  getConfig
 }

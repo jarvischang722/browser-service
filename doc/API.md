@@ -11,6 +11,7 @@ Tripleonetech discover service
 	- [获得用户主页以及SS](#获得用户主页以及ss)
 	- [获得浏览器信息](#获得浏览器信息)
 	- [上传安装档](#上传安装档)
+	- [取得共用设定档](#取得共用设定档)
 	- [生成浏览器](#生成浏览器)
 	
 - [Keyword](#keyword)
@@ -358,6 +359,30 @@ HTTP Status: 200
  {
    success: true
  }
+```
+
+## 取得共用设定档
+
+<p>在Mobile版的安全浏览器启动前，会先打这支API来取得初始设定</p>
+
+	POST /browser/config
+
+
+
+### Success 201
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| isVPNEnable| Boolen| |
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+  isVPNEnable : false
+}
 ```
 
 ## 生成浏览器

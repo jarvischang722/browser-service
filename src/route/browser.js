@@ -71,12 +71,7 @@ module.exports = (route, config, exempt) => {
       if (buildOfPlatform !== serverOfPlatform) {
         const serviceAddr =
           buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
-        const headers = ObjUtil.pick(
-          req.headers,
-          'content-type',
-          'accept',
-          'x-auth-key'
-        )
+        const headers = ObjUtil.pick(req.headers, 'content-type', 'accept', 'x-auth-key')
         const options = {
           url: `${serviceAddr}/browser/create`,
           method: 'POST',
@@ -141,6 +136,15 @@ module.exports = (route, config, exempt) => {
       res.json({ success: true })
     } else {
       res.json({ success: false })
+    }
+  }
+
+  const getConfig = async (req, res, next) => {
+    try {
+      const result = await Browser.getConfig(req)
+      return res.json(result)
+    } catch (err) {
+      return next(err)
     }
   }
 
@@ -267,4 +271,21 @@ module.exports = (route, config, exempt) => {
     multer({ storage }).single('browserSetup'),
     uploadBrowserSetup
   )
+
+  /**
+* @api {post} /browser/config 取得共用设定档
+* @apiVersion 1.0.0
+* @apiGroup Browser
+* @apiDescription 在Mobile版的安全浏览器启动前，会先打这支API来取得初始设定
+*
+* @apiSuccess (Success 201) {Boolen} isVPNEnable
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+  isVPNEnable : false
+}
+*
+*/
+  route.get('/browser/config', getConfig)
 }

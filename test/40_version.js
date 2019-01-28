@@ -147,7 +147,7 @@ describe('Update browser', () => {
     .set('X-Auth-Key', env.user.token)
     .send({
       platform: 'iOS',
-      version: '2.9.9',
+      version: '3.0.0',
       link: 'https://apple.com',
     })
     .expect(204)
@@ -165,7 +165,7 @@ describe('Update browser', () => {
     .set('X-Auth-Key', env.user.token)
     .send({
       platform: 'Windows',
-      version: '2.9.9',
+      version: '3.0.0',
       link: 'https://google.com',
     })
     .expect(204)
@@ -184,7 +184,7 @@ describe('Update browser', () => {
     .send({
       user: env.user2.id,
       platform: 'macOS',
-      version: '2.9.10',
+      version: '3.0.0',
       link: 'https://live.com',
     })
     .expect(204)
