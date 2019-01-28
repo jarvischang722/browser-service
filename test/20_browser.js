@@ -35,7 +35,6 @@ describe('Generate browser', () => {
     .get('/browser/config')
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
-    .set('X-Auth-Key', env.user.token)
     .send({
       id: env.user2.id,
     })

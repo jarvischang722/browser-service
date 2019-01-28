@@ -157,6 +157,7 @@ module.exports = (route, config, exempt) => {
 
   exempt('/browser/homeUrlAndSsInfo')
   exempt('/browser/uploadBrowserSetup')
+  exempt('/browser/config')
 
   /**
    * @api {post} /browser/create  生成浏览器
