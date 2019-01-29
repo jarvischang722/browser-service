@@ -31,6 +31,10 @@ const SCHEMA = {
     .required(),
   icon: T.string(),
   icon_macos: T.string(),
+  enableVpn: T.number()
+    .valid(0, 1)
+    .allow(null)
+    .default(1),
   page: T.number()
     .integer()
     .min(1)
@@ -96,7 +100,11 @@ module.exports = (route, config, exempt) => {
 
   const updateProfile = async (req, res, next) => {
     try {
-      validate(req.body, getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon', 'icon_macos'), ['name'])
+      validate(
+        req.body,
+        getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon', 'icon_macos', 'enableVpn'),
+        ['name']
+      )
       const user = await User.updateProfile(req)
       return res.json(user)
     } catch (err) {
@@ -363,7 +371,7 @@ module.exports = (route, config, exempt) => {
 */
   route.post('/user/expire', changeChildExpireTime)
 
- /**
+  /**
 * @api {get} /user/getHomeurl  取得首頁列表
 * @apiVersion 1.0.0
 * @apiGroup User

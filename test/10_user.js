@@ -275,7 +275,7 @@ describe('User', () => {
       })
   })
 
-  it('Invalid homeurl', done => {
+  it('Update profile - Invalid homeurl', done => {
     client()
       .post('/user/profile')
       .set('Content-Type', 'multipart/form-data')
@@ -304,16 +304,34 @@ describe('User', () => {
       .field('homeUrl', ['https://www.agtop.t1t.games/'])
       .attach('icon', 'test/files/icon.ico')
       .attach('icon_macos', 'test/files/icon_macos.png')
+      .field('enableVpn', 1)
       .expect(200)
       .end((err, res) => {
         should.not.exist(err)
         res.body.should.have.property('id')
         res.body.should.have.property('name')
         res.body.should.have.property('icon')
+        res.body.should.have.property('icon_macos')
         res.body.should.have.property('homeUrl')
+        res.body.should.have.property('enable_vpn')
         done()
       })
   })
+
+  it('Update child profile - Invalid enable', done => {
+    client()
+      .post('/user/profile')
+      .set('Content-Type', 'multipart/form-data')
+      .set('Accept', 'application/json')
+      .set('X-Auth-Key', env.user.token)
+      .field('id', env.user2.id)
+      .expect(400)
+      .end((err, res) => {
+        should.not.exist(err)
+        done()
+      })
+  })
+
 
   it('Update child expire time', done => {
     client()
