@@ -1,8 +1,9 @@
 const errors = require('../error')
+const { PLATFORM_OS } = require('./const')
 
 const getLink = (link, platform, host) => {
   if (!host || !link) return link
-  if (platform !== 'Windows') return link
+  if (platform !== PLATFORM_OS.WIN) return link
   if (link.includes('http')) return link
   if (!host.includes('http')) return link
   const lk = link[0] === '/' ? link.slice(1) : link

@@ -8,7 +8,7 @@ const { validate, getSchema, T } = require('../validator')
 const url = require('url')
 const request = require('request')
 const multer = require('multer')
-const STATUS = require('../schema/const').BUILD_STATUS
+const { BUILD_STATUS: STATUS, PLATFORM_OS } = require('../schema/const')
 
 const log = log4js.getLogger()
 
@@ -18,8 +18,8 @@ const SCHEMA = {
     .required()
     .regex(/^\w+$/),
   platform: T.string()
-    .default('Windows')
-    .valid(['Windows', 'macOS'])
+    .default(PLATFORM_OS.WIN)
+    .valid([PLATFORM_OS.WIN, PLATFORM_OS.MAC])
 }
 
 const ERRORS = {
@@ -37,16 +37,16 @@ errors.register(ERRORS)
 module.exports = (route, config, exempt) => {
   const createNewBrowser = async (req, res, next) => {
     let profile = {}
-    let buildOfPlatform = 'Windows'
+    let buildOfPlatform = PLATFORM_OS.WIN
     try {
       const validatedData = validate(req.body, getSchema(SCHEMA, 'id', 'platform'))
       buildOfPlatform = validatedData.platform
       // process.platform :  win32 | linux | darwin(mac os)
       let serverOfPlatform = process.platform
       if (serverOfPlatform === 'darwin') {
-        serverOfPlatform = 'macOS'
+        serverOfPlatform = PLATFORM_OS.MAC
       } else if (serverOfPlatform === 'win32') {
-        serverOfPlatform = 'Windows'
+        serverOfPlatform = PLATFORM_OS.WIN
       }
 
       const tarId = req.body ? req.body.id : null
@@ -54,8 +54,8 @@ module.exports = (route, config, exempt) => {
       // 信息不全的不允许生成浏览器
       if (!profile || !profile.username) throw new errors.UserNotFoundError()
       if (!profile.name) throw new errors.NameRequiredError()
-      if (!profile.icon) throw new errors.IconRequiredError()
-      if (!profile.icon_macos) throw new errors.IconMacOSRequiredError()
+      if (!profile.icon && buildOfPlatform === PLATFORM_OS.WIN) throw new errors.IconRequiredError()
+      if (!profile.icon_macos && buildOfPlatform === PLATFORM_OS.MAC) { throw new errors.IconMacOSRequiredError() }
       if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
       if (!Array.isArray(profile.homeUrl)) {
         profile.homeUrl = [profile.homeUrl]
@@ -70,7 +70,7 @@ module.exports = (route, config, exempt) => {
       const { id } = profile
       if (buildOfPlatform !== serverOfPlatform) {
         const serviceAddr =
-          buildOfPlatform === 'Windows' ? config.server.windowsAddr : config.server.macAddr
+          buildOfPlatform === PLATFORM_OS.WIN ? config.server.windowsAddr : config.server.macAddr
         const headers = ObjUtil.pick(req.headers, 'content-type', 'accept', 'x-auth-key')
         const options = {
           url: `${serviceAddr}/browser/create`,

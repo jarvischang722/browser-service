@@ -2,6 +2,7 @@ const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
 const Browser = require('./browser')
+const { PLATFORM_OS } = require('./const')
 
 const checkExpireTime = async (userId, expireIn) => {
   const query = `
@@ -123,7 +124,7 @@ const getUser = async userId => {
 }
 
 const getProfile = async (userId, tarId, config, platform) => {
-  const clientPlatform = platform || 'Windows'
+  const clientPlatform = platform || PLATFORM_OS.WIN
   const targetId = tarId || userId
   const row = await checkPermission(userId, targetId)
   const browser = await Browser.getUserBrowser(targetId, config, clientPlatform)

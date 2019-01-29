@@ -5,7 +5,7 @@
     "npm": ">3.5"
   },
   "name": "tripleonetech-discover-service",
-  "version": "1.0.0",
+  "version": "2.2.0",
   "description": "Tripleonetech discover service",
   "main": "index.js",
   "scripts": {

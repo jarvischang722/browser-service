@@ -9,6 +9,12 @@
   },
   "ssServerList":[
     {
+      "serverAddr": "119.9.106.90",
+      "serverPort": 81,
+      "password": "sQ60P8Q8X4Zb7U",
+      "method": "chacha20-ietf-poly1305"
+    },
+    {
       "serverAddr": "106.75.166.72",
       "serverPort": 19999,
       "password": "nMvTdb7VXMPudFWH",
@@ -46,6 +52,6 @@
   "browser": {
     "projectPath": "C:\\projects\\safetybrowser",
     "version": "3.0.0",
-    "legalCopyright": "Copyright 2017"
+    "legalCopyright": "Copyright 2019"
   }
 }

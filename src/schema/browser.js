@@ -5,7 +5,7 @@ const path = require('path')
 const utils = require('../utils')
 const uuidV4 = require('uuid/v4')
 const Version = require('./version')
-const STATUS = require('./const').BUILD_STATUS
+const { BUILD_STATUS: STATUS, PLATFORM_OS } = require('./const')
 
 const updateCreatingBrowserStatus = async (userId, platform, status, errorMsg) => {
   const st = status || STATUS.CREATING
@@ -35,7 +35,7 @@ const getUserBrowser = async (userId, config, platform) => {
       userid = ?
       AND platform = ?
     ;`
-  const results = await db.query(query, [userId, platform || 'Windows'])
+  const results = await db.query(query, [userId, platform || PLATFORM_OS.WIN])
   let browser = null
   if (results.length > 0) {
     const row = results[0]
@@ -51,7 +51,11 @@ const getUserBrowser = async (userId, config, platform) => {
   return browser
 }
 
-const getLocalPort = async userId => {
+const getLocalPort = async (userId, username, platform) => {
+  if (platform === 'macOS') {
+    // 因為MACOS的SS APPLICATION(ShadowsocksX-NG.app)無法更換任何設定，所以只能寫死某個PORT
+    return 22870
+  }
   const query = `
     SELECT port
     FROM port
@@ -117,8 +121,8 @@ return function(url, host) {
 const createBrowser = async (config, profile, platform) => {
   const { id, username, name, homeUrl, icon, icon_macos } = profile
   try {
-    const iconTailPath = platform === 'Windows' ? icon : icon_macos
-    const iconFileName = platform === 'Windows' ? 'icon.ico' : 'icon.png'
+    const iconTailPath = platform === PLATFORM_OS.WIN ? icon : icon_macos
+    const iconFileName = platform === PLATFORM_OS.WIN ? 'icon.ico' : 'icon.png'
     const { projectPath, version: ver } = config.browser
     const buildNum = new Date().toFormat('MMDDHH24MI')
     const version = `${ver}.${buildNum}`
@@ -135,8 +139,12 @@ const createBrowser = async (config, profile, platform) => {
       )
     }
 
-    const localPort = await getLocalPort(id, username)
+    const localPort = await getLocalPort(id, username, platform)
     const ssServerList = config.ssServerList || []
+    const ssProxyOption =
+      ssServerList.length > 0
+        ? ssServerList[Math.floor(Math.random() * ssServerList.length)]
+        : {}
     // generate options
     const options = {
       client: username,
@@ -148,10 +156,10 @@ const createBrowser = async (config, profile, platform) => {
       enabledFlash: true,
       enabledProxy: true,
       clientId: uuidV4().toUpperCase(),
-      proxyOptions: Object.assign({}, ssServerList.length > 0 ? ssServerList[0] : {}, {
+      proxyOptions: Object.assign({}, ssProxyOption, {
         localAddr: '127.0.0.1',
         localPort,
-        timeout: 180
+        timeout: 180000
       }),
       ssServerList
     }
@@ -194,7 +202,6 @@ const getConfig = () => {
   }
   return configs
 }
-
 
 module.exports = {
   STATUS,

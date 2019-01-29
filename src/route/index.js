@@ -1,5 +1,6 @@
 const exempt = require('../authorization/exemptions').add
 const fs = require('fs')
+const pjson = require('../../package.json')
 
 const bind = (route, config) => {
   fs.readdirSync(__dirname).forEach(file => {
@@ -8,7 +9,7 @@ const bind = (route, config) => {
     }
   })
   route.get('/', (req, res) => {
-    res.send('Tripleonetech browser api service 2.0')
+    res.send(`Tripleonetech browser api service ${pjson.version}`)
   })
 }
 /**
