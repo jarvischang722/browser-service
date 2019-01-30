@@ -139,7 +139,8 @@ const getProfile = async (userId, tarId, config, platform) => {
     icon: row.icon,
     icon_macos: row.icon_macos,
     browser,
-    homeUrl
+    homeUrl,
+    enable_vpn: row.enable_vpn
   }
   return user
 }
@@ -147,7 +148,7 @@ const getProfile = async (userId, tarId, config, platform) => {
 const updateProfile = async req =>
   db.transaction(async client => {
     const userId = req.user.id
-    const { id, name, icon, icon_macos, enableVpn } = req.body
+    const { id, name, icon, icon_macos, enable_vpn } = req.body
     let { homeUrl } = req.body
     if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
     const tarId = id || userId
@@ -174,7 +175,7 @@ const updateProfile = async req =>
       WHERE
         id = ?
       ;`
-    const results = await client.query(query, [name, iconPath, iconMacOSPath, enableVpn, tarId])
+    const results = await client.query(query, [name, iconPath, iconMacOSPath, enable_vpn, tarId])
     if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
     // update homeurl
     const queryClean = `
@@ -195,7 +196,7 @@ const updateProfile = async req =>
       homeUrl,
       icon: iconPath,
       icon_macos: iconMacOSPath,
-      enable_vpn: enableVpn
+      enable_vpn
     }
     return user
   })

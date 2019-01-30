@@ -31,7 +31,7 @@ const SCHEMA = {
     .required(),
   icon: T.string(),
   icon_macos: T.string(),
-  enableVpn: T.number()
+  enable_vpn: T.number()
     .valid(0, 1)
     .allow(null)
     .default(1),
@@ -102,7 +102,7 @@ module.exports = (route, config, exempt) => {
     try {
       validate(
         req.body,
-        getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon', 'icon_macos', 'enableVpn'),
+        getSchema(SCHEMA, 'id', 'name', 'homeUrl', 'icon', 'icon_macos', 'enable_vpn'),
         ['name']
       )
       const user = await User.updateProfile(req)
