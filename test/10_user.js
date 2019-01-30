@@ -304,7 +304,7 @@ describe('User', () => {
       .field('homeUrl', ['https://www.agtop.t1t.games/'])
       .attach('icon', 'test/files/icon.ico')
       .attach('icon_macos', 'test/files/icon_macos.png')
-      .field('enableVpn', 1)
+      .field('enable_vpn', 1)
       .expect(200)
       .end((err, res) => {
         should.not.exist(err)
