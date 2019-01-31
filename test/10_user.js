@@ -5,7 +5,8 @@ const tripleone = {
   password: 'pass1234'
 }
 const newAgent = {
-  username: `newagent_${Date.now()}`
+  username: `newagent_${Date.now()}`,
+  id: ''
 }
 
 describe('User', () => {
@@ -122,6 +123,7 @@ describe('User', () => {
         res.body.should.have.property('username')
         res.body.should.have.property('password')
         newAgent.password = res.body.password
+        newAgent.id = res.body.id
         done()
       })
   })
@@ -455,6 +457,36 @@ describe('User', () => {
         should.not.exist(err)
         res.body.should.have.property('total')
         res.body.should.have.property('items').and.instanceOf(Array).and.be.empty
+        done()
+      })
+  })
+
+  it('Delete newAgent account by id', done => {
+    client()
+      .post('/user/delete')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set('X-Auth-Key', env.user.token)
+      .send({
+        id: newAgent.id
+      })
+      .expect(201)
+      .end((err, res) => {
+        should.not.exist(err)
+        res.body.should.have.property('isDeleted').and.to.equal(true)
+        done()
+      })
+  })
+
+  it('Delete newAgent account no id', done => {
+    client()
+      .post('/user/delete')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .set('X-Auth-Key', env.user.token)
+      .expect(404)
+      .end((err, res) => {
+        should.not.exist(err)
         done()
       })
   })

@@ -2,7 +2,7 @@ const crypto = require('../utils/crypto')
 const errors = require('../error')
 const strUtils = require('../utils/str.js')
 const Browser = require('./browser')
-const { PLATFORM_OS } = require('./const')
+const { PLATFORM_OS, USER_STATUS } = require('./const')
 
 const checkExpireTime = async (userId, expireIn) => {
   const query = `
@@ -231,9 +231,9 @@ const getChildren = async (userId, page, pagesize) => {
   const queryCount = `
     SELECT COUNT(id) AS cnt
     FROM user
-    WHERE parent = ?
+    WHERE parent = ? and status = ?
   ;`
-  const resultsCount = await db.query(queryCount, [userId])
+  const resultsCount = await db.query(queryCount, [userId, USER_STATUS.ACTIVE])
   if (resultsCount.length <= 0 || resultsCount[0].cnt <= 0) {
     return {
       total: 0
@@ -242,12 +242,17 @@ const getChildren = async (userId, page, pagesize) => {
   const query = `
     SELECT *
     FROM user
-    WHERE parent = ?
+    WHERE parent = ? and status = ?
     ORDER BY id DESC
     LIMIT ?
     OFFSET ?
     ;`
-  const results = await db.query(query, [userId, pagesize, (page - 1) * pagesize])
+  const results = await db.query(query, [
+    userId,
+    USER_STATUS.ACTIVE,
+    pagesize,
+    (page - 1) * pagesize
+  ])
   const users = results.map(r => ({
     id: r.id,
     username: r.username,
@@ -280,6 +285,17 @@ const changeChildExpireTime = async (userId, tarId, expireIn) => {
   }
 }
 
+const deleteUser = async (userId, tarId) => {
+  await checkPermission(userId, tarId)
+  const delQuery = `
+    UPDATE user SET status = ?  
+    WHERE  id = ?
+  ;`
+  const result = await db.query(delQuery, [USER_STATUS.DISABLE, tarId])
+  if (result.affectedRows <= 0) throw new errors.UserNotFoundError()
+  return result.affectedRows > 0
+}
+
 module.exports = {
   login,
   getUser,
@@ -287,6 +303,7 @@ module.exports = {
   getProfile,
   updateProfile,
   createUser,
+  deleteUser,
   getChildren,
   changeChildExpireTime,
   checkPermission

@@ -12,6 +12,11 @@ const BUILD_STATUS = {
   FAILED: 3
 }
 
+const USER_STATUS = {
+  ACTIVE: 1,
+  DISABLE: 0
+}
+
 const PLATFORM_OS = {
   WIN: 'Windows',
   MAC: 'macOS'
@@ -21,5 +26,6 @@ module.exports = {
   ADMIN_ID,
   ROLE,
   BUILD_STATUS,
+  USER_STATUS,
   PLATFORM_OS
 }

@@ -126,6 +126,17 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const deleteUser = async (req, res, next) => {
+    try {
+      if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
+      validate(req.body, getSchema(SCHEMA, 'id'))
+      const isDeleted = await User.deleteUser(req.user.id, req.body.id)
+      return res.status(201).send({ isDeleted })
+    } catch (err) {
+      return next(err)
+    }
+  }
+
   const getChildren = async (req, res, next) => {
     try {
       if (!req.user || req.user.role !== 1) throw new errors.NoPermissionError()
@@ -387,4 +398,21 @@ module.exports = (route, config, exempt) => {
 }
 */
   route.get('/user/getHomeurl', getHomeurl)
+
+  /**
+* @api {post} /user/delete  刪除agent
+* @apiVersion 1.0.0
+* @apiGroup User
+*
+* @apiParam {String} username  用户名稱
+*
+* @apiSuccess (Success 200) {Boolean} isDeleted
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+  "isDeleted": true
+}
+*/
+  route.post('/user/delete', deleteUser)
 }
