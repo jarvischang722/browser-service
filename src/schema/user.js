@@ -145,12 +145,43 @@ const getProfile = async (userId, tarId, config, platform) => {
   return user
 }
 
+const updateHomeUrls = async (client, tarId, homeUrls) => {
+  const queryClean = `
+        DELETE FROM homeurl
+        WHERE userid = ?;
+    ;`
+  await client.query(queryClean, [tarId])
+  const queryAddUrl = `
+        INSERT INTO homeurl (userid, url)
+        VALUES (?, ?)
+    ;`
+  for (const url of homeUrls) {
+    await client.query(queryAddUrl, [tarId, url])
+  }
+}
+
+const updateSsDomain = async (client, tarId, ssDomain) => {
+  const queryClean = `
+        DELETE FROM ss_domain
+        WHERE userid = ?;
+    ;`
+  await client.query(queryClean, [tarId])
+  const queryAddUrl = `
+        INSERT INTO ss_domain (userid, domain)
+        VALUES (?, ?)
+    ;`
+  for (const dm of ssDomain) {
+    await client.query(queryAddUrl, [tarId, dm])
+  }
+}
+
 const updateProfile = async req =>
   db.transaction(async client => {
     const userId = req.user.id
     const { id, name, icon, icon_macos, enable_vpn } = req.body
-    let { homeUrl } = req.body
+    let { homeUrl, ss_domain } = req.body
     if (!Array.isArray(homeUrl)) homeUrl = [homeUrl]
+    if (!Array.isArray(ss_domain)) ss_domain = [ss_domain]
     const tarId = id || userId
     await checkPermission(userId, tarId)
     let iconPath = null
@@ -177,22 +208,17 @@ const updateProfile = async req =>
       ;`
     const results = await client.query(query, [name, iconPath, iconMacOSPath, enable_vpn, tarId])
     if (results.affectedRows <= 0) throw new errors.UserNotFoundError()
+
     // update homeurl
-    const queryClean = `
-      DELETE FROM homeurl
-      WHERE userid = ?;
-    ;`
-    await client.query(queryClean, [tarId])
-    const queryAddUrl = `
-      INSERT INTO homeurl (userid, url)
-      VALUES (?, ?)
-      ;`
-    for (const url of homeUrl) {
-      await client.query(queryAddUrl, [tarId, url])
-    }
+    await updateHomeUrls(client, tarId, homeUrl)
+
+    // update ss domain name
+    await updateSsDomain(client, tarId, ss_domain)
+
     const user = {
       id: tarId,
       name,
+      ss_domain,
       homeUrl,
       icon: iconPath,
       icon_macos: iconMacOSPath,

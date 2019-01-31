@@ -261,6 +261,7 @@ describe('User', () => {
       .set('X-Auth-Key', env.user.token)
       .field('name', 'tripleonetech')
       .field('homeUrl', ['https://www.demo.tripleonetech.com/', 'https://www.tripleonetech.com/'])
+      .field('ss_domain', ['www.google.com', 'www.tripleone.com'])
       .attach('icon', 'test/files/icon.ico')
       .attach('icon_macos', 'test/files/icon_macos.png')
       .expect(200)
@@ -331,7 +332,6 @@ describe('User', () => {
         done()
       })
   })
-
 
   it('Update child expire time', done => {
     client()

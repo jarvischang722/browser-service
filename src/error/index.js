@@ -9,29 +9,29 @@ function normalize(name) {
 
 errors.localization = require('./locale.zh.json')
 
-errors.lang = (error) => {
+errors.lang = error => {
   if (error.message) return error.message
   const name = error.name.slice(0, -5)
   return errors.localization[name]
 }
 
-errors.register = (options) => {
-  Object.keys(options).forEach((name) => {
+errors.register = options => {
+  Object.keys(options).forEach(name => {
     const config = options[name]
     const errorName = normalize(name)
     switch (typeof config) {
-    case 'number':
-      if (config % 1 === 0) {
-        errors.makeConstructor(errorName, {
-          statusCode: config,
-        })
+      case 'number':
+        if (config % 1 === 0) {
+          errors.makeConstructor(errorName, {
+            statusCode: config
+          })
+          return
+        }
+        break
+      case 'object':
+        errors.makeConstructor(errorName, config)
         return
-      }
-      break
-    case 'object':
-      errors.makeConstructor(errorName, config)
-      return
-    default:
+      default:
     }
     throw new Error(`Invalid error config for ${errorName}`)
   })

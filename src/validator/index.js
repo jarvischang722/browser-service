@@ -2,7 +2,7 @@ const Joi = require('joi')
 const errors = require('../error')
 
 const ERRORS = {
-  ValidationFailed: 400,
+  ValidationFailed: 400
 }
 errors.register(ERRORS)
 

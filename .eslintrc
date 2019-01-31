@@ -1,10 +1,8 @@
 {
-  "parser": "babel-eslint",
-  "extends": "airbnb",
+  "extends": ["airbnb"],
   "globals": {
     "__DEV__": true,
     "__TEST__": true,
-    "__LOTTERY_SERVICE__": true,
     "db": true,
     "describe": true,
     "it": true,
@@ -21,10 +19,7 @@
     "ecmascript": 6
   },
   "rules": {
-    "arrow-parens": [
-      0,
-      "as-needed"
-    ],
+    "arrow-parens": [0, "as-needed"],
     "comma-dangle": [
       "error",
       {
@@ -43,10 +38,7 @@
         "properties": "always"
       }
     ],
-    "semi": [
-      2,
-      "never"
-    ],
+    "semi": [2, "never"],
     "global-require": 0,
     "no-param-reassign": [
       "error",
@@ -62,39 +54,11 @@
       "error",
       {
         "groups": [
-          [
-            "*",
-            "/",
-            "%",
-            "**"
-          ],
-          [
-            "&",
-            "|",
-            "^",
-            "~",
-            "<<",
-            ">>",
-            ">>>"
-          ],
-          [
-            "==",
-            "!=",
-            "===",
-            "!==",
-            ">",
-            ">=",
-            "<",
-            "<="
-          ],
-          [
-            "&&",
-            "||"
-          ],
-          [
-            "in",
-            "instanceof"
-          ]
+          ["*", "/", "%", "**"],
+          ["&", "|", "^", "~", "<<", ">>", ">>>"],
+          ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
+          ["&&", "||"],
+          ["in", "instanceof"]
         ],
         "allowSamePrecedence": true
       }
@@ -102,9 +66,7 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": [
-          "**/*.test.js"
-        ]
+        "devDependencies": ["**/*.test.js"]
       }
     ],
     "no-unused-vars": [
@@ -123,6 +85,7 @@
     "no-prototype-builtins": 0,
     "no-restricted-syntax": 0,
     "no-nested-ternary": 0,
-    "linebreak-style": 0
+    "linebreak-style": 0,
+    "dot-location": 0
   }
 }

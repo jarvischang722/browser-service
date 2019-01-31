@@ -23,18 +23,19 @@ const server = async () => {
 
   app.use(helmet())
 
-  app.use(cors({
-    origin: (origin, callback) => {
-      callback(null, true)
-    },
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Key, If-None-Match',
-    credentials: true,
-  }))
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        callback(null, true)
+      },
+      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Key, If-None-Match',
+      credentials: true
+    })
+  )
 
   app.use('/download', express.static('deploy'))
   app.use('/upload', express.static('upload'))
   app.use('/pub_plugins', express.static('pub_plugins'))
-
 
   const apiRouter = new express.Router()
   apiRouter.use(cookieParser(config.secret.cookie))
@@ -84,7 +85,7 @@ const server = async () => {
 }
 
 module.exports = () => {
-  const handleErr = (e) => {
+  const handleErr = e => {
     log.error(e)
     throw e
   }
