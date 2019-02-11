@@ -1,4 +1,4 @@
-# tripleonetech-discover-service v1.0.0
+# tripleonetech-discover-service v2.2.0
 
 Tripleonetech discover service
 
@@ -11,6 +11,7 @@ Tripleonetech discover service
 	- [获得用户主页以及SS](#获得用户主页以及ss)
 	- [获得浏览器信息](#获得浏览器信息)
 	- [上传安装档](#上传安装档)
+	- [取得瀏覽器client資訊](#取得瀏覽器client資訊)
 	- [取得共用设定档](#取得共用设定档)
 	- [生成浏览器](#生成浏览器)
 	
@@ -37,6 +38,7 @@ Tripleonetech discover service
 	- [获取用户信息](#获取用户信息)
 	- [recurrent](#recurrent)
 	- [创建下级代理/客户](#创建下级代理/客户)
+	- [刪除agent](#刪除agent)
 	- [修改下级代理过期时间](#修改下级代理过期时间)
 	- [登陆](#登陆)
 	- [更新用户信息](#更新用户信息)
@@ -361,6 +363,62 @@ HTTP Status: 200
  }
 ```
 
+## 取得瀏覽器client資訊
+
+<p>safetybrowser 開啟前需要先抓取client的一些資訊，此API就是回傳相關的資訊</p>
+
+	POST /browser/clientData
+
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| client| String| |
+| homeUrl| Array| <p>開啟網址</p>|
+| ssDomain| Array| <p>打開ss後，可透過ss出去的domain</p>|
+| enabledProxy| Boolen| <p>是否打開ss</p>|
+| ssServerList| Array| <p>ss清單</p>|
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+    "client": "tripleone",
+    "homeUrl": [
+        "https://www.ipip.net/"
+    ],
+    "ssDomain": [
+        "google1.com",
+        "google2.org"
+    ],
+    "enabledProxy": false,
+    "ssServerList": [
+        {
+            "serverAddr": "119.9.106.90",
+            "serverPort": 81,
+            "password": "sQ60P8Q8X4Zb7U",
+            "method": "chacha20-ietf-poly1305"
+        },
+        {
+            "serverAddr": "106.75.166.72",
+            "serverPort": 19999,
+            "password": "nMvTdb7VXMPudFWH",
+            "method": "aes-256-cfb"
+        },
+        {
+            "serverAddr": "35.201.204.2",
+            "serverPort": 19999,
+            "password": "dBbQMP8Nd9vyjvN",
+            "method": "aes-256-cfb"
+        }
+    ]
+}
+```
+
 ## 取得共用设定档
 
 <p>在Mobile版的安全浏览器启动前，会先打这支API来取得初始设定</p>
@@ -369,7 +427,7 @@ HTTP Status: 200
 
 
 
-### Success 201
+### Success 200
 | Field    | Type        | Description                          |
 |---------|-----------|--------------------------------------|
 | isVPNEnable| Boolen| |
@@ -1215,6 +1273,36 @@ HTTP Status: 201
   "id": 10,
   "username": "tripleone",
   "password": "pass1234"
+}
+```
+
+## 刪除agent
+
+
+
+	POST /user/delete
+
+
+### Parameters
+
+| Name    | Type      | Attribute      | Description                          |
+|---------|-----------|----------------| -------------------|
+| username			| String	| Required|  <p>用户名稱</p>							|
+
+
+### Success 200
+| Field    | Type        | Description                          |
+|---------|-----------|--------------------------------------|
+| isDeleted| Boolean| |
+
+### Success Response
+
+Success-Response:
+
+```
+HTTP Status: 200
+{
+  "isDeleted": true
 }
 ```
 

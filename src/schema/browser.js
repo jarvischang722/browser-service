@@ -142,9 +142,7 @@ const createBrowser = async (config, profile, platform) => {
     const localPort = await getLocalPort(id, username, platform)
     const ssServerList = config.ssServerList || []
     const ssProxyOption =
-      ssServerList.length > 0
-        ? ssServerList[Math.floor(Math.random() * ssServerList.length)]
-        : {}
+      ssServerList.length > 0 ? ssServerList[Math.floor(Math.random() * ssServerList.length)] : {}
     // generate options
     const options = {
       client: username,
@@ -203,11 +201,29 @@ const getConfig = () => {
   return configs
 }
 
+const getClientData = async (config, clientName) => {
+  const User = require('./user')
+  const clientId = await User.getClientId(clientName)
+  const clientInfo = await User.getProfile(clientId, clientId, config)
+  const homeUrl = await User.getHomeUrlByClientName(clientName)
+  const ssDomain = clientInfo.ss_domain || []
+  const ssServerList = config.ssServerList || []
+  const enabledProxy = clientInfo.enable_vpn || false
+  return {
+    client: clientName,
+    homeUrl,
+    ssDomain,
+    enabledProxy,
+    ssServerList
+  }
+}
+
 module.exports = {
   STATUS,
   createBrowser,
   getUserBrowser,
   getBrowserInfo,
   updateCreatingBrowserStatus,
-  getConfig
+  getConfig,
+  getClientData
 }

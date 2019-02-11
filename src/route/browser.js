@@ -55,7 +55,9 @@ module.exports = (route, config, exempt) => {
       if (!profile || !profile.username) throw new errors.UserNotFoundError()
       if (!profile.name) throw new errors.NameRequiredError()
       if (!profile.icon && buildOfPlatform === PLATFORM_OS.WIN) throw new errors.IconRequiredError()
-      if (!profile.icon_macos && buildOfPlatform === PLATFORM_OS.MAC) { throw new errors.IconMacOSRequiredError() }
+      if (!profile.icon_macos && buildOfPlatform === PLATFORM_OS.MAC) {
+        throw new errors.IconMacOSRequiredError()
+      }
       if (!profile.homeUrl) throw new errors.HomeUrlRequiredError()
       if (!Array.isArray(profile.homeUrl)) {
         profile.homeUrl = [profile.homeUrl]
@@ -148,6 +150,17 @@ module.exports = (route, config, exempt) => {
     }
   }
 
+  const getClientData = async (req, res, next) => {
+    try {
+      validate(req.body, getSchema(SCHEMA, 'clientName'))
+      const clientName = req.body.clientName
+      const result = await Browser.getClientData(config, clientName)
+      return res.json(result)
+    } catch (err) {
+      return next(err)
+    }
+  }
+
   const storage = multer.diskStorage({
     destination: 'deploy/',
     filename: (req, file, cb) => {
@@ -158,6 +171,7 @@ module.exports = (route, config, exempt) => {
   exempt('/browser/homeUrlAndSsInfo')
   exempt('/browser/uploadBrowserSetup')
   exempt('/browser/config')
+  exempt('/browser/clientData')
 
   /**
    * @api {post} /browser/create  生成浏览器
@@ -279,7 +293,7 @@ module.exports = (route, config, exempt) => {
 * @apiGroup Browser
 * @apiDescription 在Mobile版的安全浏览器启动前，会先打这支API来取得初始设定
 *
-* @apiSuccess (Success 201) {Boolen} isVPNEnable
+* @apiSuccess (Success 200) {Boolen} isVPNEnable
 *
 * @apiSuccessExample Success-Response:
 * HTTP Status: 200
@@ -289,4 +303,53 @@ module.exports = (route, config, exempt) => {
 *
 */
   route.get('/browser/config', getConfig)
+
+  /**
+* @api {post} /browser/clientData 取得瀏覽器client資訊
+* @apiVersion 1.0.0
+* @apiGroup Browser
+* @apiDescription safetybrowser 開啟前需要先抓取client的一些資訊，此API就是回傳相關的資訊
+*
+* @apiSuccess (Success 200) {String} client
+* @apiSuccess (Success 200) {Array} homeUrl 開啟網址
+* @apiSuccess (Success 200) {Array} ssDomain 打開ss後，可透過ss出去的domain
+* @apiSuccess (Success 200) {Boolen} enabledProxy 是否打開ss
+* @apiSuccess (Success 200) {Array} ssServerList ss清單
+*
+* @apiSuccessExample Success-Response:
+* HTTP Status: 200
+{
+    "client": "tripleone",
+    "homeUrl": [
+        "https://www.ipip.net/"
+    ],
+    "ssDomain": [
+        "google1.com",
+        "google2.org"
+    ],
+    "enabledProxy": false,
+    "ssServerList": [
+        {
+            "serverAddr": "119.9.106.90",
+            "serverPort": 81,
+            "password": "sQ60P8Q8X4Zb7U",
+            "method": "chacha20-ietf-poly1305"
+        },
+        {
+            "serverAddr": "106.75.166.72",
+            "serverPort": 19999,
+            "password": "nMvTdb7VXMPudFWH",
+            "method": "aes-256-cfb"
+        },
+        {
+            "serverAddr": "35.201.204.2",
+            "serverPort": 19999,
+            "password": "dBbQMP8Nd9vyjvN",
+            "method": "aes-256-cfb"
+        }
+    ]
+}
+*
+*/
+  route.get('/browser/clientData', getClientData)
 }

@@ -64,7 +64,7 @@ const getHomeUrl = async userId => {
   const queryUrl = `
     SELECT url
     FROM homeurl
-    WHERE userid = ?
+    WHERE userid = ? 
     ;`
   const resultsUrl = await db.query(queryUrl, [userId])
   const homeUrl = resultsUrl.map(r => r.url)
@@ -85,6 +85,17 @@ const getHomeUrlByClientName = async clientName => {
   const resultsUrl = await db.query(queryUrl, [clientName])
   const homeUrls = resultsUrl.map(r => r.url)
   return homeUrls
+}
+
+const getSsDomains = async userId => {
+  const queryUrl = `
+  SELECT domain
+  FROM ss_domain
+  WHERE userid = ?
+  ;`
+  const resultsUrl = await db.query(queryUrl, [userId])
+  const ss_domain = resultsUrl.map(r => r.domain)
+  return ss_domain
 }
 
 const login = async (userName, password) => {
@@ -130,6 +141,7 @@ const getProfile = async (userId, tarId, config, platform) => {
   const browser = await Browser.getUserBrowser(targetId, config, clientPlatform)
   // get homeurls
   const homeUrl = await getHomeUrl(targetId)
+  const ssDomains = await getSsDomains(targetId)
   const user = {
     id: row.id,
     role: row.role,
@@ -140,7 +152,8 @@ const getProfile = async (userId, tarId, config, platform) => {
     icon_macos: row.icon_macos,
     browser,
     homeUrl,
-    enable_vpn: row.enable_vpn
+    enable_vpn: row.enable_vpn,
+    ss_domain: ssDomains
   }
   return user
 }
@@ -296,6 +309,18 @@ const deleteUser = async (userId, tarId) => {
   return result.affectedRows > 0
 }
 
+const getClientId = async clientName => {
+  const querySQL = `
+     SELECT id 
+     FROM user
+     WHERE username = ?
+  ;`
+
+  const result = await db.query(querySQL, [clientName])
+  if (result.length === 0) throw new errors.UserNotFoundError()
+  return result[0].id
+}
+
 module.exports = {
   login,
   getUser,
@@ -306,5 +331,6 @@ module.exports = {
   deleteUser,
   getChildren,
   changeChildExpireTime,
-  checkPermission
+  checkPermission,
+  getClientId
 }
