@@ -271,6 +271,7 @@ const getChildren = async (userId, page, pagesize) => {
     username: r.username,
     name: r.name,
     role: r.role,
+    icon: r.icon,
     expireIn: r.expire_in
   }))
   return {
