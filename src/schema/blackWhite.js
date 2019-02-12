@@ -1,12 +1,13 @@
 const errors = require('../error')
-
+const { USER_STATUS } = require('./const')
 
 const getList = async (page, pagesize) => {
   const queryCnt = `
   SELECT COUNT(id) AS cnt
-  FROM user
+  FROM user u
+  WHERE u.status = ?
   ;`
-  const resultsCnt = await db.query(queryCnt)
+  const resultsCnt = await db.query(queryCnt, [USER_STATUS.ACTIVE])
   if (resultsCnt.length <= 0 || resultsCnt[0].cnt <= 0) {
     return {
       total: 0
@@ -20,11 +21,12 @@ const getList = async (page, pagesize) => {
       SELECT u.id as userid , u.name, bwl.black_list, bwl.white_list 
       FROM user u 
       LEFT JOIN black_white_list bwl on bwl.userid = u.id
+      WHERE u.status = ?
       ORDER BY  u.id ASC
       LIMIT ?
       OFFSET ?
       ;`
-  list.items = await db.query(query, [pagesize, (page - 1) * pagesize])
+  list.items = await db.query(query, [USER_STATUS.ACTIVE, pagesize, (page - 1) * pagesize])
   return list
 }
 
