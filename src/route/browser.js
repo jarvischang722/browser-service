@@ -152,8 +152,8 @@ module.exports = (route, config, exempt) => {
 
   const getClientData = async (req, res, next) => {
     try {
-      validate(req.body, getSchema(SCHEMA, 'clientName'))
-      const clientName = req.body.clientName
+      validate(req.query, getSchema(SCHEMA, 'clientName'))
+      const clientName = req.query.clientName
       const result = await Browser.getClientData(config, clientName)
       return res.json(result)
     } catch (err) {

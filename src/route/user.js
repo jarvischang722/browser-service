@@ -404,7 +404,7 @@ module.exports = (route, config, exempt) => {
 * @apiVersion 1.0.0
 * @apiGroup User
 *
-* @apiParam {String} username  用户名稱
+* @apiParam {String} id  用户ID
 *
 * @apiSuccess (Success 200) {Boolean} isDeleted
 *

@@ -208,7 +208,7 @@ const getClientData = async (config, clientName) => {
   const homeUrl = await User.getHomeUrlByClientName(clientName)
   const ssDomain = clientInfo.ss_domain || []
   const ssServerList = config.ssServerList || []
-  const enabledProxy = clientInfo.enable_vpn || false
+  const enabledProxy = clientInfo.enable_vpn === 1 || false
   return {
     client: clientName,
     homeUrl,
