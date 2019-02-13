@@ -18,8 +18,8 @@ npm-debug.log
 
 src/config/*.json
 
-/upload/
-/deploy/
+upload/
+deploy/
 /icon/
 
 package-lock.json
