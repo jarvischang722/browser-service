@@ -168,7 +168,9 @@ const updateHomeUrls = async (client, tarId, homeUrls) => {
         INSERT INTO homeurl (userid, url)
         VALUES (?, ?)
     ;`
+
   for (const url of homeUrls) {
+    /* eslint-disable no-await-in-loop */
     await client.query(queryAddUrl, [tarId, url])
   }
 }
@@ -184,7 +186,7 @@ const updateSsDomain = async (client, tarId, ssDomain) => {
         VALUES (?, ?)
     ;`
   for (const dm of ssDomain) {
-    await client.query(queryAddUrl, [tarId, dm])
+    if (dm) await client.query(queryAddUrl, [tarId, dm])
   }
 }
 
