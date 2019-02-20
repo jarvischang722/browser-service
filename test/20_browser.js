@@ -48,12 +48,9 @@ describe('Generate browser', () => {
 
   it('get client data', done => {
     client()
-      .get('/browser/clientData')
+      .get('/browser/clientData?clientName=tripleone')
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
-      .send({
-        clientName: 'tripleone'
-      })
       .expect(200)
       .end((err, res) => {
         should.not.exist(err)

@@ -156,7 +156,8 @@ describe('User', () => {
       .set('Accept', 'application/json')
       .set('X-Auth-Key', env.user.token)
       .send({
-        username: `agent2_${Date.now()}`
+        username: `agent2_${Date.now()}`,
+        name: 'agent2'
       })
       .expect(201)
       .end((err, res) => {

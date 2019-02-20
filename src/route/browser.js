@@ -157,6 +157,7 @@ module.exports = (route, config, exempt) => {
       const result = await Browser.getClientData(config, clientName)
       return res.json(result)
     } catch (err) {
+      console.error(err)
       return next(err)
     }
   }
